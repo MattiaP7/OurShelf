@@ -1,0 +1,12 @@
+# questo file contiene file, cartelle che NON devono essere visibili su github, come per esempio i file dbconfig non vogliamo che la gente sappia le informazioni personali...
+# ovviamente ognugno avra i suoi locali 
+
+# cartella .vscode, ognuno con la sua personlae
+.vscode/
+
+
+# NON CARICATE IL FILE src/config/dbconfig.php, su github sara' caricato un file .example per completezza ma non l'originale!
+src/config/dbconfig.php
+
+# permetti il caricamente dell'esempio
+!src/config/dbconfig.example.php
