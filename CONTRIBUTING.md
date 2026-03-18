@@ -9,6 +9,7 @@ Per garantire la stabilità del progetto, seguiamo il modello **Feature Branchin
 ### 1. I Branch
 
 - **`main`**: È la versione stabile. Solo il PM può scriverci.
+- **`dev-tm`** Lavoro generale del TM.
 - **`dev-db`**: Lavoro sulle tabelle e SQL.
 - **`dev-backend`**: Lavoro su PHP, logica e query.
 - **`dev-frontend`**: Lavoro su HTML, CSS e interfacce.
