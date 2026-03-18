@@ -9,8 +9,7 @@ Il progetto segue il paradigma MVC utilizzando PHP e MariaDB.
 ```
 OurShelf/
 ├── .vscode/        # Configurazioni ottimizzate per l'editor
-├── scripts/        # Script automation (.sh) per Git e Workflow
-├── logs/           # Cartella dedicata ai log di errore
+├── database/       # Cartella dedicata per gli script SQL in caso di errori
 ├── src/            # Codice sorgente dell'applicazione
 │ ├── config/       # Connessione al Database e parametri di sistema
 │ ├── controllers/  # Logica di controllo (Gestione richieste)
@@ -46,7 +45,7 @@ Per fare questo seguite questi passagggi:
 3. Aggiungete infondo queste regole:
    ```json
    "php-docblocker.extra": [
-    "@author **Mattia Pirazzi** <PIRAZZI.8076@isit100.fe.it>",
+      "@author Nome Cognome <email@isit100.fe.it>",
    ],
    "php-docblocker.returnVoid": true,
    ```
@@ -79,7 +78,6 @@ bmewburn.vscode-intelephense-client
 natizyskunk.sftp
 neilbrayfield.php-docblocker
 usernamehw.errorlens
-xdebug.php-debug
 formulahendry.auto-close-tag
 ```
 
