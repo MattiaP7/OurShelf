@@ -6,7 +6,8 @@ require_once 'dbconfig.php';
  * Classe per la gestione della connessione al Database.
  * Fornisce un'interfaccia statica per stabilire una connessione sicura tramite PDO, garantendo che l'applicazione utilizzi standard moderni per le query SQL.
  *
- * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
+ * @author Nome Cognome <email@isit100.fe.it>
+ * @date 19/03/2026
  */
 class DB
 {
@@ -17,6 +18,7 @@ class DB
      *
      * @return PDO|void L'oggetto della connessione se riuscita, altrimenti termina con errore.
      * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
+     * @date 19/03/2026
      */
     public static function connect()
     {
@@ -31,7 +33,7 @@ class DB
             return $pdo;
         } catch (PDOException $e) {
             // stampiamo il messaggio anche se non e' il top ma amen.
-            echo $e->getMessage();
+            echo "{$e->getMessage()}<br>";
             die('Errore di connessione al database.');
         }
     }
