@@ -37,28 +37,27 @@ Per garantire la manutenibilità e facilitare il Testing, ogni collaboratore dev
   - `@param`: Descrizione di ogni variabile in ingresso.
   - `@return`: Cosa restituisce la funzione (es: bool, array, string).
   - **Descrizione**: La prima riga del commento deve spiegare chiaramente la funzionalità (es: "Effettua la ricerca nel database dei libri adottati".
+    Se avete bisogno di una lista di plugin di vscode da installare per il progetto io ho queste, cercate il nome scritto cosi nella ricerca dei plugin (`Ctrl + Shift + X`):
 
-Per fare questo seguite questi passagggi:
+```
+bmewburn.vscode-intelephense-client
+natizyskunk.sftp
+neilbrayfield.php-docblocker
+usernamehw.errorlens
+formulahendry.auto-close-tag
+```
 
-1. Premi sulla tastiera `Ctrl + Shift + P`
-2. Scrivi nella barra che compare: `Open User Settings (JSON)` e fate invio
-3. Aggiungete infondo queste regole:
-   ```json
-   "php-docblocker.extra": [
-      "@author Nome Cognome <email@isit100.fe.it>",
-   ],
-   "php-docblocker.returnVoid": true,
-   ```
-
-### Formattazione del codice
-
-Per avere una codebase uguale usiamo lo stesso formatter, che in teoria e' gia installato quando avete fatto configurato php ad inizio anno,
+Per aver un buon funzionamento di vscode fate questi passaggi:
 
 1. Premi sulla tastiera `Ctrl + Shift + P`
 2. Scrivi nella barra che compare: `Open User Settings (JSON)` e fate invio
 3. Aggiungete infondo queste regole:
 
 ```json
+"php-docblocker.extra": [
+   "@author Nome Cognome <email@isit100.fe.it>",
+],
+"php-docblocker.returnVoid": true,
 "[php]": {
   "editor.defaultFormatter": "bmewburn.vscode-intelephense-client",
   "editor.formatOnSave": true,
@@ -68,18 +67,35 @@ Per avere una codebase uguale usiamo lo stesso formatter, che in teoria e' gia i
     "comments": true,
     "strings": true,
   },
+  "intelephense.completion.triggerParameterHints": true,
 },
+"php.suggest.basic": false,
+"php.validate.enable": true,
 ```
 
-Se avete bisogno di una lista di plugin di vscode da installare per il progetto io ho queste, cercate il nome scritto cosi nella ricerca dei plugin (`Ctrl + Shift + X`):
+Se per qualche motivo non dovesse generare la documentazione sopra una funzione fate questi passaggi:
 
+1. Premi sulla tastiera `Ctrl + Shift + P`
+2. Scrivi nella barra che compare: `Snippets: configure snippets` e cercate php, fate invio
+3. Aggiungete il seguente blocco:
+
+```json
+"DocBlock PHP": {
+  "prefix": "docme",
+  "body": [
+      "/**",
+      " * ${1:Descrizione della funzione}",
+      " *",
+      " * @author nome cognome <email@isit100.fe.it>",
+      " * @param ${2:mixed} \\$${3:variabile} ${4:Descrizione parametro}",
+      " * @return ${5:void}",
+      " */"
+  ],
+  "description": "Genera il blocco commenti con autore per la scuola"
+}
 ```
-bmewburn.vscode-intelephense-client
-natizyskunk.sftp
-neilbrayfield.php-docblocker
-usernamehw.errorlens
-formulahendry.auto-close-tag
-```
+
+Adesso basterà sopra una funzione scrivere `docme` e autocompletare, questa è una soluzione più spartana ma funzionante.
 
 ## Configurazione .vscode
 
