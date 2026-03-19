@@ -10,6 +10,7 @@ Il progetto segue il paradigma MVC utilizzando PHP e MariaDB.
 OurShelf/
 ├── .vscode/        # Configurazioni ottimizzate per l'editor
 ├── database/       # Cartella dedicata per gli script SQL in caso di errori
+├── utils/          # Cartella che contiene funzioni di helper usate in tutto il progetto
 ├── src/            # Codice sorgente dell'applicazione
 │ ├── config/       # Connessione al Database e parametri di sistema
 │ ├── controllers/  # Logica di controllo (Gestione richieste)
@@ -55,7 +56,8 @@ Per aver un buon funzionamento di vscode fate questi passaggi:
 
 ```json
 "php-docblocker.extra": [
-   "@author Nome Cognome <email@isit100.fe.it>",
+  "@author Nome Cognome <email@isit100.fe.it>",
+  "@date ${CURRENT_DATE}/${CURRENT_MONTH}/${CURRENT_YEAR}",
 ],
 "php-docblocker.returnVoid": true,
 "[php]": {
@@ -86,9 +88,10 @@ Se per qualche motivo non dovesse generare la documentazione sopra una funzione 
       "/**",
       " * ${1:Descrizione della funzione}",
       " *",
-      " * @author nome cognome <email@isit100.fe.it>",
       " * @param ${2:mixed} \\$${3:variabile} ${4:Descrizione parametro}",
       " * @return ${5:void}",
+      " * @author nome cognome <email@isit100.fe.it>",
+			" * @date ${CURRENT_DATE}/${CURRENT_MONTH}/${CURRENT_YEAR}",
       " */"
   ],
   "description": "Genera il blocco commenti con autore per la scuola"
