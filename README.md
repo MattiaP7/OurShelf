@@ -27,6 +27,16 @@ Per lavorare correttamente su OurShelf, installa i seguenti plugin in Visual Stu
 - **PHP Intelephense** Fondamentale per l'autocompletamento e la navigazione tra classi MVC.
 - **PHP DocBlocker** Genera in modo automatico la documentazione delle funzioni, classi, etc
 - **SFTP (di Natizyskunk)** Per sincronizzare il codice locale con il server info5/projects.
+- **Bootstrap IntelliSense** Per autocompletamento delle classi bootstrap
+
+```
+bmewburn.vscode-intelephense-client
+natizyskunk.sftp
+neilbrayfield.php-docblocker
+usernamehw.errorlens
+formulahendry.auto-close-tag
+hossaini.bootstrap-intellisense
+```
 
 ### Documentazione del Codice (DocBlock)
 
@@ -39,14 +49,6 @@ Per garantire la manutenibilità e facilitare il Testing, ogni collaboratore dev
   - `@return`: Cosa restituisce la funzione (es: bool, array, string).
   - **Descrizione**: La prima riga del commento deve spiegare chiaramente la funzionalità (es: "Effettua la ricerca nel database dei libri adottati".
     Se avete bisogno di una lista di plugin di vscode da installare per il progetto io ho queste, cercate il nome scritto cosi nella ricerca dei plugin (`Ctrl + Shift + X`):
-
-```
-bmewburn.vscode-intelephense-client
-natizyskunk.sftp
-neilbrayfield.php-docblocker
-usernamehw.errorlens
-formulahendry.auto-close-tag
-```
 
 Per aver un buon funzionamento di vscode fate questi passaggi:
 
@@ -91,10 +93,10 @@ Se per qualche motivo non dovesse generare la documentazione sopra una funzione 
       " * @param ${2:mixed} \\$${3:variabile} ${4:Descrizione parametro}",
       " * @return ${5:void}",
       " * @author nome cognome <email@isit100.fe.it>",
-			" * @date ${CURRENT_DATE}/${CURRENT_MONTH}/${CURRENT_YEAR}",
+	  " * @date ${CURRENT_DATE}/${CURRENT_MONTH}/${CURRENT_YEAR}",
       " */"
   ],
-  "description": "Genera il blocco commenti con autore per la scuola"
+  "description": "Genera il blocco commenti"
 }
 ```
 
