@@ -6,3 +6,11 @@
  */
 
 define("APP", true);
+
+
+require_once 'core/helpers.php';
+
+$msg = "<a href=\"\">link</a>";
+
+echo $msg . "<br>";
+echo sprint($msg);
