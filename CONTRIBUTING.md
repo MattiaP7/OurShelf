@@ -39,6 +39,7 @@ git pull origin main
 # 3. Dopo che hai aggiornato, creato dei file aggiungili al commit:
 # git add path-file, es:
 git add database/schema.sql
+# oppure tutti i file con git add .
 
 # crea il commit con una descrizione esausitiva, se raggiungi il limite di 50 caratteri fai un altro -m, es:
 git commit -m "DB: Aggiornata tabella ourshelf_libri" -m "Descrizione estesa..."
@@ -47,22 +48,29 @@ git commit -m "DB: Aggiornata tabella ourshelf_libri" -m "Descrizione estesa..."
 git push origin dev-db
 ```
 
+Se due persone vogliono lavorare sullo stesso file fate cosi:
+
+```bash
+# scarica il lavoro dell'altra persona
+git pull origin [nome-branch]
+# aggiungi i file
+git add .
+# sincronizza di nuovo (in caso avesse fatto un push)
+git pull origin [nome-branch]
+
+# invia
+git push origin [nome-branch]
+```
+
 ## Standard di Codifica
 
 - **Naming Variabili**: `camelCase` (es: `$prezzoLibro`, `$utenteLoggato`).
 - **Naming Tabelle DB**: `snake_case` (es: `ourshelf_libri_adottati`, `ourshelf_storico_operazioni`). Devono iniziare con il prefisso `ourshelf_` (a meno che Dessolis non crei uno spazio dedicato).
+- **Funzioni**: `snake_case`, es: `get_libri()`, per le funzioni specificare il tipo dei parametri e il tipo di ritorno.
+- **Classi**: es `ControllerLibro`
 - **Commenti**: Ogni funzione deve avere la documentazione DocBlock con l'autore, generata da `PHP DocBlocker` tramite `/**` (usate l'autocompletamento), se non dovesse andare posizionatevi con il cursore sopra una funzione e fate `F1 > Insert PHP Docblock`.
 - **Database**: Le query devono utilizzare i **Prepared Statements** per la sicurezza (PDO).
-
-## Requisiti del Database
-
-Il database deve contenere obbligatoriamente i seguenti campi per ogni libro:
-
-- ISBN (13 caratteri)
-- Titolo e Autori
-- Editore e Volume (U, 1, 2, 3)
-- Classe (1-5) e Materia
-- Corso di studi
+- **Lingua Italiana per tutto.**
 
 ### Cartella /database
 
@@ -72,9 +80,9 @@ Questa cartella serve per avere una copia locale degli script sql che creiamo su
 
 Ogni membro ha un ruolo specifico come indicato nel documento di progetto:
 
-1. **Pirazzi Mattia** Project Manager / Analista (Coordinamento e Documentazione) - \*\*
-2. **nome** Database Designer (Schema ER e SQL)
-3. **nome** Backend Developer (Logica PHP e CRUD)
-4. **nome** Frontend Developer (Interfaccia e UX)
+1. **Pirazzi Mattia** Project Manager / Analista (Coordinamento e Documentazione)
+2. **Landi e Ionut** Database Designer (Schema ER e SQL)
+3. **Pirazzi Mattia** Backend Developer (Logica PHP e CRUD)
+4. **Portacci Matteo** Frontend Developer (Interfaccia e UX)
 
 > **Nota**: Per dubbi tecnici o conflitti di codice, rivolgersi subito al Project Manager. Se dovete cambiare ruolo o aiutarvi su un compito specifico, avvisate prima il Team Leader.
