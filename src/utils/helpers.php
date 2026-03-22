@@ -1,17 +1,19 @@
 <?php
 
-
 /**
- * safe_string - Ritorna una stringa sicura, converte caratteri speciali in valori HTML, da usare nelle view html.
- * Per esempio se il nostro valore da stampare è "<a href=\"\">link</a>" con echo sarà un link ma con sprint sarà il valore in sè, faremo `echo safe_string(stringa)`.
+ * Converte caratteri speciali in entità HTML per una stampa sicura nelle View.
  * 
+ * Protegge l'applicazione da attacchi XSS (Cross-Site Scripting). 
+ * Esempio: trasformando `"<a>"` in `"&lt;a&gt;"`, il browser visualizzerà 
+ * il testo letterale invece di interpretarlo come un link o script.
+ *
+ * @param string $value La stringa grezza da convertire.
+ * @return string La stringa convertita in entità HTML sicure.
  * 
- * @param string $value
- * @return string
  * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
  * @date 20/03/2026
  */
 function safe_string(string $value): string
 {
-  return htmlspecialchars($value, ENT_QUOTES, "utf-8");
+  return htmlspecialchars($value ?? '', ENT_QUOTES, 'UTF-8');
 }
