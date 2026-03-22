@@ -6,11 +6,9 @@
  */
 
 define("APP", true);
-
-
-require_once 'core/helpers.php';
+require_once 'utils/helpers.php';
 
 $msg = "<a href=\"\">link</a>";
 
-echo $msg . "<br>";
-echo sprint($msg);
+echo "Messaggio con echo: {$msg} <br>";
+echo "Messaggio con safe string: " . safe_string($msg);
