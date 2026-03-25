@@ -4,11 +4,28 @@
  * File principale che si occupa del page routing
  * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
  */
-
 define("APP", true);
-require_once 'utils/helpers.php';
 
-$msg = "<a href=\"\">link</a>";
+session_start();
 
-echo "Messaggio con echo: {$msg} <br>";
-echo "Messaggio con safe string: " . safe_string($msg);
+$page = $_GET['page'] ?? 'home';
+$action = $_GET['action'] ?? 'index';
+
+$filename = ucfirst($page) . 'Controller';
+$path = __DIR__ . "/controllers/{$filename}.php";
+
+if (file_exists($path)) {
+  require_once $path;
+  if (class_exists($filename)) {
+    $controller = new $filename();
+
+    if (method_exists($controller, $action)) {
+      $controller->$action();
+    } else {
+      die("Errore: L'azione '$action' non esiste nel controller '$filename'.");
+    }
+  }
+} else {
+  header("Location: index.php?page=home");
+  exit;
+}
