@@ -6,6 +6,8 @@
  */
 define("APP", true);
 
+session_start();
+
 $page = $_GET['page'] ?? 'home';
 $action = $_GET['action'] ?? 'index';
 
@@ -14,12 +16,16 @@ $path = __DIR__ . "/controllers/{$filename}.php";
 
 if (file_exists($path)) {
   require_once $path;
-  $controller = new $filename();
-  if (method_exists($controller, $action)) {
-    $controller->$action();
-  } else {
-    die("Il metodo '{$action}' non esiste nel controller '{$filename}'");
+  if (class_exists($filename)) {
+    $controller = new $filename();
+
+    if (method_exists($controller, $action)) {
+      $controller->$action();
+    } else {
+      die("Errore: L'azione '$action' non esiste nel controller '$filename'.");
+    }
   }
 } else {
-  die("Il controller non esiste: {$path}");
+  header("Location: index.php?page=home");
+  exit;
 }
