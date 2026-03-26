@@ -62,6 +62,31 @@ git pull origin [nome-branch]
 git push origin [nome-branch]
 ```
 
+Se hai iniziato a lavorare ma devi scaricare aggiornamenti dal `main` che ti servono subito, usa lo **Stash** per non perdere le tue modifiche non salvate:
+
+```bash
+# 1. Congela le tue modifiche attuali
+git stash
+
+# 2. Scarica le novità dal main
+git pull origin main
+
+# 3. Riprendi il tuo lavoro da dove avevi lasciato
+git stash pop
+
+```
+
+Se Git ti avvisa che ci sono dei conflitti (scritte rosse nel terminale):
+
+1. Apri VS Code: I file in conflitto avranno dei segni <<<<<<< HEAD.
+2. Scegli la versione: Clicca su "Accept Current Change" (il tuo) o "Accept Incoming Change" (quello dal server).
+3. Concludi: Una volta risolti tutti i punti, salva il file e scrivi:
+
+```bash
+git add .
+git commit -m "fix: risolti conflitti di merge"
+```
+
 ## Standard di Codifica
 
 - **Naming Variabili**: `camelCase` (es: `$prezzoLibro`, `$utenteLoggato`).
