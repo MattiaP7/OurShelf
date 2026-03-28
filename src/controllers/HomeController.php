@@ -5,8 +5,7 @@ class HomeController
 {
   public function index()
   {
-    include __DIR__ . "/../views/layout/header.php";
-    include __DIR__ . "/../views/home/index.php";
-    include __DIR__ . "/../views/layout/footer.php";
+    $view = 'views/home/index.php';
+    include 'views/layout.php';
   }
 }

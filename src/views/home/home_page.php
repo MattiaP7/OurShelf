@@ -1,17 +1,11 @@
 <?php
 require_once __DIR__ . '/../../utils/helpers.php';
 
-// hardcoded annunci per testare... tutto da cambiare con il database
-$annunci = [
-  ['titolo' => 'Divina Commedia', 'autore' => 'Dante', 'prezzo' => 15],
-  ['titolo' => 'Matematica Blu', 'autore' => 'Bergamini', 'prezzo' => 20]
-];
 ?>
 
 <section class="hero-section text-center py-5 bg-light mb-4">
   <div class="container">
     <h1 class="display-4">Benvenuti su OurShelf</h1>
-    <p class="lead">La piattaforma per scambiare libri scolastici all'ISI Levi di Ferrara.</p>
     <a href="index.php?page=libri&action=lista" class="btn btn-primary btn-lg">Sfoglia il catalogo</a>
   </div>
 </section>

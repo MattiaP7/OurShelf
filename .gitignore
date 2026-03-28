@@ -10,3 +10,7 @@ src/config/dbconfig.php
 
 # permetti il caricamente dell'esempio
 !src/config/dbconfig.example.php
+
+# dati dei database
+utils/popolaDB.php
+utils/libri_2025.json
