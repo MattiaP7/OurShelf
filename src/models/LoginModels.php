@@ -1,0 +1,89 @@
+<?php
+defined("APP") or die("Accesso negato");
+
+require_once __DIR__ . '/../config/dbconfig.php';
+
+/**
+ * Classe LoginModels
+ * Gestisce tutte le operazioni CRUD relative alla tabella Studenti,
+ * incluse l'autenticazione, la registrazione e il recupero dati
+ *
+ * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
+ * @date 30/03/2026
+ */
+class LoginModels
+{
+  /** @var PDO Istanza della connessione al database */
+  private $pdo;
+
+  /**
+   * Inizializza la connessione al database.
+   */
+  public function __construct()
+  {
+    $this->pdo = DB::connect();
+  }
+
+  /**
+   * Recupera la lista di tutti gli indirizzi email registrati.
+   * @param array $params Parametri opzionali per la query (default vuoto).
+   * @return array Array contenente le email.
+   * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
+   * @date 30/03/2026
+   */
+  public function emailList(array $params = []): array
+  {
+    $dql = "SELECT email FROM Studenti";
+    $stm = $this->pdo->prepare($dql);
+    $stm->execute($params);
+    return array_column($stm->fetchAll(PDO::FETCH_ASSOC), 'email');
+  }
+
+  /**
+   * Cerca uno studente nel database tramite il suo indirizzo email.
+   * @param string $email L'email dello studente da cercare.
+   * @return array Restituisce l'array dei dati utente, se vuoto nessuno e' stato trovato.
+   * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
+   * @date 30/03/2026
+   */
+  public function authUser(string $email): array
+  {
+    $dql = "SELECT * FROM Studenti WHERE email = ? LIMIT 1";
+    $stmt = $this->pdo->prepare($dql);
+    $stmt->execute([$email]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+  }
+
+  /**
+   * Inserisce un nuovo record studente nella tabella.
+   * @param array $params [nome, cognome, data_nascita, sesso, email, password, id_classe]
+   * @return bool True se l'inserimento è avvenuto con successo, false altrimenti.
+   * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
+   * @date 30/03/2026
+   */
+  public function insertUser(array $params): bool
+  {
+    $dql = "
+            INSERT INTO Studenti (nome, cognome, data_nascita, sesso, email, password, id_classe)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        ";
+    $stmt = $this->pdo->prepare($dql);
+    $stmt->execute($params);
+    return $stmt->rowCount() !== 0;
+  }
+
+  /**
+   * Aggiorna la password hashata di uno studente specifico.
+   * @param string $hash Il nuovo hash della password.
+   * @param int $id L'identificativo univoco dello studente.
+   * @return bool Esito dell'operazione di update.
+   * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
+   * @date 30/03/2026
+   */
+  public function updatePassword(string $hash, int $id): bool
+  {
+    $dql = "UPDATE Studenti SET password = ? WHERE id_studente = ?";
+    $stmt = $this->pdo->prepare($dql);
+    return $stmt->execute([$hash, $id]);
+  }
+}

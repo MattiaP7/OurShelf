@@ -13,7 +13,7 @@
  * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
  * @date 20/03/2026
  */
-function safe_string(string $value): string
+function safe_string(?string $value): string
 {
   return htmlspecialchars($value ?? '', ENT_QUOTES, 'UTF-8');
 }

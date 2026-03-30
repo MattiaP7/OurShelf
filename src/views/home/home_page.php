@@ -23,7 +23,14 @@ require_once __DIR__ . '/../../utils/helpers.php';
               <h5 class="mb-1"><?= safe_string($libro['titolo']); ?></h5>
               <small>Autore: <?= safe_string($libro['autore']); ?></small>
             </div>
-            <span class="badge bg-success rounded-pill"><?= safe_string($libro['prezzo']); ?> €</span>
+            <span class="badge bg-success rounded-pill">
+              <?php
+              if (isset($libro['prezzo']))
+                echo safe_string($libro['prezzo']);
+              else
+                echo '0'
+              ?>
+              €</span>
           </div>
         <?php endforeach; ?>
       </div>
