@@ -1,12 +1,26 @@
 <?php
 defined("APP") or die("Accesso negato");
 
+require_once __DIR__ . '/../models/LibriModels.php';
+
 class HomeController
 {
-  public function index()
+  private $model;
+
+  public function __construct()
   {
-    include __DIR__ . "/../views/layout/header.php";
-    include __DIR__ . "/../views/home/main_page.php";
-    include __DIR__ . "/../views/layout/footer.php";
+    $this->model = new LibriModels();
+  }
+
+  public function index(): void
+  {
+    //    $annunci = $this->model->selectAllLibri();
+    $view = 'views/home/home_page.php';
+    include 'views/layout.php';
+  }
+
+  public function lista()
+  {
+    include 'views/layout.php';
   }
 }

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <title>OurShelf</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="index.php">OurShelf</a>
+            <div class="ms-auto d-flex align-items-center gap-3">
+                <?php if (!empty($_SESSION['id_studente'])): ?>
+                    <span class="text-white small">
+                        <i class="bi bi-person-circle me-1"></i>
+                        <?= htmlspecialchars($_SESSION['email']) ?>
+                    </span>
+                    <a class="btn btn-outline-light btn-sm" href="index.php?page=login&action=logout">
+                        <i class="bi bi-box-arrow-right me-1"></i> Logout
+                    </a>
+                <?php else: ?>
+                    <a class="nav-link text-white" href="index.php?page=login&action=index">Accedi</a>
+                <?php endif; ?>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <?php if (!empty($view)): ?>
+            <div class="mt-4 p-4 bg-white rounded-4 shadow-sm border">
+                <?php include $view; ?>
+            </div>
+        <?php endif; ?>
+    </div>
+
+    <footer class="text-center mt-5 py-3 border-top">
+        <p>&copy; 2026 OurShelf - Team 2</p>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

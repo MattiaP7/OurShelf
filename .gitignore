@@ -4,9 +4,17 @@
 # cartella .vscode, ognuno con la sua personlae
 .vscode/
 
+databases/tabls.sql
 
 # NON CARICATE IL FILE src/config/dbconfig.php, su github sara' caricato un file .example per completezza ma non l'originale!
 src/config/dbconfig.php
 
 # permetti il caricamente dell'esempio
 !src/config/dbconfig.example.php
+
+# dati dei database
+utils/popolaDB.php
+utils/libri_2025.json
+
+src/utils/popolaDB.php
+src/utils/libri_2025.json
