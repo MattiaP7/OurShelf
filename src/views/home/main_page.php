@@ -6,7 +6,10 @@ $annunci = [
   ['titolo' => 'Divina Commedia', 'autore' => 'Dante', 'prezzo' => 15],
   ['titolo' => 'Matematica Blu', 'autore' => 'Bergamini', 'prezzo' => 20]
 ];
+$base_url = "http://lab.isit100.fe.it:8092/portacci/OurShelf";
 ?>
+
+<head><link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/style_main.css"></head>
 
 <section class="hero-section text-center py-5 bg-light mb-4">
   <div class="container">
