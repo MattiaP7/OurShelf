@@ -28,7 +28,7 @@ class LoginController
 	 */
 	public function index(): void
 	{
-		$view = __DIR__ . '/../views/login/login_form.php';
+		$view = __DIR__ . '/../views/login/login.php';
 		include __DIR__ . '/../views/layout.php';
 	}
 
@@ -43,30 +43,33 @@ class LoginController
 		$user = $this->model->authUser($email);
 
 		if (!$user) {
+			$_SESSION['errors'][] = "Email non trovata";
 			header("Location: index.php?page=login");
 			exit;
 		}
-
 		if (!password_verify($password, $user['password'])) {
+			$_SESSION['errors'][] = "Password errata";
 			header("Location: index.php?page=login");
 			exit;
 		}
 
-		// Setup della sessione utente
 		$_SESSION['id_studente'] = $user['id_studente'];
 		$_SESSION['nome']        = $user['nome'];
 		$_SESSION['email']       = $user['email'];
 		$_SESSION['id_classe']   = $user['id_classe'];
 
+		$_SESSION['success'] = "Bentornato, {$user['nome']}!";
 		header("Location: index.php");
 		exit;
 	}
 
-	/** * Carica e mostra il form di registrazione per nuovi studenti.
+	/** 
+	 * Carica e mostra il form di registrazione per nuovi studenti.
 	 */
 	public function register(): void
 	{
-		$view = __DIR__ . '/../views/login/login_register.php';
+		$classi = $this->model->getClassi();
+		$view   = __DIR__ . '/../views/login/register.php';
 		include __DIR__ . '/../views/layout.php';
 	}
 
@@ -87,7 +90,6 @@ class LoginController
 		$confirm_password = trim($_POST['password_confirm'] ?? '');
 		$id_classe        = (int)($_POST['id_classe'] ?? 0);
 
-		// Validazione integrità password
 		if (empty($password) || empty($confirm_password)) {
 			$_SESSION['errors'][] = "Password obbligatoria";
 		}
@@ -98,7 +100,6 @@ class LoginController
 			$_SESSION['errors'][] = "La password deve essere almeno 8 caratteri";
 		}
 
-		// Validazione univocità e formato email
 		if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
 			$_SESSION['errors'][] = "Email non valida";
 		}
@@ -106,7 +107,6 @@ class LoginController
 			$_SESSION['errors'][] = "Email già registrata";
 		}
 
-		// Controllo campi anagrafici
 		if (empty($nome) || empty($cognome)) {
 			$_SESSION['errors'][] = "Nome e cognome obbligatori";
 		}
@@ -114,7 +114,6 @@ class LoginController
 			$_SESSION['errors'][] = "Seleziona una classe";
 		}
 
-		// Redirect in caso di errori di validazione
 		if (!empty($_SESSION['errors'])) {
 			header("Location: index.php?page=login&action=register");
 			exit;

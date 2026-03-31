@@ -1,7 +1,7 @@
 <?php
 defined("APP") or die("Accesso negato");
 
-require_once __DIR__ . '/../config/dbconfig.php';
+require_once 'config/dbconnect.php';
 
 /**
  * Classe LoginModels
@@ -37,6 +37,22 @@ class LoginModels
     $stm = $this->pdo->prepare($dql);
     $stm->execute($params);
     return array_column($stm->fetchAll(PDO::FETCH_ASSOC), 'email');
+  }
+
+  /**
+   * Recupera tutte le classi
+   *
+   * @param array $params
+   * @return array
+   * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
+   * @date 31/03/2026
+   */
+  public function getClassi(array $params = []): array
+  {
+    $dql  = "SELECT id_classe, anno, sezione, indirizzo FROM Classi ORDER BY anno, sezione";
+    $stmt = $this->pdo->prepare($dql);
+    $stmt->execute($params);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
   /**

@@ -12,7 +12,19 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
             <a class="navbar-brand" href="index.php">OurShelf</a>
-            <a class="nav-link" href="index.php?page=login&action=index">Registrati</a>
+            <div class="ms-auto d-flex align-items-center gap-3">
+                <?php if (!empty($_SESSION['id_studente'])): ?>
+                    <span class="text-white small">
+                        <i class="bi bi-person-circle me-1"></i>
+                        <?= htmlspecialchars($_SESSION['email']) ?>
+                    </span>
+                    <a class="btn btn-outline-light btn-sm" href="index.php?page=login&action=logout">
+                        <i class="bi bi-box-arrow-right me-1"></i> Logout
+                    </a>
+                <?php else: ?>
+                    <a class="nav-link text-white" href="index.php?page=login&action=index">Accedi</a>
+                <?php endif; ?>
+            </div>
         </div>
     </nav>
 
