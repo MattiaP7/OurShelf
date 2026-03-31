@@ -136,7 +136,7 @@ class LoginController
 	 */
 	public function changePassword(): void
 	{
-		$view = __DIR__ . '/../views/login/login_change_password.php';
+		$view = __DIR__ . '/../views/login/change_password.php';
 		include __DIR__ . '/../views/layout.php';
 	}
 
@@ -166,6 +166,7 @@ class LoginController
 
 		$hash = password_hash($newPassword, PASSWORD_DEFAULT);
 		if ($this->model->updatePassword($hash, $user['id_studente'])) {
+			$_SESSION['success'] = "Password aggiornata con successo!";
 			header("Location: index.php?page=login");
 		} else {
 			header("Location: index.php?page=login&action=changePassword");
