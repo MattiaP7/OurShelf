@@ -14,13 +14,7 @@ class HomeController
 
   public function index(): void
   {
-    //    $annunci = $this->model->selectAllLibri();
     $view = 'views/home/home_page.php';
-    include 'views/layout.php';
-  }
-
-  public function lista()
-  {
     include 'views/layout.php';
   }
 }
