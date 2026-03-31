@@ -20,7 +20,7 @@
         <?php unset($_SESSION['success']); ?>
     <?php endif; ?>
 
-    <form action="index.php?page=login&action=check" method="post"> <!-- ← page minuscolo, action=check -->
+    <form action="index.php?page=login&action=check" method="post">
         <div class="mb-3">
             <label class="form-label small fw-bold text-muted mb-1">Email</label>
             <div class="input-group">
