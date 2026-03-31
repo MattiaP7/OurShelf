@@ -13,6 +13,7 @@ class LibriModels
     $this->pdo = DB::connect();
   }
 
+
   public function selectAllLibri(array $param = []): array
   {
     $dql = "SELECT * from Libri";
