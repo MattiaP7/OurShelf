@@ -6,7 +6,7 @@
  */
 function showPassword(PasswordId) {
   const password = document.getElementById(PasswordId);
-  // se il tipo e' password lo trasformiamo in test e viceversa
+  // se il tipo e' password lo trasformiamo in text e viceversa
   const type = password.type === "password" ? "text" : "password";
   password.type = type;
 }

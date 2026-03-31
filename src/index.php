@@ -8,6 +8,8 @@ define("APP", true);
 
 session_start();
 
+require_once __DIR__ . '/utils/helpers.php';
+
 $page = $_GET['page'] ?? 'home';
 $action = $_GET['action'] ?? 'index';
 

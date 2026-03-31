@@ -22,7 +22,7 @@
         </span>
         <input type="email" name="email" class="form-control form-control-sm border-start-0 ps-0"
           placeholder="mario@esempio.it"
-          value="<?= htmlspecialchars($_SESSION['email'] ?? '') ?>"
+          value="<?= safe_string($_SESSION['email'] ?? '') ?>"
           required>
       </div>
     </div>

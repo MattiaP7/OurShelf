@@ -16,7 +16,7 @@
                 <?php if (!empty($_SESSION['id_studente'])): ?>
                     <span class="text-white small">
                         <i class="bi bi-person-circle me-1"></i>
-                        <?= htmlspecialchars($_SESSION['email']) ?>
+                        <?= safe_string($_SESSION['email']) ?>
                     </span>
                     <a class="btn btn-outline-light btn-sm" href="index.php?page=login&action=logout">
                         <i class="bi bi-box-arrow-right me-1"></i> Logout

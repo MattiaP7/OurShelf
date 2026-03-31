@@ -59,6 +59,7 @@ Per aver un buon funzionamento di vscode fate questi passaggi:
 
 ```json
 "php-docblocker.extra": [
+  //  ovviamente metti il tuo nome cognome e email
   "@author Nome Cognome <email@isit100.fe.it>",
   "@date ${CURRENT_DATE}/${CURRENT_MONTH}/${CURRENT_YEAR}",
 ],
@@ -78,6 +79,7 @@ Per aver un buon funzionamento di vscode fate questi passaggi:
 "php.validate.enable": true,
 ```
 
+<!--
 Se per qualche motivo non dovesse generare la documentazione sopra una funzione fate questi passaggi:
 
 1. Premi sulla tastiera `Ctrl + Shift + P`
@@ -99,7 +101,7 @@ Se per qualche motivo non dovesse generare la documentazione sopra una funzione 
   ],
   "description": "Genera il blocco commenti"
 }
-```
+``` -->
 
 Adesso basterà sopra una funzione scrivere `docme` e autocompletare, questa è una soluzione più spartana ma funzionante.
 
@@ -122,7 +124,14 @@ Per un'esperienza ottimale, la cartella `.vscode` deve contenere:
   "useTempFile": false,
   "openSsh": false,
   // evitare di caricare se stesso
-  "ignore": [".vscode", ".git", ".DS_Store"]
+  "ignore": [
+    ".vscode",
+    ".git",
+    ".DS_Store",
+    "databases/*.sql",
+    "README.md",
+    "CONTRIBUTING.md"
+  ]
 }
 ```
 
@@ -135,3 +144,59 @@ Le informazioni vuote prendete dal `.vscode/sftp.json` di project in info5
 - Consulta il file [CONTRIBUTING.md](CONTRIBUTING.md) per gli standard di programmazione.
 - Consulta il file [Book_swap_project.pdf](Book_swap_project.pdf) per informazioni aggiuntive sul progetto/
   Per ogni dubbio sulle configurazioni vscode e altro scrivete al Team Leader.
+
+# Stato del progetto
+
+**Configurazione Ambiente e Repository**
+
+- [x] Creazione repository GitHub | 17/03/2026
+- [x] Strutturazione cartelle progetto secondo paradigma MVC (app, public, src, views) | 17/03/2026
+- [x] Configurazione file di connessione al database (PDO) | 17/03/2026
+
+**Analisi e Progettazione Database**
+
+- [x] Progettazione schema concettuale (Diagramma ER) | 28/03/2026
+- [x] Progettazione schema logico relazionale | 28/03/2026
+- [x] Creazione tabelle | 28/03/2026
+- [x] Implementazione vincoli di integrità referenziale (Foreign Keys) | 28/03/2026
+<!-- - [x] Creazione indici ottimizzati per la ricerca (Full-text su Titolo/ISBN/Autore)  | 31/03/2026 -->
+
+**Sistema di Autenticazione e Profilo**
+
+- [x] Sviluppo logica di registrazione nuovi utenti | 31/03/2026
+- [x] Sviluppo sistema di login con gestione sessioni sicure | 31/03/2026
+- [x] Implementazione sistema di cambia password | 31/03/2026
+- [ ] Creazione area riservata personale dello studente
+- [ ] Implementazione recupero password o modifica dati profilo
+
+**Gestione Catalogo Libri Scolastici**
+
+- [x] Script di importazione massiva libri da file JSON/CSV (Adozioni scolastiche) | 31/03/2026
+<!-- - [x] Sviluppo sistema di ricerca libri per classe, indirizzo o ISBN | 31/03/2026
+- [x] Visualizzazione dettagliata del libro (Titolo, Autore, Editore, Prezzo consigliato) | 31/03/2026 -->
+
+**Mercatino e Annunci (Core Business)**
+
+- [ ] Sviluppo procedura inserimento annuncio (scansione ISBN o ricerca manuale)
+- [ ] Gestione upload immagini per lo stato d'usura del libro usato
+- [ ] Algoritmo di calcolo automatico del prezzo dell'usato (basato sul prezzo di copertina)
+- [ ] Visualizzazione bacheca annunci pubblici filtrabile
+- [ ] Gestione stato annuncio (Disponibile, In trattativa, Venduto)
+
+<!-- **Comunicazione e Scambio**
+  - [ ] Gestione delle notifiche per nuovi messaggi ricevuti
+  - [ ] Funzionalità di segnalazione interesse per un libro -->
+
+**Frontend e Interfaccia Utente**
+
+- [ ] Sviluppo layout responsive (Bootstrap)
+- [ ] Implementazione vista doppia: Griglia (Card) e Tabella
+<!-- - [ ] Sviluppo barra di ricerca asincrona (AJAX) per risultati in tempo reale -->
+- [ ] Ottimizzazione UX per dispositivi mobili (scansione ISBN via camera)
+
+**Testing e Integrazione**
+
+- [ ] Test di sicurezza (protezione SQL Injection e XSS)
+- [ ] Verifica flussi operativi (registrazione -> inserimento -> vendita)
+- [ ] Bug fixing e ottimizzazione delle performance delle query
+- [ ] Produzione documentazione finale del progetto

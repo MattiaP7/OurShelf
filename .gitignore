@@ -1,3 +1,5 @@
+# NON MODIFICARE IL FILE
+
 # questo file contiene file, cartelle che NON devono essere visibili su github, come per esempio i file dbconfig non vogliamo che la gente sappia le informazioni personali...
 # ovviamente ognugno avra i suoi locali 
 
@@ -5,6 +7,7 @@
 .vscode/
 
 databases/*.sql
+databases/info5n2526__team2.sql
 
 # NON CARICATE IL FILE src/config/dbconfig.php, su github sara' caricato un file .example per completezza ma non l'originale!
 src/config/dbconfig.php
@@ -16,5 +19,12 @@ src/config/dbconfig.php
 utils/popolaDB.php
 utils/libri_2025.json
 
-src/utils/popolaDB.php
-src/utils/libri_2025.json
+generate_table/
+
+logs/
+databases/info5n2526__team2.sql
+
+*.bat
+*.phar
+docs/
+.phpdoc/
