@@ -24,7 +24,7 @@ if (file_exists($path)) {
     if (method_exists($controller, $action)) {
       $controller->$action();
     } else {
-      die("Errore: L'azione '$action' non esiste nel controller '$filename'.");
+      die("Errore: action '$action' non esiste nel controller '$filename'.");
     }
   }
 } else {
