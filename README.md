@@ -10,9 +10,9 @@ Il progetto segue il paradigma MVC utilizzando PHP e MariaDB.
 OurShelf/
 ├── .vscode/        # Configurazioni ottimizzate per l'editor
 ├── database/       # Cartella dedicata per gli script SQL in caso di errori
-├── utils/          # Cartella che contiene funzioni di helper usate in tutto il progetto
 ├── src/            # Codice sorgente dell'applicazione
 │ ├── config/       # Connessione al Database e parametri di sistema
+│ ├── utils/        # Cartella che contiene funzioni di helper usate in tutto il progetto
 │ ├── controllers/  # Logica di controllo (Gestione richieste)
 │ ├── models/       # Modelli dei dati (Query SQL)
 │ └── views/        # Interfaccia utente (HTML/PHP)reali
