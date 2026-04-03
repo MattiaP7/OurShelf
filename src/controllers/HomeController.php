@@ -14,7 +14,7 @@ class HomeController
 
   public function index(): void
   {
-    $view = 'views/home/home_page.php';
+    $view = "views/login/main_view.php";
     include 'views/layout.php';
   }
 }

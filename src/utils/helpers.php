@@ -17,3 +17,9 @@ function safe_string(?string $value): string
 {
   return htmlspecialchars($value ?? '', ENT_QUOTES, 'UTF-8');
 }
+
+$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
+$host = $_SERVER['HTTP_HOST'];
+$script_dir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
+$project_root = str_replace('/src', '', $script_dir);
+define('BASE_URL', rtrim($protocol . $host . $project_root, '/'));
