@@ -1,6 +1,5 @@
 <?php
 // Configurazione base e caricamento utility
-$base_url = "http://lab.isit100.fe.it:8092/portacci/OurShelf";
 require_once __DIR__ . '/../utils/helpers.php';
 ?>
 <!DOCTYPE html>
@@ -15,8 +14,8 @@ require_once __DIR__ . '/../utils/helpers.php';
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
 
-    <link rel="stylesheet" href="<?= $base_url ?>/assets/css/style_layout.css">
-    <link rel="icon" type="image/png" href="<?= $base_url ?>/assets/img/logo_progetto.png">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/style_layout.css">
+    <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/img/logo_progetto.png">
 
 </head>
 
@@ -25,8 +24,8 @@ require_once __DIR__ . '/../utils/helpers.php';
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
             <div class="container">
-                <a class="navbar-brand d-flex align-items-center" href="<?= $base_url ?>/index.php">
-                    <img src="<?= $base_url ?>/assets/img/logo_progetto.png" alt="OurShelf Logo" class="me-2">
+                <a class="navbar-brand d-flex align-items-center" href="<?= BASE_URL ?>/index.php">
+                    <img src="<?= BASE_URL ?>/assets/img/logo_progetto.png" alt="OurShelf Logo" class="me-2">
                     <span class="fw-bold">OurShelf</span>
                 </a>
 
@@ -43,7 +42,8 @@ require_once __DIR__ . '/../utils/helpers.php';
                         <a class="btn btn-outline-light btn-sm" href="index.php?page=login&action=logout">Logout</a>
                         <?php else: ?>
                         <a class="btn btn-outline-light btn-sm" href="index.php?page=login&action=index">Accedi</a>
-                        <a class="btn btn-light btn-sm text-primary fw-bold" href="#">Registrati</a>
+                        <a class="btn btn-light btn-sm text-primary fw-bold"
+                            href="index.php?page=login&action=register.php">Registrati</a>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -57,13 +57,9 @@ require_once __DIR__ . '/../utils/helpers.php';
             if (!empty($view) && file_exists($view)) {
                 include $view;
             } else {
-                // Contenuto di default se la view è vuota (Home Page integrata)
+                die("Pagina non ricaricata riprova tran po' ... ");
             ?>
-            <section class="text-center py-5">
-                <h1 class="display-4 fw-bold">Benvenuti su OurShelf</h1>
-                <p class="lead">La piattaforma per scambiare libri scolastici all'ISI Levi di Ferrara.</p>
-                <a href="index.php?page=libri&action=lista" class="btn btn-primary btn-lg mt-3">Sfoglia il catalogo</a>
-            </section>
+
             <?php
             }
             ?>
@@ -71,12 +67,12 @@ require_once __DIR__ . '/../utils/helpers.php';
     </main>
 
     <footer class="text-center mt-auto">
-        <div class="container">
+        <div class="footer-container">
             <p class="mb-1 fw-bold">&copy; 2026 OurShelf - Team 2</p>
             <p class="small text-muted mb-0">Scambia, Vendi, Leggi.</p>
         </div>
         <div class="link">
-            <p class="prova">CIAO</p>
+            <p class="prova">qua ci dovrebbero essere tutti i link</p>
         </div>
     </footer>
 
