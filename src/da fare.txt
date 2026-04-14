@@ -1,0 +1,4 @@
+unire il file footer - header e layout in una unica pagina... eliminare il file e la cartella home e mgiliorare con lo stile la pagine finale 
+che verra chiamata layout... così facendo il footer e l'header saranno sempre uguali per ogni pagina  ma la view cambierà in base 
+alle scelte dell'utente   
+
