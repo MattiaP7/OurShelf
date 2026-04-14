@@ -15,7 +15,7 @@ class AnnuncuModels
 
     public function selectAnnunci(array $param = []): array
     {
-        $dql = "SELECT * from Annunci";
+        $dql = "SELECT * from Annunci WHERE ";
         $stm = $this->pdo->prepare($dql);
         $stm->execute($param);
         return $stm->fetchAll(PDO::FETCH_ASSOC);

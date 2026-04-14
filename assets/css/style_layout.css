@@ -49,9 +49,7 @@ main {
     background: var(--white);
     border-radius: 1.25rem;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-    padding: 3rem 2rem;
-    margin-top: 2.5rem;
-    margin-bottom: 4rem;
+    
     border: 1px solid rgba(0,0,0,0.03);
 }
 

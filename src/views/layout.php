@@ -43,7 +43,7 @@ require_once __DIR__ . '/../utils/helpers.php';
                         <?php else: ?>
                         <a class="btn btn-outline-light btn-sm" href="index.php?page=login&action=index">Accedi</a>
                         <a class="btn btn-light btn-sm text-primary fw-bold"
-                            href="index.php?page=login&action=register.php">Registrati</a>
+                            href="index.php?page=login&action=register">Registrati</a>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -66,13 +66,33 @@ require_once __DIR__ . '/../utils/helpers.php';
         </div>
     </main>
 
-    <footer class="text-center mt-auto">
-        <div class="footer-container">
-            <p class="mb-1 fw-bold">&copy; 2026 OurShelf - Team 2</p>
-            <p class="small text-muted mb-0">Scambia, Vendi, Leggi.</p>
-        </div>
-        <div class="link">
-            <p class="prova">qua ci dovrebbero essere tutti i link</p>
+    <footer class="container">
+        <div class="row">
+            <div class="col-md-3 footer-container">
+                <p class="mb-1 fw-bold">&copy; 2026 OurShelf - Team 2</p>
+                <p class="small text-muted mb-0">Scambia, Vendi, Leggi.</p>
+            </div>
+            <div class="col-md-3 link">
+               <label for="Navigazione e Utility">Navigazione e Utility</label>
+               <ul>
+                <li><a href="<?php BASE_URL?>/../../link/chi_siamo.php">Chi siamo</a></li>
+                <li><a href="https://www.isit100.fe.it/">Isit Bassi Burgatti</a></li>
+                <li></li>
+               </ul>
+            </div>
+            <div class="col-md-3 link">
+               <label for="Contatti">Contatti</label>
+               <ul>
+                <label for="">Email group leader</label>
+                <li><a href="">pirazzi.8076@isit100.fe.it</a></li>
+                <label for="">Email front-developer</label>
+                <li><a href="">portacci.7780@isit100.fe.it</a></li>
+                <label for="">Email back-ender</label>
+                <li><a href="">Email back-ender</a></li>
+                <label for="">Email data analist</label>
+                <li><a href="">Email data analist</a></li>
+               </ul>
+            </div>
         </div>
     </footer>
 
