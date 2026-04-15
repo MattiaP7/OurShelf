@@ -17,4 +17,9 @@ class HomeController
     $view = "views/login/main_view.php";
     include 'views/layout.php';
   }
+    public function about(): void
+  {
+    $view = "views/link/chi_siamo.php";
+    include 'views/layout.php';
+  }
 }
