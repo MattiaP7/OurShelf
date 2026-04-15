@@ -1,5 +1,5 @@
 <?php
-include_once __DIR__ . "/../utils/helpers.php";
+include_once __DIR__ . "/../../utils/helpers.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -10,15 +10,19 @@ include_once __DIR__ . "/../utils/helpers.php";
     <title>main-view</title>
     <meta name="description" content="Generated with Layoutit" />
     <link rel="stylesheet" href="./bootstrap.min.css" />
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/style_layout.css">
 </head>
 
 <body>
     <div class="container">
         <div class="row">
-            <div class="col-6">
-                <!-- qua è dove ci devono essere tutte le copertine dei libri-->
+            <div class="col-md-8 elenco-annunci">
+                <fieldset>
+                    <legend>annunci</legend>
+
+                </fieldset>
             </div>
-            <div class="form">
+            <div class="col-md-4 form">
                 <h3 class="h3 text-info text-start">
                     Cerca il libro giusto per te
                 </h3>
@@ -53,6 +57,8 @@ include_once __DIR__ . "/../utils/helpers.php";
                     <div>
                         <button class="btn btn-primary" type="submit">
                             Cerca
+                            <!--dopo devo creare la funzione per la ricerca e trasformarlo come un link
+                            e associarlo a quella funzione-->
                         </button>
                     </div>
                 </form>

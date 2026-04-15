@@ -1,12 +1,22 @@
-
+/* ==========================================================================
+   CONFIGURAZIONE VARIABILI
+   ========================================================================== */
 :root {
     --primary-color: #0d6efd; 
     --secondary-color: #6c757d;
     --bg-light: #f4f7f6;
     --white: #ffffff;
+    --dark-footer: #1a1d20;
     --transition-smooth: all 0.3s ease;
 }
 
+/* ==========================================================================
+   STRUTTURA LAYOUT (Footer sempre in basso)
+   ========================================================================== */
+html, body {
+    height: 100%;
+    margin: 0;
+}
 
 body {
     background-color: var(--bg-light);
@@ -17,77 +27,122 @@ body {
     color: #333;
 }
 
-
+/* ==========================================================================
+   HEADER / NAVBAR - FIX TOTALE VISIBILITÀ
+   ========================================================================== */
 .navbar {
     padding: 0.8rem 0;
 }
-
-
+ 
+ 
 .navbar-brand img {
-    height: 45px; 
+    height: 45px;
     width: auto;  
     object-fit: contain;
     transition: var(--transition-smooth);
     filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
 }
-
+ 
 .navbar-brand:hover img {
     transform: translateY(-2px);
 }
-
+ 
 .navbar-brand span {
     font-size: 1.4rem;
     letter-spacing: -0.5px;
 }
+ 
 
+.user-badge {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
 
+/* ==========================================================================
+   MAIN CONTENT (Grande e pulito)
+   ========================================================================== */
 main {
-    flex: 1; 
+    flex: 1 0 auto;
+    padding: 80px 0; /* Aumentato spazio */
+    display: flex;
+    align-items: center;
 }
 
-.view-container {
-    background: var(--white);
+.content-card {
+    background: var(--white) !important;
     border-radius: 1.25rem;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-    padding: 3rem 2rem;
-    margin-top: 2.5rem;
-    margin-bottom: 4rem;
-    border: 1px solid rgba(0,0,0,0.03);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0,0,0,0.05);
+    padding: 3.5rem !important; /* Molto spazioso */
+    width: 100%;
 }
 
-
-.display-4 {
-    color: var(--primary-color);
-    letter-spacing: -1px;
+/* ==========================================================================
+   FOOTER (Sfondo Scuro - Titoli BIANCHI)
+   ========================================================================== */
+footer.footer {
+    background-color: var(--dark-footer) !important;
+    border-top: 4px solid var(--primary-color);
+    padding: 4rem 0 2rem 0;
+    flex-shrink: 0;
 }
 
-.lead {
-    color: var(--secondary-color);
-    margin-bottom: 2rem;
+/* FIX TITOLI FOOTER: Ora saranno Bianchi su Nero */
+footer.footer h5, 
+footer.footer h6, 
+footer.footer .fw-bold {
+    color: var(--white) !important; 
+    font-weight: 700 !important;
+    margin-bottom: 1.5rem;
+    display: block;
+    text-transform: uppercase;
+    font-size: 0.95rem;
+    letter-spacing: 1.2px;
 }
 
+/* Nome brand nel footer */
+footer.footer h5.fw-bold {
+    color: var(--primary-color) !important;
+    text-transform: none;
+    font-size: 1.6rem;
+}
 
-.btn-primary {
-    padding: 0.6rem 1.5rem;
-    border-radius: 0.75rem;
-    font-weight: 600;
+/* Testi semplici e icone footer */
+footer.footer p, 
+footer.footer li,
+footer.footer i {
+    color: #adb5bd !important;
+    font-size: 0.95rem;
+}
+
+/* Link nel footer */
+footer.footer a {
+    color: #dee2e6 !important;
+    text-decoration: none;
     transition: var(--transition-smooth);
 }
 
-.btn-primary:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+footer.footer a:hover {
+    color: var(--primary-color) !important;
+    padding-left: 5px;
 }
 
-
-footer {
-    background: var(--white);
-    padding: 2.5rem 0;
-    border-top: 1px solid #e9ecef;
-    color: var(--secondary-color);
+/* ==========================================================================
+   BOTTONI UTILITY
+   ========================================================================== */
+.btn-light {
+    background-color: var(--white) !important;
+    color: var(--primary-color) !important;
+    border-radius: 50px !important;
+    font-weight: 600;
 }
 
-footer .fw-bold {
-    color: #222;
+.btn-outline-light {
+    border: 2px solid var(--white) !important;
+    border-radius: 50px !important;
 }
 
+.btn-outline-light:hover {
+    background-color: var(--white) !important;
+    color: var(--primary-color) !important;
+}
