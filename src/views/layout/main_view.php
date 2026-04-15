@@ -56,7 +56,8 @@ include_once __DIR__ . "/../../utils/helpers.php";
                     </div>
                     <div>
                         <button class="btn btn-primary" type="submit">
-                            Cerca <!--dopo devo creare la funzione per la ricerca e trasformarlo come un link
+                            Cerca
+                            <!--dopo devo creare la funzione per la ricerca e trasformarlo come un link
                             e associarlo a quella funzione-->
                         </button>
                     </div>

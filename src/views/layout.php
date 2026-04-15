@@ -1,103 +1,91 @@
-<?php
-// Configurazione base e caricamento utility
-require_once __DIR__ . '/../utils/helpers.php';
-?>
 <!DOCTYPE html>
 <html lang="it">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OurShelf - Scambio Libri</title>
-
+    <title>OurShelf</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-
-
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/style_layout.css">
-    <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/img/logo_progetto.png">
-
+    <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 
-<body>
+<body class="d-flex flex-column min-vh-100">
 
     <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+        <nav class="navbar navbar-expand-lg shadow-sm">
             <div class="container">
-                <a class="navbar-brand d-flex align-items-center" href="<?= BASE_URL ?>/index.php">
-                    <img src="<?= BASE_URL ?>/assets/img/logo_progetto.png" alt="OurShelf Logo" class="me-2">
-                    <span class="fw-bold">OurShelf</span>
+                <a class="navbar-brand fw-bold" href="index.php">
+                    <i class="bi bi-book-half me-2"></i>OurShelf
                 </a>
-
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <div class="ms-auto d-flex align-items-center gap-2">
-                        <?php if (!empty($_SESSION['id_studente'])): ?>
-                        <span class="text-white me-2">
-                            <i class="bi bi-person-circle"></i> <?= safe_string($_SESSION['email']) ?>
-                        </span>
-                        <a class="btn btn-outline-light btn-sm" href="index.php?page=login&action=logout">Logout</a>
-                        <?php else: ?>
-                        <a class="btn btn-outline-light btn-sm" href="index.php?page=login&action=index">Accedi</a>
-                        <a class="btn btn-light btn-sm text-primary fw-bold"
-                            href="index.php?page=login&action=register">Registrati</a>
-                        <?php endif; ?>
+                <div class="ms-auto d-flex align-items-center gap-3">
+                    <?php if (!empty($_SESSION['id_studente'])): ?>
+                    <div class="user-badge px-3 py-1 rounded-pill  bg-opacity-10 small d-none d-sm-block">
+                        <i class="bi bi-person-circle me-1"></i>
+                        <?= safe_string($_SESSION['email']) ?>
                     </div>
+                    <a class="btn btn-light btn-sm rounded-pill px-3" href="index.php?page=login&action=logout">
+                        <i class="bi bi-box-arrow-right me-1"></i> Logout
+                    </a>
+                    <?php else: ?>
+                    <a class="btn btn-outline-light btn-sm rounded-pill px-4"
+                        href="index.php?page=login&action=index">Accedi</a>
+                    <?php endif; ?>
                 </div>
             </div>
         </nav>
     </header>
 
-    <main class="container">
-        <div class="view-container">
-            <?php
-            if (!empty($view) && file_exists($view)) {
-                include $view;
-            } else {
-                die("Pagina non ricaricata riprova tran po' ... ");
-            ?>
-
-            <?php
-            }
-            ?>
+    <main class="flex-grow-1">
+        <div class="container my-5">
+            <?php if (!empty($view)): ?>
+            <div class="content-card p-4 p-md-5 bg-white rounded-4 shadow-sm">
+                <?php include $view; ?>
+            </div>
+            <?php endif; ?>
         </div>
     </main>
 
-    <footer class="container">
-        <div class="row">
-            <div class="col-md-3 footer-container">
-                <p class="mb-1 fw-bold">&copy; 2026 OurShelf - Team 2</p>
-                <p class="small text-muted mb-0">Scambia, Vendi, Leggi.</p>
-            </div>
-            <div class="col-md-3 link">
-               <label for="Navigazione e Utility">Navigazione e Utility</label>
-               <ul>
-                <li><a href="<?php BASE_URL?>/../../link/chi_siamo.php">Chi siamo</a></li>
-                <li><a href="https://www.isit100.fe.it/">Isit Bassi Burgatti</a></li>
-                <li></li>
-               </ul>
-            </div>
-            <div class="col-md-3 link">
-               <label for="Contatti">Contatti</label>
-               <ul>
-                <label for="">Email group leader</label>
-                <li><a href="">pirazzi.8076@isit100.fe.it</a></li>
-                <label for="">Email front-developer</label>
-                <li><a href="">portacci.7780@isit100.fe.it</a></li>
-                <label for="">Email back-ender</label>
-                <li><a href="">Email back-ender</a></li>
-                <label for="">Email data analist</label>
-                <li><a href="">Email data analist</a></li>
-               </ul>
+    <footer class="footer mt-auto">
+        <div class="container">
+            <div class="row gy-5">
+                <div class="col-lg-4 col-md-12 text-center text-lg-start">
+                    <h5 class="footer-brand mb-3">OurShelf</h5>
+                    <p class="footer-description mb-4">La piattaforma ideale per il Team 2, dedicata alla condivisione
+                        fluida e organizzata della conoscenza.</p>
+                    <div class="copyright small">
+                        &copy; 2026 OurShelf &bull; Made with <i class="bi bi-heart-fill text-danger"></i>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6 text-center text-lg-start">
+                    <h6 class="footer-title">Navigazione</h6>
+                    <ul class="list-unstyled footer-list">
+                        <li><a href="https://www.isit100.fe.it/" target="_blank"><i
+                                    class="bi bi-chevron-right me-1"></i>Isit Bassi Burgatti</a></li>
+                        <li><a href="index.php?page=home&action=about"><i class="bi bi-chevron-right me-1"></i>Chi
+                                siamo</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-4 col-md-6 text-center text-lg-start">
+                    <h6 class="footer-title">Contatti Supporto</h6>
+                    <ul class="list-unstyled footer-list">
+                        <li><a href="mailto:pirazzi.8076@isit100.fe.it"><i class="bi bi-envelope-at me-2"></i>Email
+                                Pirazzi</a></li>
+                        <li><a href="mailto:portacci.7780@isit100.fe.it"><i class="bi bi-envelope-at me-2"></i>Email
+                                Portacci</a></li>
+                        <li><a href="mailto:landi.7998@isit100.fe.it"><i class="bi bi-envelope-at me-2"></i>Email
+                                Landi</a></li>
+                        <li><a href="mailto:anusca.7806@isit100.fe.it"><i class="bi bi-envelope-at me-2"></i>Email
+                                Anusca</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
     </footer>
 
-    <script src=" https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
