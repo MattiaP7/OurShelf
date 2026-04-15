@@ -118,8 +118,6 @@ class LoginController
 		$id_classe        = (int)($_POST['id_classe'] ?? 0);
 
 		// controllo errori vari per i campi
-
-
 		if (empty($password) || empty($confirm_password)) {
 			$_SESSION['errors'][] = "Password obbligatoria";
 		}
@@ -230,5 +228,4 @@ class LoginController
 		header("Location: index.php?page=login");
 		exit;
 	}
-	
 }

@@ -2,26 +2,29 @@
 <div class="login-container">
   <h4 class="fw-bold mb-3 text-center">Cambia Password</h4>
 
-  <?php if (!empty($_SESSION['errors'])): ?>
-    <div class="alert alert-danger py-2 mb-3 border-0 shadow-sm" style="font-size: 0.85rem;">
-      <i class="bi bi-exclamation-triangle-fill me-2"></i>
-      <?php foreach ($_SESSION['errors'] as $error): ?>
-        <div class="d-block"><?= $error ?></div>
-      <?php endforeach; ?>
-    </div>
-    <?php unset($_SESSION['errors']); ?>
-  <?php endif; ?>
+  <div class="position-fixed top-0 end-0 p-3" style="z-index: 1050;">
+    <?php flash_error(); ?>
+  </div>
 
   <form action="index.php?page=login&action=updatePassword" method="post">
 
     <div class="mb-3">
       <label class="form-label small fw-bold text-muted mb-1">Email</label>
-      <div class="input-group">
-        <span class="input-group-text bg-white border-end-0">
+      <div class="input-group shadow-sm" style="border: 1px solid #dee2e6; border-radius: 0.375rem; overflow: hidden;">
+
+        <span class="input-group-text bg-white border-0 pe-1">
           <i class="bi bi-envelope text-muted"></i>
         </span>
-        <input type="email" name="email" class="form-control form-control-sm border-start-0 ps-0"
+
+        <input
+          type="email"
+          name="email"
+          /* Rimosso 'form-control-sm' per matchare la password,
+          sostituito 'border-start-0' con 'border-0'
+          */
+          class="form-control border-0 ps-1"
           placeholder="mario@esempio.it"
+          style="box-shadow: none;"
           value="<?= safe_string($_SESSION['email'] ?? '') ?>"
           required>
       </div>
@@ -29,57 +32,95 @@
 
     <div class="mb-3">
       <label class="form-label small fw-bold text-muted mb-1">Password attuale</label>
-      <div class="input-group input-group-sm">
-        <span class="input-group-text bg-white border-end-0">
-          <i class="bi bi-lock text-muted"></i>
+      <div class="input-group shadow-sm" style="border: 1px solid #dee2e6; border-radius: 0.375rem; overflow: hidden;">
+
+        <span class="input-group-text bg-white border-0 pe-1">
+          <i id="icon-oldPassword" class="bi bi-lock text-muted"></i>
         </span>
-        <input id="oldPassword" type="password" name="oldPassword"
-          class="form-control border-start-0 ps-0"
-          placeholder="••••••••" required>
-        <div class="input-group-text">
-          <div class="form-check d-flex align-items-center mb-0">
-            <input class="form-check-input mt-0 me-2" type="checkbox" onclick="showPassword('oldPassword')">
-            <label class="form-check-label small text-muted fw-bold">Mostra</label>
+
+        <input
+          id="oldPassword"
+          type="password"
+          name="oldPassword"
+          class="form-control border-0 ps-1"
+          placeholder="••••••••"
+          style="box-shadow: none;"
+          required>
+
+        <span class="input-group-text bg-white border-0">
+          <div class="form-check mb-0 d-flex align-items-center">
+            <input class="form-check-input"
+              type="checkbox"
+              style="cursor: pointer;"
+              onclick="showPassword('oldPassword', 'icon-oldPassword')">
+            <label class="form-check-label small text-muted fw-bold mb-0 ms-2" style="cursor: pointer;">
+              Mostra
+            </label>
           </div>
-        </div>
+        </span>
       </div>
     </div>
 
     <div class="mb-3">
       <label class="form-label small fw-bold text-muted mb-1">Nuova Password</label>
-      <div class="input-group input-group-sm">
-        <span class="input-group-text bg-white border-end-0">
-          <i class="bi bi-shield-lock text-muted"></i>
+      <div class="input-group shadow-sm" style="border: 1px solid #dee2e6; border-radius: 0.375rem; overflow: hidden;">
+
+        <span class="input-group-text bg-white border-0 pe-1">
+          <i id="icon-newPassword" class="bi bi-lock text-muted"></i>
         </span>
-        <input id="newPassword" type="password" name="newPassword"
-          class="form-control border-start-0 ps-0"
-          placeholder="••••••••" required>
-        <div class="input-group-text">
-          <div class="form-check d-flex align-items-center mb-0">
-            <input class="form-check-input mt-0 me-2" type="checkbox" onclick="showPassword('newPassword')">
-            <label class="form-check-label small text-muted fw-bold">Mostra</label>
+
+        <input
+          id="newPassword"
+          type="password"
+          name="newPassword"
+          class="form-control border-0 ps-1"
+          placeholder="••••••••"
+          style="box-shadow: none;"
+          required>
+
+        <span class="input-group-text bg-white border-0">
+          <div class="form-check mb-0 d-flex align-items-center">
+            <input class="form-check-input"
+              type="checkbox"
+              style="cursor: pointer;"
+              onclick="showPassword('newPassword', 'icon-newPassword')">
+            <label class="form-check-label small text-muted fw-bold mb-0 ms-2" style="cursor: pointer;">
+              Mostra
+            </label>
           </div>
-        </div>
+        </span>
       </div>
     </div>
 
-    <div class="mb-4">
+    <div class="mb-3">
       <label class="form-label small fw-bold text-muted mb-1">Conferma Nuova Password</label>
-      <div class="input-group input-group-sm">
-        <span class="input-group-text bg-white border-end-0">
-          <i class="bi bi-shield-lock text-muted"></i>
+      <div class="input-group shadow-sm" style="border: 1px solid #dee2e6; border-radius: 0.375rem; overflow: hidden;">
+
+        <span class="input-group-text bg-white border-0 pe-1">
+          <i id="icon-confNewPassword" class="bi bi-lock text-muted"></i>
         </span>
-        <input id="reNewPassword" type="password" name="reNewPassword"
-          class="form-control border-start-0 ps-0"
-          placeholder="••••••••" required>
-        <div class="input-group-text">
-          <div class="form-check d-flex align-items-center mb-0">
-            <input class="form-check-input mt-0 me-2" type="checkbox" onclick="showPassword('reNewPassword')">
-            <label class="form-check-label small text-muted fw-bold">Mostra</label>
+
+        <input
+          id="confNewPassword"
+          type="password"
+          name="confNewPassword"
+          class="form-control border-0 ps-1"
+          placeholder="••••••••"
+          style="box-shadow: none;"
+          required>
+
+        <span class="input-group-text bg-white border-0">
+          <div class="form-check mb-0 d-flex align-items-center">
+            <input class="form-check-input"
+              type="checkbox"
+              style="cursor: pointer;"
+              onclick="showPassword('confNewPassword', 'icon-confNewPassword')">
+            <label class="form-check-label small text-muted fw-bold mb-0 ms-2" style="cursor: pointer;">
+              Mostra
+            </label>
           </div>
-        </div>
+        </span>
       </div>
-      <div id="passwordError" class="small mt-1 text-danger text-center"></div>
     </div>
 
     <button type="submit" class="btn btn-primary w-100 btn-login mb-3 shadow-sm">

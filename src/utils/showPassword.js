@@ -1,12 +1,24 @@
 /**
- * Mostra a schermo il contenuto di un tag input password.
- * @param {*} PasswordId id del tag password
- * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
- * @date 21/03/2026
+ * Mostra/Nasconde la password e cambia l'icona di sicurezza
+ * @param {string} inputId - ID dell'input field
+ * @param {string} iconId - ID dell'elemento <i> che contiene l'icona
  */
-function showPassword(PasswordId) {
-  const password = document.getElementById(PasswordId);
-  // se il tipo e' password lo trasformiamo in text e viceversa
-  const type = password.type === "password" ? "text" : "password";
-  password.type = type;
+function showPassword(inputId, iconId) {
+  const input = document.getElementById(inputId);
+  const icon = document.getElementById(iconId);
+
+  if (input && input.type === "password") {
+    input.type = "text";
+    if (icon) {
+      // Cambia l'icona da lucchetto a lucchetto aperto (o occhio)
+      icon.classList.replace("bi-shield-lock", "bi-shield-lock-fill");
+      icon.classList.replace("text-muted", "text-primary");
+    }
+  } else if (input) {
+    input.type = "password";
+    if (icon) {
+      icon.classList.replace("bi-shield-lock-fill", "bi-shield-lock");
+      icon.classList.replace("text-primary", "text-muted");
+    }
+  }
 }
