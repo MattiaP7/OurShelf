@@ -1,79 +1,85 @@
-<?php defined("APP") or die("Accesso negato"); ?>
-<div class="login-container">
-    <h4 class="fw-bold mb-3 text-center">Accedi</h4>
+<?php defined("APP") or die("Non puoi accedere direttamente") ?>
 
-    <?php if (!empty($_SESSION['errors'])): ?>
-        <div class="alert alert-danger py-2 mb-3 border-0 shadow-sm" role="alert" style="font-size: 0.85rem;">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-            <?php foreach ($_SESSION['errors'] as $error): ?>
-                <div class="d-block"><?= $error ?></div>
-            <?php endforeach; ?>
-        </div>
-        <?php unset($_SESSION['errors']); ?>
-    <?php endif; ?>
+<div class="auth-card">
+    <div class="text-center mb-4">
+        <h3 class="fw-bold">Bentornato!</h3>
+        <p class="text-muted small">Inserisci le tue credenziali per accedere</p>
+    </div>
 
-    <?php if (!empty($_SESSION['success'])): ?>
-        <div class="alert alert-success py-2 mb-3 border-0 shadow-sm" role="alert" style="font-size: 0.85rem;">
-            <i class="bi bi-check-all me-2"></i>
-            <span><?= $_SESSION['success'] ?></span>
-        </div>
-        <?php unset($_SESSION['success']); ?>
-    <?php endif; ?>
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1050;">
+        <?php flash_error(); ?>
+    </div>
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1050;">
+        <?php flash_success(); ?>
+    </div>
 
     <form action="index.php?page=login&action=check" method="post">
         <div class="mb-3">
             <label class="form-label small fw-bold text-muted mb-1">Email</label>
-            <div class="input-group">
-                <span class="input-group-text bg-white border-end-0">
-                    <i class="bi bi-envelope text-muted"></i>
+            <div class="input-group shadow-sm" style="border: 1px solid #dee2e6; border-radius: 0.375rem; overflow: hidden;">
+
+                <span class="input-group-text bg-white border-0 pe-1">
+                    <i id="icon-email" class="bi bi-envelope text-muted"></i>
                 </span>
-                <input id="email" type="email" name="email"
-                    class="form-control form-control-sm border-start-0 ps-0"
-                    placeholder="mario@esempio.it" required>
+
+                <input
+                    id="email"
+                    type="email"
+                    name="email"
+                    class="form-control border-0 ps-1"
+                    placeholder="mario@gmail.com"
+                    style="box-shadow: none;"
+                    required>
             </div>
         </div>
 
-        <div class="mb-4">
+        <div class="mb-3">
             <label class="form-label small fw-bold text-muted mb-1">Password</label>
-            <div class="input-group input-group-sm">
-                <span class="input-group-text bg-white border-end-0">
-                    <i class="bi bi-shield-lock text-muted"></i>
+            <div class="input-group shadow-sm" style="border: 1px solid #dee2e6; border-radius: 0.375rem; overflow: hidden;">
+
+                <span class="input-group-text bg-white border-0 pe-1">
+                    <i id="icon-password" class="bi bi-lock text-muted"></i>
                 </span>
-                <input id="password" type="password" name="password"
-                    class="form-control border-start-0 ps-0"
-                    placeholder="••••••••" required>
-                <div class="input-group-text">
-                    <div class="form-check d-flex align-items-center mb-0">
-                        <input class="form-check-input mt-0 me-2" type="checkbox" id="togglePass" onclick="showPassword('password')">
-                        <label class="form-check-label small text-muted fw-bold" for="togglePass">Mostra</label>
+
+                <input
+                    id="password"
+                    type="password"
+                    name="password"
+                    class="form-control border-0 ps-1"
+                    placeholder="••••••••"
+                    style="box-shadow: none;"
+                    required>
+
+                <span class="input-group-text bg-white border-0">
+                    <div class="form-check mb-0 d-flex align-items-center">
+                        <input class="form-check-input"
+                            type="checkbox"
+                            style="cursor: pointer;"
+                            onclick="showPassword('password', 'icon-password')">
+                        <label class="form-check-label small text-muted fw-bold mb-0 ms-2" style="cursor: pointer;">
+                            Mostra
+                        </label>
                     </div>
-                </div>
+                </span>
             </div>
         </div>
 
-        <div class="text-end mt-1 mb-3">
-            <a href="index.php?page=login&action=changePassword" class="text-decoration-none small text-muted">
-                Cambia password
+        <div class="text-end mb-4">
+            <a href="index.php?page=login&action=changePassword" class="text-decoration-none small">
+                Password dimenticata?
             </a>
         </div>
 
-        <button type="submit" class="btn btn-primary w-100 btn-login mb-3 shadow-sm">
-            Entra <i class="bi bi-box-arrow-right ms-1"></i>
+        <button type="submit" class="btn btn-primary w-100 btn-modern shadow-sm">
+            Entra nel profilo <i class="bi bi-arrow-right-short ms-2"></i>
         </button>
 
-        <div class="d-flex align-items-center my-3">
-            <hr class="flex-grow-1 text-muted opacity-25">
-            <span class="mx-2 small text-muted">oppure</span>
-            <hr class="flex-grow-1 text-muted opacity-25">
-        </div>
+        <div class="divider"><span>oppure</span></div>
 
         <div class="text-center">
-            <p class="small text-muted mb-2">Non hai ancora un account?</p>
-            <a href="index.php?page=login&action=register" class="btn btn-outline-success btn-sm w-100 rounded-pill fw-bold">
-                <i class="bi bi-person-plus me-1"></i> Registrati Ora
+            <a href="index.php?page=login&action=register" class="btn btn-outline-success w-100 btn-modern">
+                <i class="bi bi-person-plus me-2"></i> Crea un nuovo account
             </a>
         </div>
     </form>
 </div>
-
-<script src="/pirazzi/OurShelf/src/utils/showPassword.js"></script>
