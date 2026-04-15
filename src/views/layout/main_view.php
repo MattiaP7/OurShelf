@@ -17,10 +17,12 @@ include_once __DIR__ . "/../../utils/helpers.php";
     <div class="container">
         <div class="row">
             <div class="col-md-8 elenco-annunci">
-                <fieldset>
-                    <legend>annunci</legend>
+                <form>
+                    <fieldset>
+                        <legend>annunci</legend>
 
-                </fieldset>
+                    </fieldset>
+                </form>
             </div>
             <div class="col-md-4 form">
                 <h3 class="h3 text-info text-start">
