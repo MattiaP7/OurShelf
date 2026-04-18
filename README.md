@@ -177,11 +177,10 @@ Le informazioni vuote prendete dal `.vscode/sftp.json` di project in info5
 
 **Mercatino e Annunci (Core Business)**
 
-- [ ] Sviluppo procedura inserimento annuncio (scansione ISBN o ricerca manuale)
+- [ ] Sviluppo procedura inserimento annuncio (inserimento ISBN)
 - [ ] Gestione upload immagini per lo stato d'usura del libro usato
-- [ ] Algoritmo di calcolo automatico del prezzo dell'usato (basato sul prezzo di copertina)
 - [ ] Visualizzazione bacheca annunci pubblici filtrabile
-- [ ] Gestione stato annuncio (Disponibile, In trattativa, Venduto)
+- [ ] Gestione stato annuncio (Disponibile, Venduto)
 
 <!-- **Comunicazione e Scambio**
   - [ ] Gestione delle notifiche per nuovi messaggi ricevuti
@@ -189,10 +188,7 @@ Le informazioni vuote prendete dal `.vscode/sftp.json` di project in info5
 
 **Frontend e Interfaccia Utente**
 
-- [ ] Sviluppo layout responsive (Bootstrap)
-- [ ] Implementazione vista doppia: Griglia (Card) e Tabella
-<!-- - [ ] Sviluppo barra di ricerca asincrona (AJAX) per risultati in tempo reale -->
-- [ ] Ottimizzazione UX per dispositivi mobili (scansione ISBN via camera)
+- [x] Sviluppo layout responsive (Bootstrap)
 
 **Testing e Integrazione**
 
