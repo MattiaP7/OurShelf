@@ -1,47 +1,127 @@
 <?php
-
-defined("APP") or die("Non si ha il permesso di accedere");
+defined("APP") or die("Accesso negato");
 
 require_once 'config/dbconnect.php';
 
+/**
+ * Classe LibriModels
+ * Gestisce le operazioni di ricerca e recupero dati relativi alla tabella Libri
+ * e alla tabella di associazione Classi_Libri.
+ * Usata principalmente per verificare che un libro sia adottato dalla scuola
+ * prima di permetterne la pubblicazione come annuncio.
+ *
+ * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
+ * @date 17/04/2026
+ */
 class LibriModels
 {
+  /** @var PDO Istanza della connessione al database */
   private $pdo;
 
+  /**
+   * Inizializza la connessione al database.
+   *
+   * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
+   * @date 17/04/2026
+   */
   public function __construct()
   {
     $this->pdo = DB::connect();
   }
 
-  public function selectAllLibri(array $param = []): array
+  /**
+   * Cerca un libro tramite il suo codice ISBN.
+   * Utilizzato per verificare che il libro sia nel catalogo scolastico
+   * prima di permettere la pubblicazione di un annuncio.
+   *
+   * @param string $isbn Il codice ISBN del libro da cercare.
+   * @return array|false Array con i dati del libro, false se non trovato.
+   * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
+   * @date 17/04/2026
+   */
+  public function getLibroByIsbn(string $isbn): array|false
   {
-    $dql = "SELECT * from Libri";
-    $stm = $this->pdo->prepare($dql);
-    $stm->execute($param);
-    return $stm->fetchAll(PDO::FETCH_ASSOC);
+    $sql  = "SELECT * FROM Libri WHERE isbn = ? LIMIT 1";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute([$isbn]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
   }
 
-     /**
-     * funzione per selezionare parametri dei libri 
-     *
-     * @author Matteo Portacci <portacci.7780@isit100.fe.it>
-     * @param mixed $variabile Descrizione parametro
-     * @return void
-     */
-    public function selectLibri(array $param = []): array
-    {
-        /**
-         * WHERE 1 = 1 -> seleziono solo i libri disponibili
-         *
-         * @author Matteo Portacci <portacci.7780@isit100.fe.it>
-         * @param mixed $variabile Descrizione parametro
-         * @return void
-         */
-        $dql = "SELECT isbn, titolo, materia, editore from Annunci WHERE 1 = 1";
-        $stm = $this->pdo->prepare($dql);
-        $stm->execute($param);
-        return $stm->fetchAll(PDO::FETCH_ASSOC);
-    }
+  /**
+   * Recupera un libro tramite il suo ID.
+   *
+   * @param int $id L'identificativo univoco del libro.
+   * @return array|false Array con i dati del libro, false se non trovato.
+   * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
+   * @date 17/04/2026
+   */
+  public function getLibroById(int $id): array|false
+  {
+    $sql  = "SELECT * FROM Libri WHERE id_libro = ? LIMIT 1";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute([$id]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+  }
 
+  /**
+   * Recupera tutti i libri adottati dalla classe specificata.
+   * Utile per mostrare allo studente solo i libri pertinenti alla propria classe.
+   *
+   * @param int $id_classe L'ID della classe di cui recuperare i libri adottati.
+   * @return array Array dei libri adottati dalla classe.
+   * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
+   * @date 17/04/2026
+   */
+  public function getLibriByClasse(int $id_classe): array
+  {
+    $sql = "
+			SELECT
+				l.id_libro,
+				l.isbn,
+				l.titolo,
+				l.autore,
+				l.materia,
+				l.editore,
+				l.volume,
+				l.anno_scolastico
+			FROM Libri l
+			JOIN Classi_Libri cl ON l.id_libro = cl.id_libro
+			WHERE cl.id_classe = ?
+			ORDER BY l.materia, l.titolo
+		";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute([$id_classe]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
 
-};
+  /**
+   * Recupera l'elenco di tutte le materie presenti nel catalogo.
+   * Usato per popolare i filtri di ricerca nella bacheca degli annunci.
+   *
+   * @return array Array delle materie distinte, ordinate alfabeticamente.
+   * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
+   * @date 17/04/2026
+   */
+  public function getMaterie(): array
+  {
+    $sql  = "SELECT DISTINCT materia FROM Libri ORDER BY materia";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute();
+    return array_column($stmt->fetchAll(PDO::FETCH_ASSOC), 'materia');
+  }
+
+  /**
+   * Verifica se un libro (tramite ISBN) è effettivamente adottato dalla scuola.
+   * Restituisce true se il libro esiste nel database, false altrimenti.
+   * Questa è la validazione principale prima di pubblicare un annuncio.
+   *
+   * @param string $isbn Il codice ISBN da verificare.
+   * @return bool True se il libro è nel catalogo scolastico.
+   * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
+   * @date 17/04/2026
+   */
+  public function isbnEsiste(string $isbn): bool
+  {
+    return $this->getLibroByIsbn($isbn) !== false;
+  }
+}
