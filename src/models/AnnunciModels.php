@@ -211,14 +211,14 @@ class AnnunciModels
   {
     $sql = "
 			SELECT
-				a.id_annuncio,
-				a.prezzo,
-				a.data_pubblicazione,
-				a.stato,
-				a.condizione,
-				l.titolo,
-				l.autore,
-				l.isbn
+				a.id_annuncio as id_annuncio,
+				a.prezzo as prezzo,
+				a.data_pubblicazione as data_pubblicazione,
+				a.stato as stato,
+				a.condizione as condizione,
+				l.titolo as titolo,
+				l.autore as autore,
+				l.isbn as isbn
 			FROM Annunci a
 			JOIN Libri l ON a.id_libro = l.id_libro
 			WHERE a.id_venditore = ?
