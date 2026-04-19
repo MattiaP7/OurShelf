@@ -1,52 +1,39 @@
-<div class="container">
-  <div class="row">
-    <div class="col-md-8 elenco-annunci">
-      <fieldset>
-        <legend>annunci</legend>
-
-      </fieldset>
+<div class="container-fluid py-5"> <div class="row g-4 justify-content-center"> <div class="col-lg-8 col-md-7">
+      <div class="p-4 border-start border-4 border-primary bg-white shadow-sm rounded-3" style="min-height: 600px;">
+        <h2 class="fw-bold mb-4">Annunci Recenti</h2>
+        <p class="text-muted">Esplora gli ultimi libri inseriti dalla community.</p>
+        <hr>
+        </div>
     </div>
-    <div class="col-md-4 form">
-      <h3 class="h3 text-info text-start">
-        Cerca il libro giusto per te
-      </h3>
-      <form action="index.php?page=Annunci&action=Annunci" method="post">
-        <div class="mb-3">
-          <label class=isbn>
-            ISBN
-          </label>
-          <input type="text" name="ISBN" id="ISBN" aria-roledescription="ISBN es.1788808699862" required>
-        </div>
-        <div class="mb-3">
-          <label class="titolo">
-            Titolo
-          </label>
-          <input class="form-control" type="text" name="titolo" id="titolo"
-            placeholder="Matematica a colori" required />
-        </div>
-        <div class="mb-3">
-          <label class="materia">
-            Materia
-          </label>
-          <input class="form-control" type="text" name="materia" id="materia" placeholder=" Matematica"
-            required />
-        </div>
-        <div class="mb-3">
-          <label class="editore">
-            Editore
-          </label>
-          <input class="form-control" type="text" name="editore" id="editore" placeholder="Zanichelli"
-            required />
-        </div>
-        <div>
-          <button class="btn btn-primary" type="submit">
-            Cerca
-            <!--dopo devo creare la funzione per la ricerca e trasformarlo come un link
-                            e associarlo a quella funzione-->
+    
+    <div class="col-lg-4 col-md-5">
+      <div class="form-container shadow-sm p-4 bg-white rounded-3">
+        <h3 class="h4 fw-bold text-primary mb-4">Cerca il libro giusto</h3>
+        <form action="index.php?page=Annunci&action=Annunci" method="post">
+          <div class="mb-3">
+            <label class="form-label fw-semibold">ISBN</label>
+            <input type="text" name="ISBN" class="form-control" placeholder="es. 97888..." required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Titolo</label>
+            <input type="text" name="titolo" class="form-control" placeholder="Matematica a colori" required>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-semibold">Materia</label>
+              <input type="text" name="materia" class="form-control" placeholder="Matematica" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-semibold">Editore</label>
+              <input type="text" name="editore" class="form-control" placeholder="Zanichelli" required>
+            </div>
+          </div>
+          <button class="btn btn-primary w-100 py-3 rounded-pill fw-bold mt-3 shadow-sm" type="submit">
+            <i class="bi bi-search me-2"></i> Avvia Ricerca
           </button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
+
   </div>
 </div>
-<script src="./bootstrap.bundle.min.js"></script>

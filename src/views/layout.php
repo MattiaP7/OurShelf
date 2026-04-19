@@ -7,7 +7,8 @@
   <title>OurShelf</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/style_layout.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 
 <body class="d-flex flex-column min-vh-100">
@@ -120,10 +121,18 @@
         <div class="col-lg-4 col-md-6 text-center text-lg-start">
           <h6 class="footer-title">Navigazione</h6>
           <ul class="list-unstyled footer-list">
-            <li><a href="https://www.isit100.fe.it/" target="_blank"><i
-                  class="bi bi-chevron-right me-1"></i>Isit Bassi Burgatti</a></li>
-            <li><a href="index.php?page=home&action=about"><i class="bi bi-chevron-right me-1"></i>Chi
-                siamo</a></li>
+            <li class="mb-3 d-flex align-items-center">
+              <a href="https://www.isit100.fe.it/" target="_blank" class="bottone-btm">
+                <i class="fa-solid fa-school"></i>
+              </a>
+              <span class="text-light">Isit Bassi Burgatti</span>
+            </li>
+            <li class="d-flex align-items-center">
+              <a href="index.php?page=home&action=about" class="bottone-btm">
+                <i class="fa-solid fa-user"></i>
+              </a>
+              <span class="text-light">Chi siamo</span>
+            </li>
           </ul>
         </div>
 
