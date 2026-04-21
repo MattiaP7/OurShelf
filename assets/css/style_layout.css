@@ -20,6 +20,7 @@ html,
 body {
   height: 100%;
   margin: 0;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -69,10 +70,9 @@ body {
   border-right: 3px solid #ff7e5f;
   margin: 0;
 
-  /* Lunghezza della frase: 47 caratteri */
-  width: 40ch;
+  width: 47ch;
   animation:
-    typing 4s steps(40) forwards,
+    typing 4s steps(47) forwards,
     blink 0.5s infinite step-end alternate;
 }
 
@@ -81,8 +81,18 @@ body {
     width: 0;
   }
   to {
-    width: 40ch;
+    width: 47ch;
   }
+}
+
+.navbar {
+  background-color: white;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.navbar-brand span {
+  font-size: 1.2rem;
+  letter-spacing: -0.3px;
 }
 
 @keyframes blink {
@@ -103,8 +113,7 @@ body {
    =============================================================================== */
 main {
   flex: 1 0 auto;
-  padding: 40px 0; /* Riduciamo un po' il padding verticale se troppo alto */
-  /* RIMOSSO display: flex e align-items: center da qui */
+  padding: 60px 0;
 }
 
 .content-card {
@@ -120,15 +129,21 @@ main {
 /* ==============================================================================
    FOOTER 
    ============================================================================== */
+/* ==========================================================================
+   FOOTER - SISTEMAZIONE COMPLETA COLORI E LEGIBILITÀ
+   ========================================================================== */
 footer.footer {
   background-color: var(--dark-footer) !important;
   border-top: 4px solid var(--primary-color);
   padding: 4rem 0 2rem 0;
   flex-shrink: 0;
+  color: #dee2e6 !important; /* Colore base chiaro per tutto il footer */
 }
 
+/* 1. TITOLI (H5, H6 e Classi Titolo) */
 footer.footer h5,
 footer.footer h6,
+footer.footer .footer-title,
 footer.footer .fw-bold {
   color: var(--white) !important;
   font-weight: 700 !important;
@@ -139,22 +154,29 @@ footer.footer .fw-bold {
   letter-spacing: 1.2px;
 }
 
-/* Nome brand nel footer */
-footer.footer h5.fw-bold {
+/* Brand Name Specifico */
+footer.footer .footer-brand {
   color: var(--primary-color) !important;
-  text-transform: none;
-  font-size: 1.6rem;
+  text-transform: none !important;
+  font-size: 1.6rem !important;
+  letter-spacing: -0.5px;
 }
 
-/* Testi semplici e icone footer */
+/* 2. TESTI SEMPLICI E LISTE (Risolve il testo invisibile) */
 footer.footer p,
 footer.footer li,
-footer.footer i {
-  color: #adb5bd !important;
+footer.footer .footer-description {
+  color: #ced4da !important; /* Grigio argento chiaro */
   font-size: 0.95rem;
 }
 
-/* Link nel footer */
+/* Forza il colore bianco per i testi vicino alle icone (es. "Home", "Chi Siamo") */
+footer.footer li span,
+footer.footer li {
+  color: #dee2e6 !important;
+}
+
+/* 3. LINK */
 footer.footer a {
   color: #dee2e6 !important;
   text-decoration: none;
@@ -165,6 +187,31 @@ footer.footer a:hover {
   color: var(--primary-color) !important;
   padding-left: 5px;
 }
+
+/* 4. ICONE */
+footer.footer i {
+  color: var(--primary-color) !important; /* Colore blu primario per le icone */
+  font-size: 1rem;
+}
+
+/* Icona Cuore specifica */
+footer.footer .bi-heart-fill {
+  color: #ff4d4d !important; /* Rosso acceso */
+}
+
+/* 5. COPYRIGHT (In fondo) */
+footer.footer .copyright {
+  color: #adb5bd !important;
+  font-size: 0.85rem;
+  margin-top: 1rem;
+  opacity: 0.9;
+}
+
+/* Sovrascrittura per classi Bootstrap che "oscurano" il testo */
+footer.footer .text-muted {
+  color: #adb5bd !important;
+}
+
 /* ==========================================================================
    BOTTONI CIRCOLARI (Classe bottone-btm)
    ========================================================================== */
@@ -183,4 +230,40 @@ footer.footer a:hover {
 .btn-outline-light:hover {
   background-color: var(--white) !important;
   color: var(--primary-color) !important;
+}
+
+/* logo */
+/* Contenitore circolare per il logo */
+.logo-wrapper {
+  width: 48px; /* Dimensione aumentata */
+  height: 48px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Ombra morbida per farlo "staccare" dallo sfondo */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 6px;
+  transition: all 0.3s ease;
+}
+
+.logo-wrapper img {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+/* Testo del brand accanto al logo */
+.brand-name {
+  font-size: 1.4rem;
+  color: #212529;
+  letter-spacing: -0.5px;
+}
+
+/* Effetto al passaggio del mouse */
+.navbar-brand:hover .logo-wrapper {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(13, 110, 253, 0.15); /* Ombra bluastra al passaggio */
 }

@@ -57,6 +57,46 @@ class AnnunciController
   }
 
   /**
+   * Endpoint JSON per la ricerca degli annunci.
+   * Chiamato via fetch() dal frontend senza ricaricare la pagina.
+   * Legge i parametri da $_GET e restituisce un array json degli annunci trovati.
+   * 
+   * @example `{ "ok": true, "annunci": [ { "id_annuncio": 1, "titolo": "...", ... } ] }`
+   *
+   * @return void
+   * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
+   * @date 21/04/2026
+   */
+  public function search(): void
+  {
+    requireLogin();
+
+    $materia    = trim($_GET['materia']    ?? '');
+    $condizione = trim($_GET['condizione'] ?? '');
+    $prezzoMin  = (float) ($_GET['prezzo_min'] ?? 0);
+    $prezzoMax  = (float) ($_GET['prezzo_max'] ?? 0);
+    $isbn       = trim($_GET['isbn']       ?? '');
+    $titolo     = trim($_GET['titolo']     ?? '');
+    $editore    = trim($_GET['editore']    ?? '');
+
+    $annunci = $this->model->getAnnunci(
+      $materia,
+      $condizione,
+      $prezzoMin,
+      $prezzoMax,
+      $isbn,
+      $titolo,
+      $editore
+    );
+
+    echo json_encode([
+      'ok'      => true,
+      'totale'  => count($annunci),
+      'annunci' => $annunci
+    ], JSON_UNESCAPED_UNICODE);
+  }
+
+  /**
    * Mostra il dettaglio di un singolo annuncio.
    *
    * @return void
@@ -69,6 +109,7 @@ class AnnunciController
 
     $id      = (int) ($_GET['id'] ?? 0);
     $annuncio = $this->model->getAnnuncioById($id);
+    // print_r($annuncio);
 
     if (!$annuncio) {
       $_SESSION['errors'][] = "Annuncio non trovato";

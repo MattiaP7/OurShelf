@@ -87,6 +87,12 @@ define('STOCK_IMG', 'https://images.unsplash.com/photo-1512820790803-83ca734da79
                     <i class="bi bi-person me-1"></i><?= safe_string($a['autore']) ?>
                   </p>
 
+                  <?php if (!empty($a['isbn'])): ?>
+                    <span class="badge bg-light text-dark border mt-2 align-self-start" style="font-size:0.7rem;">
+                      ISBN: <?= safe_string($a['isbn']) ?>
+                    </span>
+                  <?php endif; ?>
+
                   <?php if (!empty($a['descrizione'])): ?>
                     <p class="text-muted small mt-2 mb-0 fst-italic"
                       style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">

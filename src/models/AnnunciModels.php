@@ -275,31 +275,22 @@ class AnnunciModels
   public function getAnnunciByVenditore(int $idStudente): array
   {
     $sql = "
-			SELECT
-				a.id_annuncio,
-				a.prezzo,
-				a.data_pubblicazione,
-				a.stato,
-				a.condizione,
-				l.titolo,
-				l.autore,
-				l.isbn,
-				l.prezzo
-			FROM Annunci a
-			JOIN Libri l ON a.id_libro = l.id_libro
-			WHERE a.id_venditore = ?
-			GROUP BY
-				a.id_annuncio,
-				a.prezzo,
-				a.data_pubblicazione,
-				a.stato,
-				a.condizione,
-				l.titolo,
-				l.autore,
-				l.isbn,
-				l.prezzo
-			ORDER BY a.data_pubblicazione DESC
-		";
+        SELECT 
+            a.id_annuncio,
+            a.prezzo AS prezzo_vendita,
+            a.data_pubblicazione,
+            a.stato,
+            a.condizione,
+            l.titolo,
+            l.autore,
+            l.isbn,
+            l.prezzo AS prezzo_listino
+        FROM Annunci a
+        JOIN Libri l ON a.id_libro = l.id_libro
+        WHERE a.id_venditore = ?
+        ORDER BY a.data_pubblicazione DESC
+    ";
+
     $stmt = $this->pdo->prepare($sql);
     $stmt->execute([$idStudente]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);

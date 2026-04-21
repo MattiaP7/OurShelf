@@ -18,11 +18,12 @@
     <nav class="navbar navbar-expand-lg shadow-sm">
       <div class="container d-flex align-items-center justify-content-between">
 
-        <a class="navbar-brand d-flex align-items-center" href="<?= BASE_URL ?>/src/index.php">
-          <img src="<?= BASE_URL ?>/assets/img/logo_progetto.png" alt="OurShelf Logo" class="me-2" style="height: 40px;">
-          <span class="fw-bold">OurShelf</span>
+        <a class="navbar-brand d-flex align-items-center gap-3" href="<?= BASE_URL ?>/src/index.php">
+          <div class="logo-wrapper">
+            <img src="<?= BASE_URL ?>/assets/img/logo_progetto.png" alt="OurShelf Logo">
+          </div>
+          <span class="brand-name fw-bold">OurShelf</span>
         </a>
-
         <div class="header-center-content d-none d-lg-flex">
           <div class="icone-google">
             <span class="material-symbols-outlined">menu_book</span>
@@ -105,13 +106,14 @@
     </div>
   <?php endif; ?>
 
-  <main class="container">
+  <main class="container my-5">
     <div class="view-container">
       <?php
       if (!empty($view) && file_exists($view)) {
         include $view;
-      } else
-        die("Pagina non ricaricata riprova tran po' ... ");
+      } else {
+        die("Pagina non ricaricata riprova tra un po'...");
+      }
       ?>
     </div>
   </main>
@@ -119,50 +121,79 @@
   <footer class="footer">
     <div class="container">
       <div class="row gy-5">
+
         <div class="col-lg-4 col-md-12 text-center text-lg-start">
           <h5 class="footer-brand mb-3">OurShelf</h5>
-          <p class="footer-description mb-4">La piattaforma ideale per il Team 2, dedicata alla condivisione
-            fluida e organizzata della conoscenza.</p>
-          <div class="copyright small">
-            &copy; 2026 OurShelf &bull; Made with <i class="bi bi-heart-fill text-danger"></i>
+          <p class="footer-description mb-4">
+            Il mercatino dei libri dell'ISIT Bassi Burgatti.
+            Aiutiamo gli studenti a risparmiare e a dare nuova vita ai testi scolastici
+            all'interno della nostra community.
+          </p>
+          <div class="copyright small text-muted">
+            &copy; <span id="year"></span> OurShelf &bull; Sviluppato dal Team 2
+            <br>
+            Made with <i class="bi bi-heart-fill text-danger"></i> for Cento
           </div>
         </div>
 
         <div class="col-lg-4 col-md-6 text-center text-lg-start">
-          <h6 class="footer-title">Navigazione</h6>
+          <h6 class="footer-title">Link Utili</h6>
           <ul class="list-unstyled footer-list">
-            <li class="mb-3 d-flex align-items-center">
-              <a href="https://www.isit100.fe.it/" target="_blank" class="bottone-btm">
-                <i class="fa-solid fa-school"></i>
+            <li class="mb-3">
+              <a href="https://www.isit100.fe.it/" target="_blank"
+                class="d-flex align-items-center justify-content-center justify-content-lg-start text-decoration-none footer-link">
+                <span class="bottone-btm me-3">
+                  <i class="fa-solid fa-school"></i>
+                </span>
+                <span class="d-flex flex-column text-start">
+                  <span class="fw-semibold small">Sito Istituzionale</span>
+                  <span class="small text-muted">ISIT Bassi Burgatti</span>
+                </span>
               </a>
-              <span class="text-light">Isit Bassi Burgatti</span>
             </li>
-            <li class="d-flex align-items-center">
-              <a href="index.php?page=home&action=about" class="bottone-btm">
-                <i class="fa-solid fa-user"></i>
+
+            <li class="mb-3">
+              <a href="index.php?page=home&action=about"
+                class="d-flex align-items-center justify-content-center justify-content-lg-start text-decoration-none footer-link">
+                <span class="bottone-btm me-3">
+                  <i class="fa-solid fa-user"></i>
+                </span>
+                <span class="d-flex flex-column text-start">
+                  <span class="fw-semibold small">Chi siamo</span>
+                  <span class="small text-muted">Il team di sviluppo</span>
+                </span>
               </a>
-              <span class="text-light">Chi siamo</span>
             </li>
-            <li><a class="return-to-index-from-footer" href="<?= BASE_URL ?>/src/index.php">
-                <i class="fa-solid fa-house-chimney"></i>
-              </a>Home</li>
           </ul>
         </div>
 
         <div class="col-lg-4 col-md-6 text-center text-lg-start">
-          <h6 class="footer-title">Contatti Supporto</h6>
+          <h6 class="footer-title">Supporto e Segnalazioni</h6>
+          <p class="text-muted small mb-3">Hai riscontrato un problema? Contatta uno dei nostri sviluppatori:</p>
           <ul class="list-unstyled footer-list">
-            <li><a href="mailto:pirazzi.8076@isit100.fe.it"><i class="bi bi-envelope-at me-2"></i>Email
-                Pirazzi</a></li>
-            <li><a href="mailto:portacci.7780@isit100.fe.it"><i class="bi bi-envelope-at me-2"></i>Email
-                Portacci</a></li>
-            <li><a href="mailto:landi.7998@isit100.fe.it"><i class="bi bi-envelope-at me-2"></i>Email
-                Landi</a></li>
-            <li><a href="mailto:anusca.7806@isit100.fe.it"><i class="bi bi-envelope-at me-2"></i>Email
-                Anusca</a></li>
-
+            <li class="mb-2">
+              <a href="mailto:pirazzi.8076@isit100.fe.it" class="text-decoration-none">
+                <i class="bi bi-envelope-at me-2 text-primary"></i>Mattia Pirazzi
+              </a>
+            </li>
+            <li class="mb-2">
+              <a href="mailto:portacci.7780@isit100.fe.it" class="text-decoration-none">
+                <i class="bi bi-envelope-at me-2 text-primary"></i>Matteo Portacci
+              </a>
+            </li>
+            <li class="mb-2">
+              <a href="mailto:landi.7998@isit100.fe.it" class="text-decoration-none">
+                <i class="bi bi-envelope-at me-2 text-primary"></i>Alessandro Landi
+              </a>
+            </li>
+            <li class="mb-2">
+              <a href="mailto:anusca.7806@isit100.fe.it" class="text-decoration-none">
+                <i class="bi bi-envelope-at me-2 text-primary"></i>Ionut Anusca
+              </a>
+            </li>
           </ul>
         </div>
+
       </div>
     </div>
   </footer>
@@ -170,6 +201,12 @@
   <script src=" https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
   </script>
   <script src="<?= BASE_URL ?>/src/utils/showPassword.js"></script>
+  <script>
+    // stampiano nel footer 2026 - anno corrente
+    const currentYear = new Date().getFullYear();
+
+    document.getElementById("year").textContent = `2026 - ${currentYear}`
+  </script>
 
 </body>
 
