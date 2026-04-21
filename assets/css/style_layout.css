@@ -33,7 +33,7 @@ body {
 }
 
 /* ==========================================================================
-   HEADER / NAVBAR - FIX TOTALE VISIBILITÀ
+   HEADER / NAVBAR - ARMONIZZAZIONE
    ========================================================================== */
 .navbar {
   padding: 0.8rem 0;
@@ -62,7 +62,7 @@ body {
 }
 
 /* ==========================================================================
-   MAIN CONTENT (Grande e pulito)
+   MAIN VIEW - CARD E FORM
    ========================================================================== */
 main {
   flex: 1 0 auto;
@@ -129,9 +129,8 @@ footer.footer a:hover {
   color: var(--primary-color) !important;
   padding-left: 5px;
 }
-
 /* ==========================================================================
-   BOTTONI UTILITY
+   BOTTONI CIRCOLARI (Classe bottone-btm)
    ========================================================================== */
 .btn-light {
   background-color: var(--white) !important;
