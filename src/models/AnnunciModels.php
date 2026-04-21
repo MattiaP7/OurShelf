@@ -1,27 +1,26 @@
 <?php
-
 defined("APP") or die("Accesso negato");
 
 require_once 'config/dbconnect.php';
 
 /**
  * Classe AnnunciModels
- * Gestisce le operazioni CRUD relative alla tabella `Annunci`,
- * incluso pubblicazione, ricerca, l'acquisto e la conclusione alle vendite
+ * Gestisce tutte le operazioni CRUD relative alla tabella Annunci,
+ * incluse la pubblicazione, la ricerca, l'acquisto e la conclusione delle vendite.
  *
  * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
- * @date 17/04/2026
+ * @date 21/04/2026
  */
 class AnnunciModels
 {
-  /** @var PDO Istanza della connessione al DB */
+  /** @var PDO Istanza della connessione al database */
   private $pdo;
 
   /**
    * Inizializza la connessione al database.
    *
    * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
-   * @date 17/04/2026
+   * @date 21/04/2026
    */
   public function __construct()
   {
@@ -31,18 +30,16 @@ class AnnunciModels
   /**
    * Recupera tutti gli annunci disponibili con i dati del libro e del venditore.
    * Supporta il filtraggio opzionale per materia, condizione, fascia di prezzo,
-   * ISBN, titolo ed editore (ricerca parziale con LIKE per titolo ed editore).
+   * ISBN, titolo ed editore.
    *
-   * @param string $materia    Filtra per materia esatta del libro (default '').
-   * @param string $condizione Filtra per condizione del libro (default '').
-   * @param float  $prezzoMin  Prezzo minimo, 0 = nessun limite (default 0).
-   * @param float  $prezzoMax  Prezzo massimo, 0 = nessun limite (default 0).
-   * @param string $isbn       Filtra per ISBN esatto (default '').
-   * @param string $titolo     Filtra per titolo (ricerca parziale, default '').
-   * @param string $editore    Filtra per editore (ricerca parziale, default '').
-   * @return array Array associativo degli annunci trovati.
-   * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
-   * @date 17/04/2026
+   * @param string $materia    Filtra per materia esatta del libro.
+   * @param string $condizione Filtra per condizione del libro.
+   * @param float  $prezzoMin  Prezzo minimo annuncio.
+   * @param float  $prezzoMax  Prezzo massimo annuncio.
+   * @param string $isbn       Filtra per ISBN esatto.
+   * @param string $titolo     Filtra per titolo (LIKE).
+   * @param string $editore    Filtra per editore (LIKE).
+   * @return array Array associativo degli annunci trovati con alias per i prezzi.
    */
   public function getAnnunci(
     string $materia    = '',
@@ -54,29 +51,30 @@ class AnnunciModels
     string $editore    = ''
   ): array {
     $sql = "
-			SELECT
-				a.id_annuncio,
-				a.prezzo,
-				a.id_venditore,
-				a.data_pubblicazione,
-				a.descrizione,
-				a.data_ora_scambio,
-				a.stato,
-				a.condizione,
-				l.titolo,
-				l.autore,
-				l.isbn,
-				l.materia,
-				l.editore,
-				l.volume,
-				ls.nome AS luogo_scambio,
-				CONCAT(s.nome, ' ', s.cognome) AS venditore
-			FROM Annunci a
-			JOIN Libri         l  ON a.id_libro    = l.id_libro
-			JOIN Luoghi_Scambi ls ON a.id_luogo     = ls.id_luogo
-			JOIN Studenti      s  ON a.id_venditore = s.id_studente
-			WHERE a.stato = 'disponibile'
-		";
+    SELECT
+      a.id_annuncio,
+      a.prezzo AS prezzo_vendita,  -- Alias per distinguere il prezzo usato
+      a.id_venditore,
+      a.data_pubblicazione,
+      a.descrizione,
+      a.data_ora_scambio,
+      a.stato,
+      a.condizione,
+      l.titolo,
+      l.autore,
+      l.isbn,
+      l.materia,
+      l.editore,
+      l.volume,
+      l.prezzo AS prezzo_listino, -- Alias per il prezzo originale
+      ls.nome AS luogo_scambio,
+      CONCAT(s.nome, ' ', s.cognome) AS venditore
+    FROM Annunci a
+    JOIN Libri         l  ON a.id_libro    = l.id_libro
+    JOIN Luoghi_Scambi ls ON a.id_luogo    = ls.id_luogo
+    JOIN Studenti      s  ON a.id_venditore = s.id_studente
+    WHERE a.stato = 'disponibile'
+  ";
 
     $params = [];
 
@@ -109,7 +107,28 @@ class AnnunciModels
       $params[] = '%' . $editore . '%';
     }
 
-    $sql .= " ORDER BY a.data_pubblicazione DESC";
+    // GROUP BY aggiornato con gli alias corretti
+    $sql .= "
+    GROUP BY
+      a.id_annuncio,
+      prezzo_vendita,
+      a.id_venditore,
+      a.data_pubblicazione,
+      a.descrizione,
+      a.data_ora_scambio,
+      a.stato,
+      a.condizione,
+      l.titolo,
+      l.autore,
+      l.isbn,
+      l.materia,
+      l.editore,
+      l.volume,
+      prezzo_listino,
+      ls.nome,
+      venditore
+    ORDER BY a.data_pubblicazione DESC
+  ";
 
     $stmt = $this->pdo->prepare($sql);
     $stmt->execute($params);
@@ -118,34 +137,65 @@ class AnnunciModels
 
   /**
    * Recupera i dettagli di un singolo annuncio tramite il suo ID.
+   * Include prezzo del libro per mostrare il risparmio nella view dettaglio.
    *
    * @param int $id L'identificativo univoco dell'annuncio.
    * @return array|false Array associativo con i dati dell'annuncio, false se non trovato.
    * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
-   * @date 17/04/2026
+   * @date 21/04/2026
    */
   public function getAnnuncioById(int $id): array|false
   {
     $sql = "
-			SELECT
-				a.*,
-				l.titolo,
-				l.autore,
-				l.isbn,
-				l.materia,
-				l.editore,
-				l.volume,
-				l.anno_scolastico,
-				ls.nome AS luogo_scambio,
-				CONCAT(sv.nome, ' ', sv.cognome) AS venditore,
-				sv.email AS email_venditore
-			FROM Annunci a
-			JOIN Libri         l  ON a.id_libro    = l.id_libro
-			JOIN Luoghi_Scambi ls ON a.id_luogo     = ls.id_luogo
-			JOIN Studenti      sv ON a.id_venditore = sv.id_studente
-			WHERE a.id_annuncio = ?
-			LIMIT 1
-		";
+      SELECT
+        a.id_annuncio,
+        a.prezzo AS prezzo_vendita,  -- Alias per il prezzo dell'annuncio
+        a.id_venditore,
+        a.data_pubblicazione,
+        a.data_acquisto,
+        a.descrizione,
+        a.data_ora_scambio,
+        a.stato,
+        a.condizione,
+        l.titolo,
+        l.autore,
+        l.isbn,
+        l.materia,
+        l.editore,
+        l.volume,
+        l.anno_scolastico,
+        l.prezzo AS prezzo_listino, -- Alias per il prezzo originale del libro
+        ls.nome AS luogo_scambio,
+        CONCAT(sv.nome, ' ', sv.cognome) AS venditore,
+        sv.email AS email_venditore
+      FROM Annunci a
+      JOIN Libri         l  ON a.id_libro    = l.id_libro
+      JOIN Luoghi_Scambi ls ON a.id_luogo    = ls.id_luogo
+      JOIN Studenti      sv ON a.id_venditore = sv.id_studente
+      WHERE a.id_annuncio = ?
+      GROUP BY
+        a.id_annuncio,
+        prezzo_vendita,
+        a.id_venditore,
+        a.data_pubblicazione,
+        a.data_acquisto,
+        a.descrizione,
+        a.data_ora_scambio,
+        a.stato,
+        a.condizione,
+        l.titolo,
+        l.autore,
+        l.isbn,
+        l.materia,
+        l.editore,
+        l.volume,
+        l.anno_scolastico,
+        prezzo_listino,
+        ls.nome,
+        venditore,
+        sv.email
+      LIMIT 1
+    ";
     $stmt = $this->pdo->prepare($sql);
     $stmt->execute([$id]);
     return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -157,7 +207,7 @@ class AnnunciModels
    * @param array $params [prezzo, descrizione, data_ora_scambio, id_venditore, id_luogo, id_libro, condizione]
    * @return int L'ID dell'annuncio appena inserito, 0 in caso di errore.
    * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
-   * @date 17/04/2026
+   * @date 21/04/2026
    */
   public function insertAnnuncio(array $params): int
   {
@@ -173,15 +223,14 @@ class AnnunciModels
 
   /**
    * Registra l'acquisto di un libro: imposta compratore, data acquisto e stato venduto.
-   * Usato per concludere una transazione tra venditore e acquirente.
    *
-   * @param int $id_annuncio   L'ID dell'annuncio da aggiornare.
-   * @param int $id_compratore L'ID dello studente acquirente.
+   * @param int $idAnnuncio   L'ID dell'annuncio da aggiornare.
+   * @param int $idCompratore L'ID dello studente acquirente.
    * @return bool True se l'aggiornamento è avvenuto con successo, false altrimenti.
    * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
-   * @date 17/04/2026
+   * @date 21/04/2026
    */
-  public function concludiAcquisto(int $id_compratore, int $id_annuncio): bool
+  public function concludiAcquisto(int $idAnnuncio, int $idCompratore): bool
   {
     $sql = "
 			UPDATE Annunci
@@ -193,66 +242,79 @@ class AnnunciModels
 			  AND stato       = 'disponibile'
 		";
     $stmt = $this->pdo->prepare($sql);
-    $stmt->execute([$id_compratore, $id_annuncio]);
+    $stmt->execute([$idCompratore, $idAnnuncio]);
     return $stmt->rowCount() > 0;
   }
 
   /**
    * Elimina un annuncio. Operazione consentita solo al venditore proprietario.
    *
-   * @param int $id_annuncio   L'ID dell'annuncio da eliminare.
-   * @param int $id_venditore  L'ID del venditore, usato come guardia di sicurezza.
+   * @param int $idAnnuncio  L'ID dell'annuncio da eliminare.
+   * @param int $idVenditore L'ID del venditore, usato come guardia di sicurezza.
    * @return bool True se la cancellazione è avvenuta con successo, false altrimenti.
    * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
-   * @date 17/04/2026
+   * @date 21/04/2026
    */
-  public function deleteAnnuncio(int $id_annuncio, int $id_venditore): bool
+  public function deleteAnnuncio(int $idAnnuncio, int $idVenditore): bool
   {
     $sql  = "DELETE FROM Annunci WHERE id_annuncio = ? AND id_venditore = ?";
     $stmt = $this->pdo->prepare($sql);
-    $stmt->execute([$id_annuncio, $id_venditore]);
+    $stmt->execute([$idAnnuncio, $idVenditore]);
     return $stmt->rowCount() > 0;
   }
 
   /**
-   * Recupera tutti gli annunci pubblicati da un determinato studente (libri in vendita).
+   * Recupera tutti gli annunci pubblicati da un determinato studente.
+   * GROUP BY su a.id_annuncio per evitare duplicati.
    *
-   * @param int $id_studente L'ID dello studente venditore.
+   * @param int $idStudente L'ID dello studente venditore.
    * @return array Array degli annunci del venditore.
    * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
-   * @date 17/04/2026
+   * @date 21/04/2026
    */
-  public function getAnnunciByVenditore(int $id_studente): array
+  public function getAnnunciByVenditore(int $idStudente): array
   {
     $sql = "
 			SELECT
-				a.id_annuncio as id_annuncio,
-				a.prezzo as prezzo,
-				a.data_pubblicazione as data_pubblicazione,
-				a.stato as stato,
-				a.condizione as condizione,
-				l.titolo as titolo,
-				l.autore as autore,
-				l.isbn as isbn
+				a.id_annuncio,
+				a.prezzo,
+				a.data_pubblicazione,
+				a.stato,
+				a.condizione,
+				l.titolo,
+				l.autore,
+				l.isbn,
+				l.prezzo
 			FROM Annunci a
 			JOIN Libri l ON a.id_libro = l.id_libro
 			WHERE a.id_venditore = ?
+			GROUP BY
+				a.id_annuncio,
+				a.prezzo,
+				a.data_pubblicazione,
+				a.stato,
+				a.condizione,
+				l.titolo,
+				l.autore,
+				l.isbn,
+				l.prezzo
 			ORDER BY a.data_pubblicazione DESC
 		";
     $stmt = $this->pdo->prepare($sql);
-    $stmt->execute([$id_studente]);
+    $stmt->execute([$idStudente]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
   /**
-   * Recupera tutti i libri acquistati da un determinato studente (storico acquisti).
+   * Recupera tutti i libri acquistati da un determinato studente.
+   * GROUP BY su a.id_annuncio per evitare duplicati.
    *
-   * @param int $id_studente L'ID dello studente acquirente.
+   * @param int $idStudente L'ID dello studente acquirente.
    * @return array Array degli annunci conclusi in cui lo studente è l'acquirente.
    * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
-   * @date 17/04/2026
+   * @date 21/04/2026
    */
-  public function getLibriAcquistati(int $id_studente): array
+  public function getLibriAcquistati(int $idStudente): array
   {
     $sql = "
 			SELECT
@@ -263,26 +325,36 @@ class AnnunciModels
 				l.titolo,
 				l.autore,
 				l.isbn,
+				l.prezzo,
 				CONCAT(s.nome, ' ', s.cognome) AS venditore
 			FROM Annunci a
 			JOIN Libri    l ON a.id_libro    = l.id_libro
 			JOIN Studenti s ON a.id_venditore = s.id_studente
 			WHERE a.id_compratore = ?
 			  AND a.stato         = 'venduto'
+			GROUP BY
+				a.id_annuncio,
+				a.prezzo,
+				a.data_acquisto,
+				a.condizione,
+				l.titolo,
+				l.autore,
+				l.isbn,
+				l.prezzo,
+				venditore
 			ORDER BY a.data_acquisto DESC
 		";
     $stmt = $this->pdo->prepare($sql);
-    $stmt->execute([$id_studente]);
+    $stmt->execute([$idStudente]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
   /**
    * Recupera tutti i luoghi disponibili per lo scambio.
-   * Usato per popolare il select nel form di pubblicazione annuncio.
    *
    * @return array Array dei luoghi con id e nome.
    * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
-   * @date 17/04/2026
+   * @date 21/04/2026
    */
   public function getLuoghi(): array
   {
@@ -291,4 +363,4 @@ class AnnunciModels
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
-};
+}

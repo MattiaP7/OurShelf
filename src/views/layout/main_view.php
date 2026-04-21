@@ -94,13 +94,30 @@ define('STOCK_IMG', 'https://images.unsplash.com/photo-1512820790803-83ca734da79
                     </p>
                   <?php endif; ?>
 
-                  <div class="mt-auto pt-3 d-flex align-items-center justify-content-between">
-                    <span class="fs-5 fw-bold text-primary">€<?= number_format($a['prezzo'], 2) ?></span>
+                  <div class="mt-auto pt-3">
+                    <div class="d-flex align-items-baseline gap-2 mb-2">
+                      <span class="fs-5 fw-bold text-primary">
+                        €<?= number_format($a['prezzo_vendita'], 2) ?>
+                      </span>
+
+                      <?php if (!empty($a['prezzo_listino']) && $a['prezzo_listino'] > 0):
+                        $risparmio = 100 - round(($a['prezzo_vendita'] / $a['prezzo_listino']) * 100);
+                      ?>
+                        <span class="text-muted text-decoration-line-through small">
+                          €<?= number_format($a['prezzo_listino'], 2) ?>
+                        </span>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill" style="font-size: 0.7rem;">
+                          -<?= $risparmio ?>%
+                        </span>
+                      <?php endif; ?>
+                    </div>
+
                     <a href="index.php?page=annunci&action=dettaglio&id=<?= (int)$a['id_annuncio'] ?>"
-                      class="btn btn-outline-primary btn-sm rounded-3">
+                      class="btn btn-outline-primary btn-sm rounded-3 w-100">
                       <i class="bi bi-eye me-1"></i> Dettaglio
                     </a>
                   </div>
+
                 </div>
 
               </div>

@@ -146,13 +146,47 @@ $carouselId = 'carousel-annuncio-' . (int)$annuncio['id_annuncio'];
 
     <div class="col-lg-5">
 
-      <!-- Card prezzo + azione -->
       <div class="card border-0 shadow-sm rounded-4 p-4 mb-3">
 
-        <div class="text-center mb-4">
-          <div class="display-5 fw-bold text-primary">€<?= number_format($annuncio['prezzo'], 2) ?></div>
-          <div class="text-muted small">Prezzo richiesto</div>
+        <div class="text-center">
+          <div class="text-muted small text-uppercase fw-bold mb-1" style="letter-spacing: 1px;">
+            Prezzo di vendita
+          </div>
+
+          <div class="display-5 fw-bold text-primary mb-1">
+            €<?= number_format($annuncio['prezzo_vendita'], 2) ?>
+          </div>
+
+          <?php if (!empty($annuncio['prezzo_listino']) && $annuncio['prezzo_listino'] > 0):
+            // Calcolo della percentuale di risparmio
+            $risparmio = 100 - round(($annuncio['prezzo_vendita'] / $annuncio['prezzo_listino']) * 100);
+          ?>
+            <div class="d-flex align-items-center justify-content-center gap-2 mb-2">
+              <span class="text-muted text-decoration-line-through fs-5">
+                €<?= number_format($annuncio['prezzo_listino'], 2) ?>
+              </span>
+
+              <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2">
+                <i class="bi bi-arrow-down-short"></i>-<?= $risparmio ?>%
+              </span>
+            </div>
+
+            <div class="text-success small fw-medium">
+              Risparmi €<?= number_format($annuncio['prezzo_listino'] - $annuncio['prezzo_vendita'], 2) ?> rispetto al nuovo
+            </div>
+          <?php endif; ?>
         </div>
+
+        <hr class="my-4 opacity-25">
+
+        <?php if ($annuncio['stato'] === 'disponibile' && !$isProprietario): ?>
+          <form method="POST" action="index.php?page=annunci&action=acquista">
+            <input type="hidden" name="id_annuncio" value="<?= (int)$annuncio['id_annuncio'] ?>">
+            <button type="submit" class="btn btn-primary rounded-3 w-100 py-3 fw-bold shadow-sm">
+              <i class="bi bi-cart-check me-2"></i>ACQUISTA ORA
+            </button>
+          </form>
+        <?php endif; ?>
 
         <?php if (!isset($_SESSION['id_studente'])): ?>
           <!-- Utente non loggato -->
