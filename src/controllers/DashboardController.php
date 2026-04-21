@@ -37,33 +37,25 @@ class DashboardController
    */
   public function index(): void
   {
-    $this->requireLogin();
+    requireLogin();
 
     $idStudente = (int) $_SESSION['id_studente'];
 
     // recupero tutti gli annunci del venditore e li separo per stato
     $tuttiAnnunci   = $this->model->getAnnunciByVenditore($idStudente);
-    $inVendita      = array_filter($tuttiAnnunci, fn($a) => $a['stato'] === 'disponibile');
-    $libriVenduti   = array_filter($tuttiAnnunci, fn($a) => $a['stato'] === 'venduto');
+    $inVendita = [];
+    $libriVenduti = [];
+
+    foreach ($tuttiAnnunci as $a) {
+      if ($a['stato'] === 'disponibile') {
+        $inVendita[] = $a;
+      } elseif ($a['stato'] === 'venduto') {
+        $libriVenduti[] = $a;
+      }
+    }
     $libriAcquistati = $this->model->getLibriAcquistati($idStudente);
 
     $view = __DIR__ . '/../views/dashboard/index.php';
     include __DIR__ . '/../views/layout.php';
-  }
-
-  /**
-   * Verifica che l'utente sia autenticato.
-   * In caso contrario reindirizza al login e interrompe l'esecuzione.
-   *
-   * @return void
-   * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
-   * @date 17/04/2026
-   */
-  private function requireLogin(): void
-  {
-    if (empty($_SESSION['id_studente'])) {
-      header("Location: index.php?page=login");
-      exit;
-    }
   }
 }

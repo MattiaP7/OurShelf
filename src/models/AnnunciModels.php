@@ -30,12 +30,16 @@ class AnnunciModels
 
   /**
    * Recupera tutti gli annunci disponibili con i dati del libro e del venditore.
-   * Supporta il filtraggio opzionale per materia, condizione e fascia di prezzo.
+   * Supporta il filtraggio opzionale per materia, condizione, fascia di prezzo,
+   * ISBN, titolo ed editore (ricerca parziale con LIKE per titolo ed editore).
    *
-   * @param string $materia   Filtra per materia del libro (default '').
+   * @param string $materia    Filtra per materia esatta del libro (default '').
    * @param string $condizione Filtra per condizione del libro (default '').
-   * @param float  $prezzoMin  Prezzo minimo (default 0).
+   * @param float  $prezzoMin  Prezzo minimo, 0 = nessun limite (default 0).
    * @param float  $prezzoMax  Prezzo massimo, 0 = nessun limite (default 0).
+   * @param string $isbn       Filtra per ISBN esatto (default '').
+   * @param string $titolo     Filtra per titolo (ricerca parziale, default '').
+   * @param string $editore    Filtra per editore (ricerca parziale, default '').
    * @return array Array associativo degli annunci trovati.
    * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
    * @date 17/04/2026
@@ -44,12 +48,16 @@ class AnnunciModels
     string $materia    = '',
     string $condizione = '',
     float  $prezzoMin  = 0,
-    float  $prezzoMax  = 0
+    float  $prezzoMax  = 0,
+    string $isbn       = '',
+    string $titolo     = '',
+    string $editore    = ''
   ): array {
     $sql = "
 			SELECT
 				a.id_annuncio,
 				a.prezzo,
+				a.id_venditore,
 				a.data_pubblicazione,
 				a.descrizione,
 				a.data_ora_scambio,
@@ -64,16 +72,11 @@ class AnnunciModels
 				ls.nome AS luogo_scambio,
 				CONCAT(s.nome, ' ', s.cognome) AS venditore
 			FROM Annunci a
-			JOIN Libri         l  USING(id_libro)
-			JOIN Luoghi_Scambi ls USING(id_luogo)
+			JOIN Libri         l  ON a.id_libro    = l.id_libro
+			JOIN Luoghi_Scambi ls ON a.id_luogo     = ls.id_luogo
 			JOIN Studenti      s  ON a.id_venditore = s.id_studente
 			WHERE a.stato = 'disponibile'
 		";
-
-    //NOTA: utilizziamo i parametri nella funzione al posto di un array perchè ci esce 
-    // meglio la query, ci bastera' infatti aggiungere il pezzo al $sql e aggiungere il parametro nel $params
-
-    //CONCAT unisce stringhe, c'e' l'ha fatta vedere dessolis
 
     $params = [];
 
@@ -92,6 +95,18 @@ class AnnunciModels
     if ($prezzoMax > 0) {
       $sql     .= " AND a.prezzo <= ?";
       $params[] = $prezzoMax;
+    }
+    if (!empty($isbn)) {
+      $sql     .= " AND l.isbn = ?";
+      $params[] = $isbn;
+    }
+    if (!empty($titolo)) {
+      $sql     .= " AND l.titolo LIKE ?";
+      $params[] = '%' . $titolo . '%';
+    }
+    if (!empty($editore)) {
+      $sql     .= " AND l.editore LIKE ?";
+      $params[] = '%' . $editore . '%';
     }
 
     $sql .= " ORDER BY a.data_pubblicazione DESC";

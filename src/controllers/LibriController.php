@@ -37,28 +37,11 @@ class LibriController
    */
   public function index(): void
   {
-    $this->requireLogin();
+    requireLogin();
 
     $libri = $this->model->getLibriByClasse($_SESSION['id_classe']);
 
     $view = __DIR__ . '/../views/libri/catalogo.php';
     include __DIR__ . '/../views/layout.php';
-  }
-
-
-  /**
-   * Verifica che l'utente sia autenticato.
-   * In caso contrario reindirizza al login e interrompe l'esecuzione.
-   *
-   * @return void
-   * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
-   * @date 17/04/2026
-   */
-  private function requireLogin(): void
-  {
-    if (empty($_SESSION['id_studente'])) {
-      header("Location: index.php?page=login");
-      exit;
-    }
   }
 }

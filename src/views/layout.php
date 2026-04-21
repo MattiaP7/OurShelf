@@ -7,7 +7,7 @@
   <title>OurShelf</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/style_layout.css">
 </head>
 
 <body class="d-flex flex-column min-vh-100">
@@ -49,11 +49,6 @@
                     </a>
                   </li>
 
-                  <li>
-                    <a class="dropdown-item d-flex align-items-center gap-2" href="index.php?page=libri&action=miei">
-                      <i class="bi bi-book text-primary"></i> I miei Libri
-                    </a>
-                  </li>
 
                   <li>
                     <a class="dropdown-item d-flex align-items-center gap-2" href="index.php?page=login&action=changePassword">

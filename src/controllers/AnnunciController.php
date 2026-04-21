@@ -42,7 +42,7 @@ class AnnunciController
    */
   public function index(): void
   {
-    $this->requireLogin();
+    requireLogin();
 
     $materia    = trim($_GET['materia']    ?? '');
     $condizione = trim($_GET['condizione'] ?? '');
@@ -65,7 +65,7 @@ class AnnunciController
    */
   public function dettaglio(): void
   {
-    $this->requireLogin();
+    requireLogin();
 
     $id      = (int) ($_GET['id'] ?? 0);
     $annuncio = $this->model->getAnnuncioById($id);
@@ -90,10 +90,17 @@ class AnnunciController
    */
   public function crea(): void
   {
-    $this->requireLogin();
+    requireLogin();
 
     $luoghi  = $this->model->getLuoghi();
-    $libri   = $this->libriModel->getLibriByClasse($_SESSION['id_classe']);
+
+    // per avere i libri solo di una classe specifica
+    //$libri   = $this->libriModel->getLibriByClasse($_SESSION['id_classe']);
+
+    // tutti i libri
+    $libri = $this->libriModel->getAllLibri();
+
+    $condizioni = ['Ottime condizioni', 'Buone condizioni', 'Condizioni accettabili', 'Danneggiato'];
 
     $view = __DIR__ . '/../views/annunci/crea.php';
     include __DIR__ . '/../views/layout.php';
@@ -110,7 +117,7 @@ class AnnunciController
    */
   public function store(): void
   {
-    $this->requireLogin();
+    requireLogin();
 
     $_SESSION['errors']  = [];
     $_SESSION['success'] = '';
@@ -131,7 +138,7 @@ class AnnunciController
     if (empty($condizione)) {
       $_SESSION['errors'][] = "Seleziona la condizione del libro";
     }
-    if (!is_numeric($prezzo) || (float) $prezzo <= 0 || filter_var($prezzo, FILTER_VALIDATE_FLOAT)) {
+    if (!is_numeric($prezzo) || (float) $prezzo <= 0) {
       $_SESSION['errors'][] = "Inserisci un prezzo valido";
     }
     if (empty($dataOraScambio)) {
@@ -178,7 +185,7 @@ class AnnunciController
    */
   public function acquista(): void
   {
-    $this->requireLogin();
+    requireLogin();
 
     $idAnnuncio = (int) ($_POST['id_annuncio'] ?? 0);
     $annuncio   = $this->model->getAnnuncioById($idAnnuncio);
@@ -216,7 +223,7 @@ class AnnunciController
    */
   public function elimina(): void
   {
-    $this->requireLogin();
+    requireLogin();
 
     $idAnnuncio = (int) ($_POST['id_annuncio'] ?? 0);
 
@@ -228,21 +235,5 @@ class AnnunciController
 
     header("Location: index.php?page=dashboard");
     exit;
-  }
-
-  /**
-   * Verifica che l'utente sia autenticato.
-   * In caso contrario reindirizza al login e interrompe l'esecuzione.
-   *
-   * @return void
-   * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
-   * @date 17/04/2026
-   */
-  private function requireLogin(): void
-  {
-    if (empty($_SESSION['id_studente'])) {
-      header("Location: index.php?page=login");
-      exit;
-    }
   }
 }
