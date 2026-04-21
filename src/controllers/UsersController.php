@@ -91,7 +91,7 @@ class UsersController
     if (!in_array($sesso, ['m', 'f'], true)) {
       $_SESSION['errors'][] = "Seleziona un sesso valido";
     }
-    if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    if (empty($email) || !isEmailDomainValid($email)) {
       $_SESSION['errors'][] = "Inserisci un'email valida";
     } elseif ($this->model->emailEsiste($email, $userId)) {
       $_SESSION['errors'][] = "L'email è già utilizzata da un altro account";
@@ -143,6 +143,7 @@ class UsersController
     if ($ok) {
       // aggiorna i dati in sessione per riflettere i cambiamenti nella navbar
       $_SESSION['nome']      = $nome;
+      $_SESSION['cognome']   = $cognome;
       $_SESSION['email']     = $email;
       $_SESSION['id_classe'] = $idClasse;
 
