@@ -203,7 +203,7 @@ class AnnunciController
       exit;
     }
 
-    if ($this->model->concludiAcquisto($idAnnuncio, $_SESSION['id_studente'])) {
+    if ($this->model->concludiAcquisto($_SESSION['id_studente'], $idAnnuncio)) {
       $_SESSION['success'] = "Acquisto registrato! Presentati all'orario indicato per il ritiro.";
       header("Location: index.php?page=dashboard");
     } else {

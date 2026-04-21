@@ -19,6 +19,7 @@
         <input
           type="email"
           name="email"
+          disabled
           class="form-control border-0 ps-1"
           placeholder="mario@esempio.it"
           style="box-shadow: none;"

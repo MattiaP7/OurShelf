@@ -11,7 +11,7 @@ require_once 'config/dbconnect.php';
  * prima di permetterne la pubblicazione come annuncio.
  *
  * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
- * @date 17/04/2026
+ * @date 21/04/2026
  */
 class LibriModels
 {
@@ -22,7 +22,7 @@ class LibriModels
    * Inizializza la connessione al database.
    *
    * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
-   * @date 17/04/2026
+   * @date 21/04/2026
    */
   public function __construct()
   {
@@ -37,7 +37,7 @@ class LibriModels
    * @param string $isbn Il codice ISBN del libro da cercare.
    * @return array|false Array con i dati del libro, false se non trovato.
    * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
-   * @date 17/04/2026
+   * @date 21/04/2026
    */
   public function getLibroByIsbn(string $isbn): array|false
   {
@@ -53,7 +53,7 @@ class LibriModels
    * @param int $id L'identificativo univoco del libro.
    * @return array|false Array con i dati del libro, false se non trovato.
    * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
-   * @date 17/04/2026
+   * @date 21/04/2026
    */
   public function getLibroById(int $id): array|false
   {
@@ -73,26 +73,46 @@ class LibriModels
   public function getAllLibri()
   {
     $sql = "
-      SELECT 
-        id_libro, isbn, titolo, autore, materia, editore, volume, anno_scolastico
-      FROM Libri 
-      ORDER BY materia, titolo
+        SELECT 
+            id_libro, 
+            isbn, 
+            titolo, 
+            autore, 
+            materia, 
+            editore, 
+            volume, 
+            anno_scolastico,
+            prezzo
+        FROM Libri 
+        GROUP BY 
+            id_libro, 
+            isbn, 
+            titolo, 
+            autore, 
+            materia, 
+            editore, 
+            volume, 
+            anno_scolastico,
+            prezzo
+        ORDER BY materia, titolo
     ";
     $stmt = $this->pdo->prepare($sql);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
+
   /**
    * Recupera tutti i libri adottati dalla classe specificata.
-   * Utile per mostrare allo studente solo i libri pertinenti alla propria classe.
+   * Il GROUP BY su l.id_libro evita duplicati quando lo stesso libro
+   * è associato alla stessa classe più volte in Classi_Libri.
    *
-   * @param int $id_classe L'ID della classe di cui recuperare i libri adottati.
+   * @param int $idClasse L'ID della classe di cui recuperare i libri adottati.
    * @return array Array dei libri adottati dalla classe.
    * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
-   * @date 17/04/2026
+   * @date 21/04/2026
    */
-  public function getLibriByClasse(int $id_classe): array
+  public function getLibriByClasse(int $idClasse): array
   {
     $sql = "
 			SELECT
@@ -103,14 +123,25 @@ class LibriModels
 				l.materia,
 				l.editore,
 				l.volume,
-				l.anno_scolastico
+				l.anno_scolastico,
+				l.prezzo
 			FROM Libri l
 			JOIN Classi_Libri cl ON l.id_libro = cl.id_libro
 			WHERE cl.id_classe = ?
+			GROUP BY
+				l.id_libro,
+				l.isbn,
+				l.titolo,
+				l.autore,
+				l.materia,
+				l.editore,
+				l.volume,
+				l.anno_scolastico,
+				l.prezzo
 			ORDER BY l.materia, l.titolo
 		";
     $stmt = $this->pdo->prepare($sql);
-    $stmt->execute([$id_classe]);
+    $stmt->execute([$idClasse]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
@@ -120,7 +151,7 @@ class LibriModels
    *
    * @return array Array delle materie distinte, ordinate alfabeticamente.
    * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
-   * @date 17/04/2026
+   * @date 21/04/2026
    */
   public function getMaterie(): array
   {
@@ -132,13 +163,11 @@ class LibriModels
 
   /**
    * Verifica se un libro (tramite ISBN) è effettivamente adottato dalla scuola.
-   * Restituisce true se il libro esiste nel database, false altrimenti.
-   * Questa è la validazione principale prima di pubblicare un annuncio.
    *
    * @param string $isbn Il codice ISBN da verificare.
    * @return bool True se il libro è nel catalogo scolastico.
    * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
-   * @date 17/04/2026
+   * @date 21/04/2026
    */
   public function isbnEsiste(string $isbn): bool
   {

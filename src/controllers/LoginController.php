@@ -55,18 +55,16 @@ class LoginController
     $email    = trim($_POST['email'] ?? '');
     $password = trim($_POST['password'] ?? '');
 
-
-
     // cerco l'utente nel db 
     $user = $this->model->authUser($email);
 
-    if (!$user) {
-      $_SESSION['errors'][] = "Email non trovata";
+    if (empty($user)) {
+      $_SESSION['errors'][] = "Credenziali non valide";
       header("Location: index.php?page=login");
       exit;
     }
     if (!password_verify($password, $user['password'])) {
-      $_SESSION['errors'][] = "Password errata";
+      $_SESSION['errors'][] = "Credenziali non valide";
       header("Location: index.php?page=login");
       exit;
     }

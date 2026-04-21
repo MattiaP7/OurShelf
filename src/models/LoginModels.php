@@ -67,7 +67,11 @@ class LoginModels
     $dql = "SELECT * FROM Studenti WHERE email = ? LIMIT 1";
     $stmt = $this->pdo->prepare($dql);
     $stmt->execute([$email]);
-    return $stmt->fetch(PDO::FETCH_ASSOC);
+    $result =  $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($result === false)
+      return [];
+    return $result;
   }
 
   /**

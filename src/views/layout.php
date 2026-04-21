@@ -65,8 +65,8 @@
 
 
                   <li>
-                    <a class="dropdown-item d-flex align-items-center gap-2" href="index.php?page=login&action=changePassword">
-                      <i class="bi bi-key text-primary"></i> Cambia Password
+                    <a class="dropdown-item d-flex align-items-center gap-2" href="index.php?page=users&action=index">
+                      <i class="bi bi-person-circle text-primary"></i> Area Utente
                     </a>
                   </li>
 
