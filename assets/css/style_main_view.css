@@ -1,26 +1,30 @@
-/*è per cercare di rendere il titolo dinamico*/
+/* 1. Importa i font in cima (facoltativo se usi monospace) */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+
+/* 2. Lo stile del tuo titolo */
 .form h3 {
-  font-family: monospace;
+  font-family: 'Poppins', monospace; /* Poppins per la bellezza, monospace per la precisione */
   display: inline-block;
-  border-right: 3px solid;
+  border-right: 3px solid #ff7e5f; /* Colore del cursore */
   white-space: nowrap;
   overflow: hidden;
-  width: 28ch;
-  animation:
-    typing 3s steps(28) forwards,
+  margin: 0 auto;
+  letter-spacing: 0.15em; /* Un po' di respiro tra le lettere */
+  
+  /* Usiamo i tuoi 28 caratteri */
+  width: 28ch; 
+  
+  animation: 
+    typing 3s steps(28) forwards, 
     blink 0.5s infinite step-end alternate;
 }
 
+/* 3. Le tue animazioni */
 @keyframes typing {
-  from {
-    width: 0;
-  }
-  to {
-    width: 28ch;
-  }
+  from { width: 0; }
+  to { width: 28ch; }
 }
+
 @keyframes blink {
-  50% {
-    border-color: transparent;
-  }
+  50% { border-color: transparent; }
 }

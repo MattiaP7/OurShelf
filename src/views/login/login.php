@@ -3,7 +3,7 @@
 <div class="auth-card">
     <div class="text-center mb-4">
         <h3 class="fw-bold">Bentornato!</h3>
-        <p class="text-muted small">Inserisci le tue credenziali per accedere</p>
+        <p class="text-muted small">Inserisci le tue credenziali per accedere. Pronto a ricominciare?</p>
     </div>
 
     <div class="position-fixed top-0 end-0 p-3" style="z-index: 1050;">
@@ -71,7 +71,9 @@
         </div>
 
         <button type="submit" class="btn btn-primary w-100 btn-modern shadow-sm">
-            Entra nel profilo <i class="bi bi-arrow-right-short ms-2"></i>
+            Entra nel profilo 
+            <i class="fa-solid fa-right-to-bracket"></i>
+            <i class="bi bi-arrow-right-short ms-2"></i>
         </button>
 
         <div class="divider"><span>oppure</span></div>

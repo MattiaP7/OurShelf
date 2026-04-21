@@ -9,22 +9,35 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
   <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/style_layout.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 </head>
 
 <body class="d-flex flex-column min-vh-100">
 
-  <header>
-    <nav class="navbar navbar-expand-lg shadow-sm">
-      <div class="container">
-        <a class="navbar-brand d-flex align-items-center" href="<?= BASE_URL ?>/src/index.php">
-          <img src="<?= BASE_URL ?>/assets/img/logo_progetto.png" alt="OurShelf Logo" class="me-2" style="height: 40px;">
-          <span class="fw-bold">OurShelf</span>
-        </a>
+<header>
+  <nav class="navbar navbar-expand-lg shadow-sm">
+    <div class="container d-flex align-items-center justify-content-between">
+      
+      <a class="navbar-brand d-flex align-items-center" href="<?= BASE_URL ?>/src/index.php">
+        <img src="<?= BASE_URL ?>/assets/img/logo_progetto.png" alt="OurShelf Logo" class="me-2" style="height: 40px;">
+        <span class="fw-bold">OurShelf</span>
+      </a>
 
+      <div class="header-center-content d-none d-lg-flex">
+        <div class="icone-google">
+          <span class="material-symbols-outlined">menu_book</span>
+          <span class="material-symbols-outlined search-icon">search</span>
+        </div>
+        <div class="frase">
+          <h3 class="typing-text">Ogni libro è un viaggio. Dove vuoi andare oggi?</h3>
+        </div>
+      </div>
+
+      <div class="d-flex align-items-center gap-2">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
           <span class="navbar-toggler-icon"></span>
         </button>
-
+        
         <div class="collapse navbar-collapse" id="navbarNav">
           <div class="ms-auto d-flex align-items-center gap-2">
 
@@ -71,9 +84,11 @@
 
             <?php else: ?>
               <a class="btn btn-outline-primary btn-sm rounded-pill px-4" href="index.php?page=login&action=index">
+                <i class="fa-solid fa-user"></i>
                 Accedi
               </a>
               <a class="btn btn-primary btn-sm rounded-pill px-4 shadow-sm" href="index.php?page=login&action=register">
+                <i class="fa-solid fa-user-plus"></i>
                 Registrati
               </a>
             <?php endif; ?>
@@ -128,6 +143,9 @@
               </a>
               <span class="text-light">Chi siamo</span>
             </li>
+            <li><a class="return-to-index-from-footer" href="<?= BASE_URL ?>/src/index.php">
+              <i class="fa-solid fa-house-chimney"></i>
+                </a>Home</li>
           </ul>
         </div>
 
@@ -142,6 +160,7 @@
                 Landi</a></li>
             <li><a href="mailto:anusca.7806@isit100.fe.it"><i class="bi bi-envelope-at me-2"></i>Email
                 Anusca</a></li>
+  
           </ul>
         </div>
       </div>

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Poppins:wght@400;600&display=swap');
+
 /* ==========================================================================
    CONFIGURAZIONE VARIABILI
    ========================================================================== */
@@ -11,7 +13,7 @@
 }
 
 /* ==========================================================================
-   STRUTTURA LAYOUT (Footer sempre in basso)
+   STRUTTURA LAYOUT
    ========================================================================== */
 html,
 body {
@@ -32,38 +34,66 @@ body {
   color: #333;
 }
 
-/* ==========================================================================
-   HEADER / NAVBAR - ARMONIZZAZIONE
-   ========================================================================== */
-.navbar {
-  padding: 0.8rem 0;
+/* ==============================================================================
+   HEADER 
+   ==============================================================================*/
+/* Container centrale */
+.header-center-content {
+  display: flex;
+  flex-direction: column; /* Icone sopra, testo sotto (o viceversa) */
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
 }
 
-.navbar-brand img {
-  height: 45px;
-  width: auto;
-  object-fit: contain;
-  transition: var(--transition-smooth);
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+.icone-google {
+  display: flex;
+  gap: 5px;
+  color: #555;
+  margin-bottom: -5px; /* Avvicina le icone al testo */
 }
 
-.navbar-brand:hover img {
-  transform: translateY(-2px);
+.icone-google .search-icon {
+  font-size: 18px;
+  color: #ff7e5f; /* Colore d'accento per la lente */
 }
 
-.navbar-brand span {
-  font-size: 1.4rem;
-  letter-spacing: -0.5px;
+/* Effetto Typing aggiornato per la tua frase */
+.typing-text {
+  font-family: 'Poppins', monospace;
+  font-size: 1rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: 3px solid #ff7e5f;
+  margin: 0;
+  
+  /* Lunghezza della frase: 47 caratteri */
+  width: 40ch; 
+  animation: 
+    typing 4s steps(40) forwards, 
+    blink 0.5s infinite step-end alternate;
 }
 
-.user-badge {
-  background: rgba(255, 255, 255, 0.2) !important;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+@keyframes typing {
+  from { width: 0; }
+  to { width: 40ch; }
 }
 
-/* ==========================================================================
-   MAIN VIEW - CARD E FORM
-   ========================================================================== */
+@keyframes blink {
+  50% { border-color: transparent; }
+}
+
+/* Nasconde la frase su mobile per evitare che l'header esploda */
+@media (max-width: 992px) {
+  .header-center-content {
+    display: none !important;
+  }
+}
+
+/* ===============================================================================
+   MAIN VIEW 
+   =============================================================================== */
 main {
   flex: 1 0 auto;
   padding: 80px 0; /* Aumentato spazio */
@@ -80,9 +110,9 @@ main {
   width: 100%;
 }
 
-/* ==========================================================================
-   FOOTER (Sfondo Scuro - Titoli BIANCHI)
-   ========================================================================== */
+/* ==============================================================================
+   FOOTER 
+   ============================================================================== */
 footer.footer {
   background-color: var(--dark-footer) !important;
   border-top: 4px solid var(--primary-color);
@@ -90,7 +120,6 @@ footer.footer {
   flex-shrink: 0;
 }
 
-/* FIX TITOLI FOOTER: Ora saranno Bianchi su Nero */
 footer.footer h5,
 footer.footer h6,
 footer.footer .fw-bold {
