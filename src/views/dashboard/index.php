@@ -126,7 +126,7 @@
                     <?= safe_string($a['condizione']) ?>
                   </span>
                 </td>
-                <td class="text-end fw-bold text-primary">€<?= number_format($a['prezzo'], 2) ?></td>
+                <td class="text-end fw-bold text-primary">€<?= number_format($a['prezzo_vendita'], 2) ?></td>
                 <td class="text-end text-muted small"><?= date('d/m/Y', strtotime($a['data_pubblicazione'])) ?></td>
                 <td class="text-end">
                   <div class="d-flex gap-1 justify-content-end">
@@ -178,7 +178,7 @@
                   <div class="text-muted small"><?= safe_string($a['autore']) ?></div>
                 </td>
                 <td class="text-muted small"><?= safe_string($a['isbn']) ?></td>
-                <td class="text-end fw-bold text-success">€<?= number_format($a['prezzo'], 2) ?></td>
+                <td class="text-end fw-bold text-success">€<?= number_format($a['prezzo_vendita'], 2) ?></td>
                 <td class="text-end text-muted small">
                   <?= !empty($a['data_pubblicazione']) ? date('d/m/Y', strtotime($a['data_pubblicazione'])) : '—' ?>
                 </td>
@@ -219,7 +219,7 @@
                 </td>
                 <td class="text-muted small"><?= safe_string($a['isbn']) ?></td>
                 <td class="text-muted small"><?= safe_string($a['venditore']) ?></td>
-                <td class="text-end fw-bold text-info">€<?= number_format($a['prezzo'], 2) ?></td>
+                <td class="text-end fw-bold text-info">€<?= number_format($a['prezzo_vendita'], 2) ?></td>
                 <td class="text-end text-muted small">
                   <?= !empty($a['data_acquisto']) ? date('d/m/Y', strtotime($a['data_acquisto'])) : '—' ?>
                 </td>
