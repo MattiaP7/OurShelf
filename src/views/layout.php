@@ -50,11 +50,6 @@
                     </a>
                   </li>
 
-                  <li>
-                    <a class="dropdown-item d-flex align-items-center gap-2" href="index.php?page=libri&action=miei">
-                      <i class="bi bi-book text-primary"></i> I miei Libri
-                    </a>
-                  </li>
 
                   <li>
                     <a class="dropdown-item d-flex align-items-center gap-2" href="index.php?page=login&action=changePassword">

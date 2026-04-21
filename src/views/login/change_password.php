@@ -19,9 +19,6 @@
         <input
           type="email"
           name="email"
-          /* Rimosso 'form-control-sm' per matchare la password,
-          sostituito 'border-start-0' con 'border-0'
-          */
           class="form-control border-0 ps-1"
           placeholder="mario@esempio.it"
           style="box-shadow: none;"

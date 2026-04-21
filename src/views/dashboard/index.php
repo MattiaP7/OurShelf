@@ -1,129 +1,248 @@
-<div class="container py-4">
-  <div class="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom">
-    <div>
-      <h1 class="fw-bold mb-0">La tua Dashboard</h1>
-      <p class="text-muted mb-0">Benvenuto, <span class="fw-semibold text-primary"><?= safe_string($_SESSION['email']) ?></span></p>
+<?php
+// views/dashboard/index.php
+// Variabili disponibili:
+//   $inVendita       (array) — annunci attivi del venditore
+//   $libriVenduti    (array) — annunci conclusi del venditore
+//   $libriAcquistati (array) — libri comprati dallo studente
+?>
+
+<div class="mt-4 mb-2">
+  <h2 class="fw-bold mb-0">La mia area personale</h2>
+  <p class="text-muted">
+    Ciao, <strong>
+      <?= safe_string($_SESSION['nome']) ?> <?= safe_string($_SESSION['cognome']) ?>
+    </strong>
+    ! Ecco un riepilogo delle tue attività.
+  </p>
+</div>
+
+<!-- ?<?= flash_success(); ?>
+?<?= flash_error(); ?> -->
+
+<!-- Statistiche rapide -->
+<div class="row g-3 mb-4">
+  <div class="col-sm-4">
+    <div class="card border-0 shadow-sm rounded-4 p-3 text-center h-100">
+      <div class="display-6 fw-bold text-primary mb-1"><?= count($inVendita) ?></div>
+      <div class="text-muted small">In vendita</div>
     </div>
-    <a href="index.php?page=annunci&action=crea" class="btn btn-success rounded-pill px-4 shadow-sm">
-      <i class="bi bi-plus-lg me-2"></i>Vendi un libro
-    </a>
   </div>
+  <div class="col-sm-4">
+    <div class="card border-0 shadow-sm rounded-4 p-3 text-center h-100">
+      <div class="display-6 fw-bold text-success mb-1"><?= count($libriVenduti) ?></div>
+      <div class="text-muted small">Venduti</div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="card border-0 shadow-sm rounded-4 p-3 text-center h-100">
+      <div class="display-6 fw-bold text-info mb-1"><?= count($libriAcquistati) ?></div>
+      <div class="text-muted small">Acquistati</div>
+    </div>
+  </div>
+</div>
 
-  <div class="row g-4">
+<!-- Tabs -->
+<ul class="nav nav-tabs border-0 mb-4" id="dashTab" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active fw-semibold" id="vendita-tab" data-bs-toggle="tab"
+      data-bs-target="#vendita" type="button">
+      <i class="bi bi-tag me-1"></i>In vendita
+      <?php if (!empty($inVendita)): ?>
+        <span class="badge bg-primary rounded-pill ms-1"><?= count($inVendita) ?></span>
+      <?php endif; ?>
+    </button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link fw-semibold" id="venduti-tab" data-bs-toggle="tab"
+      data-bs-target="#venduti" type="button">
+      <i class="bi bi-check2-circle me-1"></i>Venduti
+    </button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link fw-semibold" id="acquistati-tab" data-bs-toggle="tab"
+      data-bs-target="#acquistati" type="button">
+      <i class="bi bi-bag-check me-1"></i>Acquistati
+    </button>
+  </li>
+</ul>
 
-    <div class="col-12 col-lg-4">
-      <div class="card border-0 shadow-sm h-100">
-        <div class="card-header bg-white border-0 py-3">
-          <h5 class="card-title mb-0 d-flex align-items-center">
-            <i class="bi bi-tag text-warning me-2 fs-4"></i> In vendita
-          </h5>
-        </div>
-        <div class="card-body p-0">
-          <?php if (empty($inVendita)): ?>
-            <div class="p-4 text-center text-muted">
-              <i class="bi bi-info-circle d-block mb-2 fs-2"></i>
-              Nessun annuncio attivo
-            </div>
-          <?php else: ?>
-            <div class="list-group list-group-flush">
-              <?php foreach ($inVendita as $annuncio): ?>
-                <div class="list-group-item p-3 border-0 border-bottom border-light">
-                  <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                      <h6 class="mb-1 fw-bold"><?= safe_string($annuncio['titolo']) ?></h6>
-                      <span class="badge bg-light text-dark border"><?= number_format($annuncio['prezzo'], 2) ?> €</span>
-                    </div>
-                    <form action="index.php?page=annunci&action=elimina" method="POST" onsubmit="return confirm('Vuoi davvero rimuovere questo annuncio?')">
-                      <input type="hidden" name="id_annuncio" value="<?= $annuncio['id_annuncio'] ?>">
-                      <button class="btn btn-sm btn-outline-danger border-0">
+<div class="tab-content" id="dashTabContent">
+
+  <!-- Tab: In vendita -->
+  <div class="tab-pane fade show active" id="vendita" role="tabpanel">
+    <div class="d-flex justify-content-end mb-3">
+      <a href="index.php?page=annunci&action=crea" class="btn btn-primary btn-sm rounded-pill px-3">
+        <i class="bi bi-plus-lg me-1"></i> Nuovo annuncio
+      </a>
+    </div>
+    <?php if (empty($inVendita)): ?>
+      <div class='text-center py-5'>
+        <i class='bi bi-tag display-3 text-muted opacity-50'></i>
+        <h6 class='mt-3 fw-semibold'>Nessun libro in vendita</h6>
+        <p class='text-muted small'>Pubblica il tuo primo annuncio!</p>
+      </div>
+    <?php else: ?>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-light small text-uppercase text-muted">
+            <tr>
+              <th>Libro</th>
+              <th>ISBN</th>
+              <th>Condizione</th>
+              <th class="text-end">Prezzo</th>
+              <th class="text-end">Pubblicato</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php foreach ($inVendita as $a): ?>
+              <tr>
+                <td>
+                  <div class="fw-semibold"><?= safe_string($a['titolo']) ?></div>
+                  <div class="text-muted small"><?= safe_string($a['autore']) ?></div>
+                </td>
+                <td class="text-muted small"><?= safe_string($a['isbn']) ?></td>
+                <td>
+                  <?php
+                  $badgeClass = '';
+                  switch ($a['condizione']) {
+                    case 'Ottime condizioni':
+                      $badgeClass = 'bg-success-subtle text-success';
+                      break;
+                    case 'Buone condizioni':
+                      $badgeClass = 'bg-warning-subtle text-warning-emphasis';
+                      break;
+                    case 'Condizioni accettabili':
+                      $badgeClass = 'bg-info-subtle text-info-emphasis';
+                      break;
+                    case 'Danneggiato':
+                      $badgeClass = 'bg-danger-subtle text-danger';
+                      break;
+                    default:
+                      $badgeClass = 'bg-secondary-subtle text-secondary';
+                  }
+                  ?>
+                  <span class="badge rounded-pill <?= $badgeClass ?> small">
+                    <?= safe_string($a['condizione']) ?>
+                  </span>
+                </td>
+                <td class="text-end fw-bold text-primary">€<?= number_format($a['prezzo'], 2) ?></td>
+                <td class="text-end text-muted small"><?= date('d/m/Y', strtotime($a['data_pubblicazione'])) ?></td>
+                <td class="text-end">
+                  <div class="d-flex gap-1 justify-content-end">
+                    <a href="index.php?page=annunci&action=dettaglio&id=<?= (int)$a['id_annuncio'] ?>"
+                      class="btn btn-sm btn-outline-primary rounded-3">
+                      <i class="bi bi-eye"></i>
+                    </a>
+                    <form method="POST" action="index.php?page=annunci&action=elimina"
+                      onsubmit="return confirm('Rimuovere questo annuncio?')">
+                      <input type="hidden" name="id_annuncio" value="<?= (int)$a['id_annuncio'] ?>">
+                      <button type="submit" class="btn btn-sm btn-outline-danger rounded-3">
                         <i class="bi bi-trash"></i>
                       </button>
                     </form>
                   </div>
-                </div>
-              <?php endforeach; ?>
-            </div>
-          <?php endif; ?>
-        </div>
+                </td>
+              </tr>
+            <?php endforeach; ?>
+          </tbody>
+        </table>
       </div>
-    </div>
-
-    <div class="col-12 col-lg-4">
-      <div class="card border-0 shadow-sm h-100">
-        <div class="card-header bg-white border-0 py-3">
-          <h5 class="card-title mb-0 d-flex align-items-center">
-            <i class="bi bi-cart-check text-success me-2 fs-4"></i> Da ritirare
-          </h5>
-        </div>
-        <div class="card-body p-0">
-          <?php if (empty($libriAcquistati)): ?>
-            <div class="p-4 text-center text-muted">
-              <i class="bi bi-bag-x d-block mb-2 fs-2"></i>
-              Nessun acquisto
-            </div>
-          <?php else: ?>
-            <div class="list-group list-group-flush">
-              <?php foreach ($libriAcquistati as $annuncio): ?>
-                <div class="list-group-item p-3 border-0 border-bottom border-light">
-                  <h6 class="mb-1 fw-bold"><?= safe_string($annuncio['titolo']) ?></h6>
-                  <div class="small text-muted">
-                    <i class="bi bi-geo-alt me-1"></i> <?= safe_string($annuncio['nome_luogo']) ?><br>
-                    <i class="bi bi-clock me-1"></i> <?= date('d/m H:i', strtotime($annuncio['data_ora_scambio'])) ?>
-                  </div>
-                </div>
-              <?php endforeach; ?>
-            </div>
-          <?php endif; ?>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-12 col-lg-4">
-      <div class="card border-0 shadow-sm h-100">
-        <div class="card-header bg-white border-0 py-3">
-          <h5 class="card-title mb-0 d-flex align-items-center">
-            <i class="bi bi-clock-history text-primary me-2 fs-4"></i> Venduti
-          </h5>
-        </div>
-        <div class="card-body p-0">
-          <?php if (empty($libriVenduti)): ?>
-            <div class="p-4 text-center text-muted">
-              <i class="bi bi-hourglass-split d-block mb-2 fs-2"></i>
-              Ancora nessuna vendita
-            </div>
-          <?php else: ?>
-            <div class="list-group list-group-flush">
-              <?php foreach ($libriVenduti as $annuncio): ?>
-                <div class="list-group-item p-3 border-0 border-bottom border-light opacity-75">
-                  <h6 class="mb-1 fw-bold text-decoration-line-through"><?= safe_string($annuncio['titolo']) ?></h6>
-                  <span class="badge bg-success-subtle text-success">Venduto per <?= number_format($annuncio['prezzo'], 2) ?> €</span>
-                </div>
-              <?php endforeach; ?>
-            </div>
-          <?php endif; ?>
-        </div>
-      </div>
-    </div>
-
+    <?php endif; ?>
   </div>
+
+  <!-- Tab: Venduti -->
+  <div class="tab-pane fade" id="venduti" role="tabpanel">
+    <?php if (empty($libriVenduti)): ?>
+      <div class='text-center py-5'>
+        <i class='bi bi-check2-circle display-3 text-muted opacity-50'></i>
+        <h6 class='mt-3 fw-semibold'>Nessun libro venduto</h6>
+        <p class='text-muted small'>Le tue vendite concluse appariranno qui.</p>
+      </div>
+    <?php else: ?>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-light small text-uppercase text-muted">
+            <tr>
+              <th>Libro</th>
+              <th>ISBN</th>
+              <th class="text-end">Prezzo</th>
+              <th class="text-end">Venduto il</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php foreach ($libriVenduti as $a): ?>
+              <tr>
+                <td>
+                  <div class="fw-semibold"><?= safe_string($a['titolo']) ?></div>
+                  <div class="text-muted small"><?= safe_string($a['autore']) ?></div>
+                </td>
+                <td class="text-muted small"><?= safe_string($a['isbn']) ?></td>
+                <td class="text-end fw-bold text-success">€<?= number_format($a['prezzo'], 2) ?></td>
+                <td class="text-end text-muted small">
+                  <?= !empty($a['data_pubblicazione']) ? date('d/m/Y', strtotime($a['data_pubblicazione'])) : '—' ?>
+                </td>
+              </tr>
+            <?php endforeach; ?>
+          </tbody>
+        </table>
+      </div>
+    <?php endif; ?>
+  </div>
+
+  <!-- Tab: Acquistati -->
+  <div class="tab-pane fade" id="acquistati" role="tabpanel">
+    <?php if (empty($libriAcquistati)): ?>
+      <div class='text-center py-5'>
+        <i class='bi bi-bag-check display-3 text-muted opacity-50'></i>
+        <h6 class='mt-3 fw-semibold'>Nessun libro acquistato</h6>
+        <p class='text-muted small'>I libri che hai comprato appariranno qui.</p>
+      </div>
+    <?php else: ?>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-light small text-uppercase text-muted">
+            <tr>
+              <th>Libro</th>
+              <th>ISBN</th>
+              <th>Venditore</th>
+              <th class="text-end">Pagato</th>
+              <th class="text-end">Acquistato il</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php foreach ($libriAcquistati as $a): ?>
+              <tr>
+                <td>
+                  <div class="fw-semibold"><?= safe_string($a['titolo']) ?></div>
+                  <div class="text-muted small"><?= safe_string($a['autore']) ?></div>
+                </td>
+                <td class="text-muted small"><?= safe_string($a['isbn']) ?></td>
+                <td class="text-muted small"><?= safe_string($a['venditore']) ?></td>
+                <td class="text-end fw-bold text-info">€<?= number_format($a['prezzo'], 2) ?></td>
+                <td class="text-end text-muted small">
+                  <?= !empty($a['data_acquisto']) ? date('d/m/Y', strtotime($a['data_acquisto'])) : '—' ?>
+                </td>
+              </tr>
+            <?php endforeach; ?>
+          </tbody>
+        </table>
+      </div>
+    <?php endif; ?>
+  </div>
+
 </div>
 
-<style>
-  /* Aggiungi un tocco di stile extra */
-  .card {
-    border-radius: 15px;
-  }
-
-  .list-group-item:last-child {
-    border-bottom: 0 !important;
-  }
-
-  .btn-outline-danger:hover {
-    background-color: #dc3545;
-    color: white;
-  }
-
-  .shadow-sm {
-    box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075) !important;
-  }
-</style>
+<?php
+// Helper locale per gli empty state
+function _empty_state(string $icon, string $titolo, string $desc): string
+{
+  return "
+    <div class='text-center py-5'>
+      <i class='bi bi-{$icon} display-3 text-muted opacity-50'></i>
+      <h6 class='mt-3 fw-semibold'>{$titolo}</h6>
+      <p class='text-muted small'>{$desc}</p>
+    </div>
+  ";
+}
+?>

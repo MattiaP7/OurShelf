@@ -45,6 +45,46 @@ function flash_success()
   }
 }
 
+/**
+ * Estra dalla email il dominio e verifica che quello passato dall'utente sia isit100.fe.it (o in maiuscolo), si possono registrare/autenticare solo account con email scolastica
+ *
+ * @param string $email
+ * @return boolean
+ * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
+ * @date 18/04/2026
+ */
+function isEmailDomainValid(string $email): bool
+{
+  if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $domain = explode('@', $email)[1];
+  }
+
+  $domain = strtoupper($domain);
+  if ($domain === 'ISIT100.FE.IT') {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+/**
+ * Verifica che l'utente sia autenticato.
+ * In caso contrario reindirizza al login e interrompe l'esecuzione.
+ *
+ * @return void
+ * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
+ * @date 18/04/2026
+ */
+function requireLogin(): void
+{
+  if (empty($_SESSION['id_studente'])) {
+    $_SESSION['errors'][] = "Devi essere registrato per accedere a questa pagina.";
+    header("Location: index.php?page=login");
+    exit;
+  }
+}
+
+
 $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
 $host = $_SERVER['HTTP_HOST'];
 $script_dir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));

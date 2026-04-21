@@ -64,6 +64,26 @@ class LibriModels
   }
 
   /**
+   * Recupera tutti i libri adottati in tutta la scuola
+   *
+   * @return void
+   * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
+   * @date 18/04/2026
+   */
+  public function getAllLibri()
+  {
+    $sql = "
+      SELECT 
+        id_libro, isbn, titolo, autore, materia, editore, volume, anno_scolastico
+      FROM Libri 
+      ORDER BY materia, titolo
+    ";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  /**
    * Recupera tutti i libri adottati dalla classe specificata.
    * Utile per mostrare allo studente solo i libri pertinenti alla propria classe.
    *
