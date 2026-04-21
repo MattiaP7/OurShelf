@@ -203,8 +203,15 @@ $carouselId = 'carousel-annuncio-' . (int)$annuncio['id_annuncio'];
           <li class="d-flex align-items-center gap-2 mb-3">
             <i class="bi bi-person-circle text-muted fs-5"></i>
             <div>
-              <div class="text-muted">Venditore</div>
-              <div class="fw-semibold"><?= safe_string($annuncio['venditore']) ?></div>
+              <?php if ($isProprietario): ?>
+                <div class="text-muted">Venditore</div>
+                <a class="fw-semibold" href="index.php?page=dashboard&action=index">
+                  <?= safe_string($annuncio['venditore']) ?>
+                </a>
+              <?php else: ?>
+                <div class="text-muted">Venditore</div>
+                <div class="fw-semibold"><?= safe_string($annuncio['venditore']) ?></div>
+              <?php endif; ?>
             </div>
           </li>
           <li class="d-flex align-items-center gap-2 mb-3">

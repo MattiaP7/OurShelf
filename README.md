@@ -57,7 +57,7 @@ Per aver un buon funzionamento di vscode fate questi passaggi:
 2. Scrivi nella barra che compare: `Open User Settings (JSON)` e fate invio
 3. Aggiungete infondo queste regole:
 
-```json
+```jsonc
 "php-docblocker.extra": [
   //  ovviamente metti il tuo nome cognome e email
   "@author Nome Cognome <email@isit100.fe.it>",
@@ -111,7 +111,7 @@ Per un'esperienza ottimale, la cartella `.vscode` deve contenere:
 
 1. `.vscode/sftp.json:` Configura il percorso remoto puntando esattamente a info5/projects/OurShelf/, configurato cosi:
 
-```json
+```jsonc
 {
   "name": "",
   "host": "",
@@ -166,8 +166,8 @@ Le informazioni vuote prendete dal `.vscode/sftp.json` di project in info5
 - [x] Sviluppo logica di registrazione nuovi utenti | 31/03/2026
 - [x] Sviluppo sistema di login con gestione sessioni sicure | 31/03/2026
 - [x] Implementazione sistema di cambia password | 31/03/2026
-- [ ] Creazione area riservata personale dello studente
-- [ ] Implementazione recupero password o modifica dati profilo
+- [x] Creazione area riservata personale dello studente
+- [x] Implementazione recupero password o modifica dati profilo
 
 **Gestione Catalogo Libri Scolastici**
 
@@ -177,11 +177,9 @@ Le informazioni vuote prendete dal `.vscode/sftp.json` di project in info5
 
 **Mercatino e Annunci (Core Business)**
 
-- [ ] Sviluppo procedura inserimento annuncio (inserimento ISBN)
+- [x] Sviluppo procedura inserimento annuncio (inserimento ISBN)
 - [ ] Gestione upload immagini per lo stato d'usura del libro usato
-- [ ] Visualizzazione bacheca annunci pubblici filtrabile
-- [ ] Gestione stato annuncio (Disponibile, Venduto)
-
+- [x] Visualizzazione bacheca annunci pubblici filtrabile
 <!-- **Comunicazione e Scambio**
   - [ ] Gestione delle notifiche per nuovi messaggi ricevuti
   - [ ] Funzionalità di segnalazione interesse per un libro -->
