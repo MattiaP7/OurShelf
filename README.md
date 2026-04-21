@@ -1,67 +1,132 @@
-# OurShelf - Book Swap Project
+# OurShelf — Mercatino dei Libri Scolastici
 
-OurShelf è un'applicazione web sviluppata per facilitare lo scambio e la vendita di libri scolastici usati all'interno dell'istituto. Il sistema permette agli studenti di gestire inserzioni tramite scansione ISBN e organizzare incontri sicuri a scuola.
+> Piattaforma web per lo scambio e la vendita di libri scolastici usati all'interno dell'istituto Bassi Burgatti.
 
-## Struttura del Progetto
+---
 
-Il progetto segue il paradigma MVC utilizzando PHP e MariaDB.
+## Indice
+
+- [Descrizione](#descrizione)
+- [Struttura del progetto](#struttura-del-progetto)
+- [Requisiti](#requisiti)
+- [Configurazione ambiente](#configurazione-ambiente)
+- [Plugin VS Code consigliati](#plugin-vs-code-consigliati)
+- [Stato del progetto](#stato-del-progetto)
+- [Link utili](#link-utili)
+
+---
+
+## Descrizione
+
+OurShelf permette agli studenti di:
+
+- pubblicare annunci di vendita tramite scansione o inserimento manuale dell'ISBN
+- consultare la bacheca degli annunci con filtri avanzati
+- organizzare incontri di scambio in luoghi sicuri all'interno della scuola
+- gestire il proprio profilo e lo storico di acquisti e vendite
+
+Il progetto segue il paradigma **MVC** con **PHP** lato server e **MariaDB** come database.
+
+---
+
+## Struttura del progetto
 
 ```
 OurShelf/
-├── .vscode/        # Configurazioni ottimizzate per l'editor
-├── database/       # Cartella dedicata per gli script SQL in caso di errori
-├── src/            # Codice sorgente dell'applicazione
-│ ├── config/       # Connessione al Database e parametri di sistema
-│ ├── utils/        # Cartella che contiene funzioni di helper usate in tutto il progetto
-│ ├── controllers/  # Logica di controllo (Gestione richieste)
-│ ├── models/       # Modelli dei dati (Query SQL)
-│ └── views/        # Interfaccia utente (HTML/PHP)reali
-├── CONTRIBUTING.md # Regole di codifica e standard del team
-└── .gitignore      # File da escludere dal versionamento
+├── .vscode/               # Configurazioni editor (sftp, launch)
+├── assets/                # CSS, immagini, font
+├── database/              # Backup script SQL (non modificare manualmente)
+├── docs/                  # Documentazione aggiuntiva e diagrammi ER
+├── script/                # Script di importazione dati (JSON → DB)
+├── uploads/               # Immagini caricate dagli utenti
+│   └── annunci/           # Sottocartelle per annuncio ({id}/imgs.json)
+└── src/                   # Sorgente principale dell'applicazione
+    ├── config/            # Connessione al database (PDO) e costanti
+    ├── controllers/       # Logica di controllo — gestisce le richieste HTTP
+    ├── models/            # Accesso al database — tutte le query SQL
+    ├── utils/             # Helper riutilizzabili (UploadHelper, ecc.)
+    └── views/             # Interfaccia utente (HTML + PHP)
+        ├── annunci/
+        ├── dashboard/
+        ├── layout/
+        ├── login/
+        └── users/
 ```
 
-## Requisiti Tecnici e Plugin VS Code
+---
 
-Per lavorare correttamente su OurShelf, installa i seguenti plugin in Visual Studio Code:
+## Configurazione ambiente
 
-- **PHP Intelephense** Fondamentale per l'autocompletamento e la navigazione tra classi MVC.
-- **PHP DocBlocker** Genera in modo automatico la documentazione delle funzioni, classi, etc
-- **SFTP (di Natizyskunk)** Per sincronizzare il codice locale con il server info5/projects.
-- **Bootstrap IntelliSense** Per autocompletamento delle classi bootstrap
+### 1. Clona il repository
 
-Se avete bisogno di una lista di plugin di vscode da installare per il progetto io ho queste, cercate il nome scritto cosi nella ricerca dei plugin (`Ctrl + Shift + X`):
-
-```
-bmewburn.vscode-intelephense-client
-natizyskunk.sftp
-neilbrayfield.php-docblocker
-usernamehw.errorlens
-formulahendry.auto-close-tag
-hossaini.bootstrap-intellisense
+```bash
+git clone https://github.com/tuo-org/OurShelf.git
+cd OurShelf
 ```
 
-### Documentazione del Codice (DocBlock)
+### 2. Configura la connessione al database
 
-Per garantire la manutenibilità e facilitare il Testing, ogni collaboratore deve documentare il proprio lavoro:
+Copia `src/config/dbconfig.example.php` in `src/config/dbconfig.php` e compila i parametri:
 
-- **Obbligatorietà**: Ogni classe (Model/Controller) e ogni funzione deve avere un blocco DocBlock `/** ... */`.
-- **Tag Richiesti**:
-  - `@author`: Il nome di chi ha scritto il codice.
-  - `@param`: Descrizione di ogni variabile in ingresso.
-  - `@return`: Cosa restituisce la funzione (es: bool, array, string).
-  - **Descrizione**: La prima riga del commento deve spiegare chiaramente la funzionalità (es: "Effettua la ricerca nel database dei libri adottati").
+```php
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'nome_database');
+define('DB_USER', 'utente');
+define('DB_PASS', 'password');
+```
 
-Per aver un buon funzionamento di vscode fate questi passaggi:
+### 3. Configura SFTP per VS Code
 
-1. Premi sulla tastiera `Ctrl + Shift + P`
-2. Scrivi nella barra che compare: `Open User Settings (JSON)` e fate invio
-3. Aggiungete infondo queste regole:
+Crea `.vscode/sftp.json` con i dati del server della scuola:
+
+```jsonc
+{
+  "name": "OurShelf - Server scuola",
+  "host": "", // host del server
+  "protocol": "ftp",
+  "port": 21,
+  "username": "", // tuo username
+  "password": "", // tua password
+  "remotePath": "/tuo-cognome/OurShelf",
+  "uploadOnSave": true,
+  "useTempFile": false,
+  "openSsh": false,
+  "ignore": [
+    ".vscode",
+    ".git",
+    ".DS_Store",
+    "databases/*.sql",
+    "README.md",
+    "CONTRIBUTING.md",
+  ],
+}
+```
+
+> Per host, username e password consulta il file `sftp.json` di riferimento nella cartella `info5/projects`.
+
+---
+
+## Plugin VS Code consigliati
+
+Installa i seguenti plugin cercandoli con `Ctrl + Shift + X`:
+
+| ID Plugin                             | Descrizione                                 |
+| ------------------------------------- | ------------------------------------------- |
+| `bmewburn.vscode-intelephense-client` | Autocompletamento e navigazione PHP         |
+| `natizyskunk.sftp`                    | Sincronizzazione con il server della scuola |
+| `neilbrayfield.php-docblocker`        | Generazione automatica DocBlock             |
+| `usernamehw.errorlens`                | Evidenzia errori inline nel codice          |
+| `formulahendry.auto-close-tag`        | Chiusura automatica tag HTML                |
+| `hossaini.bootstrap-intellisense`     | Autocompletamento classi Bootstrap          |
+
+### Configurazione DocBlock automatica
+
+Apri le impostazioni utente JSON (`Ctrl + Shift + P` → `Open User Settings (JSON)`) e aggiungi in fondo — sostituendo nome, cognome ed email con i tuoi:
 
 ```jsonc
 "php-docblocker.extra": [
-  //  ovviamente metti il tuo nome cognome e email
   "@author Nome Cognome <email@isit100.fe.it>",
-  "@date ${CURRENT_DATE}/${CURRENT_MONTH}/${CURRENT_YEAR}",
+  "@date ${CURRENT_DATE}/${CURRENT_MONTH}/${CURRENT_YEAR}"
 ],
 "php-docblocker.returnVoid": true,
 "[php]": {
@@ -71,126 +136,73 @@ Per aver un buon funzionamento di vscode fate questi passaggi:
   "editor.quickSuggestions": {
     "other": true,
     "comments": true,
-    "strings": true,
-  },
-  "intelephense.completion.triggerParameterHints": true,
+    "strings": true
+  }
 },
 "php.suggest.basic": false,
-"php.validate.enable": true,
+"php.validate.enable": true
 ```
 
-<!--
-Se per qualche motivo non dovesse generare la documentazione sopra una funzione fate questi passaggi:
+Dopodichè, posizionati sopra qualsiasi funzione e digita `/**` + Invio: il DocBlock viene generato automaticamente.
 
-1. Premi sulla tastiera `Ctrl + Shift + P`
-2. Scrivi nella barra che compare: `Snippets: configure snippets` e cercate php, fate invio
-3. Aggiungete il seguente blocco:
+---
 
-```json
-"DocBlock PHP": {
-  "prefix": "docme",
-  "body": [
-      "/**",
-      " * ${1:Descrizione della funzione}",
-      " *",
-      " * @param ${2:mixed} \\$${3:variabile} ${4:Descrizione parametro}",
-      " * @return ${5:void}",
-      " * @author nome cognome <email@isit100.fe.it>",
-	  " * @date ${CURRENT_DATE}/${CURRENT_MONTH}/${CURRENT_YEAR}",
-      " */"
-  ],
-  "description": "Genera il blocco commenti"
-}
-``` -->
+## Stato del progetto
 
-Adesso basterà sopra una funzione scrivere `docme` e autocompletare, questa è una soluzione più spartana ma funzionante.
+### Ambiente e repository
 
-## Configurazione .vscode
+- [x] Creazione repository GitHub
+- [x] Struttura cartelle MVC
+- [x] Connessione al database (PDO)
 
-Per un'esperienza ottimale, la cartella `.vscode` deve contenere:
+### Database
 
-1. `.vscode/sftp.json:` Configura il percorso remoto puntando esattamente a info5/projects/OurShelf/, configurato cosi:
+- [x] Schema concettuale (ER)
+- [x] Schema logico relazionale
+- [x] Creazione tabelle e foreign key
 
-```jsonc
-{
-  "name": "",
-  "host": "",
-  "protocol": "ftp",
-  "port": 21,
-  "username": "",
-  "password": "",
-  "remotePath": "/vostro cognome/OurShelf",
-  "uploadOnSave": true,
-  "useTempFile": false,
-  "openSsh": false,
-  // evitare di caricare se stesso
-  "ignore": [
-    ".vscode",
-    ".git",
-    ".DS_Store",
-    "databases/*.sql",
-    "README.md",
-    "CONTRIBUTING.md"
-  ]
-}
-```
+### Autenticazione e profilo
 
-Le informazioni vuote prendete dal `.vscode/sftp.json` di project in info5
+- [x] Registrazione nuovi utenti
+- [x] Login con gestione sessioni
+- [x] Cambio password
+- [x] Area riservata personale
+- [x] Modifica dati profilo
 
-2. `.vscode/launch.json` Il file per aprire il progetto nel browser, prendetelo dalla cartella dove mettete i progetti info5 (`info5/projects`)
+### Catalogo libri
 
-## Link Utili
+- [x] Importazione libri da JSON (adozioni scolastiche)
 
-- Consulta il file [CONTRIBUTING.md](CONTRIBUTING.md) per gli standard di programmazione.
-- Consulta il file [Book_swap_project.pdf](Book_swap_project.pdf) per informazioni aggiuntive sul progetto/
-  Per ogni dubbio sulle configurazioni vscode e altro scrivete al Team Leader.
+### Annunci — core
 
-# Stato del progetto
+- [x] Inserimento annuncio con ricerca ISBN
+- [x] Bacheca annunci con filtri dinamici (fetch)
+- [x] Dettaglio annuncio con carosello immagini
+- [x] Acquisto e conclusione vendita
+- [ ] Upload immagini annuncio — _in corso_
 
-**Configurazione Ambiente e Repository**
+### Frontend
 
-- [x] Creazione repository GitHub | 17/03/2026
-- [x] Strutturazione cartelle progetto secondo paradigma MVC (app, public, src, views) | 17/03/2026
-- [x] Configurazione file di connessione al database (PDO) | 17/03/2026
+- [x] Layout responsive Bootstrap 5
+- [x] Navbar e footer
 
-**Analisi e Progettazione Database**
+### Testing
 
-- [x] Progettazione schema concettuale (Diagramma ER) | 28/03/2026
-- [x] Progettazione schema logico relazionale | 28/03/2026
-- [x] Creazione tabelle | 28/03/2026
-- [x] Implementazione vincoli di integrità referenziale (Foreign Keys) | 28/03/2026
-<!-- - [x] Creazione indici ottimizzati per la ricerca (Full-text su Titolo/ISBN/Autore)  | 31/03/2026 -->
+- [ ] Test sicurezza (SQL Injection, XSS)
+- [ ] Verifica flussi operativi end-to-end
+- [ ] Ottimizzazione query
+- [ ] Documentazione finale
 
-**Sistema di Autenticazione e Profilo**
+---
 
-- [x] Sviluppo logica di registrazione nuovi utenti | 31/03/2026
-- [x] Sviluppo sistema di login con gestione sessioni sicure | 31/03/2026
-- [x] Implementazione sistema di cambia password | 31/03/2026
-- [x] Creazione area riservata personale dello studente
-- [x] Implementazione recupero password o modifica dati profilo
+## Link utili
 
-**Gestione Catalogo Libri Scolastici**
+- [CONTRIBUTING.md](CONTRIBUTING.md) — standard di codifica e flusso Git
+- [Book_swap_project.pdf](docs/Book_swap_project.pdf) — specifiche del progetto
+- [Isit Bassi Burgatti](https://www.isit100.fe.it/)
 
-- [x] Script di importazione massiva libri da file JSON/CSV (Adozioni scolastiche) | 31/03/2026
-<!-- - [x] Sviluppo sistema di ricerca libri per classe, indirizzo o ISBN | 31/03/2026
-- [x] Visualizzazione dettagliata del libro (Titolo, Autore, Editore, Prezzo consigliato) | 31/03/2026 -->
+---
 
-**Mercatino e Annunci (Core Business)**
-
-- [x] Sviluppo procedura inserimento annuncio (inserimento ISBN)
-- [ ] Gestione upload immagini per lo stato d'usura del libro usato
-- [x] Visualizzazione bacheca annunci pubblici filtrabile
-<!-- **Comunicazione e Scambio**
-  - [ ] Gestione delle notifiche per nuovi messaggi ricevuti
-  - [ ] Funzionalità di segnalazione interesse per un libro -->
-
-**Frontend e Interfaccia Utente**
-
-- [x] Sviluppo layout responsive (Bootstrap)
-
-**Testing e Integrazione**
-
-- [ ] Test di sicurezza (protezione SQL Injection e XSS)
-- [ ] Verifica flussi operativi (registrazione -> inserimento -> vendita)
-- [ ] Bug fixing e ottimizzazione delle performance delle query
-- [ ] Produzione documentazione finale del progetto
+<div align="center">
+  &copy; 2026 OurShelf &bull; Team 2 &bull; Istituto Bassi Burgatti, Ferrara
+</div>
