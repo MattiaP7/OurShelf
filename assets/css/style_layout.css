@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Poppins:wght@400;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Poppins:wght@400;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 
 /* ==========================================================================
    CONFIGURAZIONE VARIABILI
@@ -60,28 +61,34 @@ body {
 
 /* Effetto Typing aggiornato per la tua frase */
 .typing-text {
-  font-family: 'Poppins', monospace;
+  font-family: "Poppins", monospace;
   font-size: 1rem;
   font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
   border-right: 3px solid #ff7e5f;
   margin: 0;
-  
+
   /* Lunghezza della frase: 47 caratteri */
-  width: 40ch; 
-  animation: 
-    typing 4s steps(40) forwards, 
+  width: 40ch;
+  animation:
+    typing 4s steps(40) forwards,
     blink 0.5s infinite step-end alternate;
 }
 
 @keyframes typing {
-  from { width: 0; }
-  to { width: 40ch; }
+  from {
+    width: 0;
+  }
+  to {
+    width: 40ch;
+  }
 }
 
 @keyframes blink {
-  50% { border-color: transparent; }
+  50% {
+    border-color: transparent;
+  }
 }
 
 /* Nasconde la frase su mobile per evitare che l'header esploda */
@@ -96,9 +103,8 @@ body {
    =============================================================================== */
 main {
   flex: 1 0 auto;
-  padding: 80px 0; /* Aumentato spazio */
-  display: flex;
-  align-items: center;
+  padding: 40px 0; /* Riduciamo un po' il padding verticale se troppo alto */
+  /* RIMOSSO display: flex e align-items: center da qui */
 }
 
 .content-card {
@@ -106,8 +112,9 @@ main {
   border-radius: 1.25rem;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
   border: 1px solid rgba(0, 0, 0, 0.05);
-  padding: 3.5rem !important; /* Molto spazioso */
+  padding: 2.5rem !important; /* Ridotto leggermente per non comprimere il contenuto */
   width: 100%;
+  display: block; /* Assicuriamoci che si comporti come blocco */
 }
 
 /* ==============================================================================

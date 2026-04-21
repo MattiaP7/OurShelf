@@ -12,90 +12,90 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 </head>
 
-<body class="d-flex flex-column min-vh-100">
+<body>
 
-<header>
-  <nav class="navbar navbar-expand-lg shadow-sm">
-    <div class="container d-flex align-items-center justify-content-between">
-      
-      <a class="navbar-brand d-flex align-items-center" href="<?= BASE_URL ?>/src/index.php">
-        <img src="<?= BASE_URL ?>/assets/img/logo_progetto.png" alt="OurShelf Logo" class="me-2" style="height: 40px;">
-        <span class="fw-bold">OurShelf</span>
-      </a>
+  <header>
+    <nav class="navbar navbar-expand-lg shadow-sm">
+      <div class="container d-flex align-items-center justify-content-between">
 
-      <div class="header-center-content d-none d-lg-flex">
-        <div class="icone-google">
-          <span class="material-symbols-outlined">menu_book</span>
-          <span class="material-symbols-outlined search-icon">search</span>
-        </div>
-        <div class="frase">
-          <h3 class="typing-text">Ogni libro è un viaggio. Dove vuoi andare oggi?</h3>
-        </div>
-      </div>
+        <a class="navbar-brand d-flex align-items-center" href="<?= BASE_URL ?>/src/index.php">
+          <img src="<?= BASE_URL ?>/assets/img/logo_progetto.png" alt="OurShelf Logo" class="me-2" style="height: 40px;">
+          <span class="fw-bold">OurShelf</span>
+        </a>
 
-      <div class="d-flex align-items-center gap-2">
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <div class="ms-auto d-flex align-items-center gap-2">
-
-            <?php if (!empty($_SESSION['id_studente'])): ?>
-              <div class="dropdown">
-                <button class="btn btn-outline-dark dropdown-toggle d-flex align-items-center gap-2 border-0"
-                  type="button"
-                  id="userMenu"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false">
-                  <i class="bi bi-person-circle fs-5"></i>
-                  <span class="small fw-bold"><?= safe_string($_SESSION['email']) ?></span>
-                </button>
-
-                <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" aria-labelledby="userMenu">
-                  <li>
-                    <h6 class="dropdown-header">Area Utente</h6>
-                  </li>
-
-                  <li>
-                    <a class="dropdown-item d-flex align-items-center gap-2" href="index.php?page=dashboard&action=index">
-                      <i class="bi bi-speedometer2 text-primary"></i> Dashboard
-                    </a>
-                  </li>
-
-
-                  <li>
-                    <a class="dropdown-item d-flex align-items-center gap-2" href="index.php?page=users&action=index">
-                      <i class="bi bi-person-circle text-primary"></i> Area Utente
-                    </a>
-                  </li>
-
-                  <li>
-                    <hr class="dropdown-divider">
-                  </li>
-
-                  <li>
-                    <a class="dropdown-item d-flex align-items-center gap-2 text-danger" href="index.php?page=login&action=logout">
-                      <i class="bi bi-box-arrow-right"></i> Logout
-                    </a>
-                  </li>
-                </ul>
-              </div>
-
-            <?php else: ?>
-              <a class="btn btn-outline-primary btn-sm rounded-pill px-4" href="index.php?page=login&action=index">
-                <i class="fa-solid fa-user"></i>
-                Accedi
-              </a>
-              <a class="btn btn-primary btn-sm rounded-pill px-4 shadow-sm" href="index.php?page=login&action=register">
-                <i class="fa-solid fa-user-plus"></i>
-                Registrati
-              </a>
-            <?php endif; ?>
-
+        <div class="header-center-content d-none d-lg-flex">
+          <div class="icone-google">
+            <span class="material-symbols-outlined">menu_book</span>
+            <span class="material-symbols-outlined search-icon">search</span>
+          </div>
+          <div class="frase">
+            <h3 class="typing-text">Ogni libro è un viaggio. Dove vuoi andare oggi?</h3>
           </div>
         </div>
-      </div>
+
+        <div class="d-flex align-items-center gap-2">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="ms-auto d-flex align-items-center gap-2">
+
+              <?php if (!empty($_SESSION['id_studente'])): ?>
+                <div class="dropdown">
+                  <button class="btn btn-outline-dark dropdown-toggle d-flex align-items-center gap-2 border-0"
+                    type="button"
+                    id="userMenu"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    <i class="bi bi-person-circle fs-5"></i>
+                    <span class="small fw-bold"><?= safe_string($_SESSION['email']) ?></span>
+                  </button>
+
+                  <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" aria-labelledby="userMenu">
+                    <li>
+                      <h6 class="dropdown-header">Area Utente</h6>
+                    </li>
+
+                    <li>
+                      <a class="dropdown-item d-flex align-items-center gap-2" href="index.php?page=dashboard&action=index">
+                        <i class="bi bi-speedometer2 text-primary"></i> Dashboard
+                      </a>
+                    </li>
+
+
+                    <li>
+                      <a class="dropdown-item d-flex align-items-center gap-2" href="index.php?page=users&action=index">
+                        <i class="bi bi-person-circle text-primary"></i> Area Utente
+                      </a>
+                    </li>
+
+                    <li>
+                      <hr class="dropdown-divider">
+                    </li>
+
+                    <li>
+                      <a class="dropdown-item d-flex align-items-center gap-2 text-danger" href="index.php?page=login&action=logout">
+                        <i class="bi bi-box-arrow-right"></i> Logout
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+
+              <?php else: ?>
+                <a class="btn btn-outline-primary btn-sm rounded-pill px-4" href="index.php?page=login&action=index">
+                  <i class="fa-solid fa-user"></i>
+                  Accedi
+                </a>
+                <a class="btn btn-primary btn-sm rounded-pill px-4 shadow-sm" href="index.php?page=login&action=register">
+                  <i class="fa-solid fa-user-plus"></i>
+                  Registrati
+                </a>
+              <?php endif; ?>
+
+            </div>
+          </div>
+        </div>
     </nav>
   </header>
 
@@ -116,7 +116,7 @@
     </div>
   </main>
 
-  <footer class="footer mt-auto">
+  <footer class="footer">
     <div class="container">
       <div class="row gy-5">
         <div class="col-lg-4 col-md-12 text-center text-lg-start">
@@ -144,8 +144,8 @@
               <span class="text-light">Chi siamo</span>
             </li>
             <li><a class="return-to-index-from-footer" href="<?= BASE_URL ?>/src/index.php">
-              <i class="fa-solid fa-house-chimney"></i>
-                </a>Home</li>
+                <i class="fa-solid fa-house-chimney"></i>
+              </a>Home</li>
           </ul>
         </div>
 
@@ -160,7 +160,7 @@
                 Landi</a></li>
             <li><a href="mailto:anusca.7806@isit100.fe.it"><i class="bi bi-envelope-at me-2"></i>Email
                 Anusca</a></li>
-  
+
           </ul>
         </div>
       </div>
