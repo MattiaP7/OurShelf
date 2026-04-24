@@ -60,7 +60,7 @@ OurShelf/
 ### 1. Clona il repository
 
 ```bash
-git clone https://github.com/tuo-org/OurShelf.git
+git clone https://github.com/MattiaP7/OurShelf.git
 cd OurShelf
 ```
 

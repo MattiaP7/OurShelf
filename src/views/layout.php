@@ -15,7 +15,7 @@
 <body>
 
   <header>
-    <nav class="navbar navbar-expand-lg shadow-sm">
+    <nav class="navbar  navbar-expand-lg shadow-sm">
       <div class="container d-flex align-items-center justify-content-between">
 
         <a class="navbar-brand d-flex align-items-center gap-3" href="<?= BASE_URL ?>/src/index.php">
