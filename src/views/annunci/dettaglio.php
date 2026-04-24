@@ -180,7 +180,15 @@ switch ($annuncio['condizione']) {
             </div>
             <div>
               <div class="text-muted" style="font-size:0.7rem;">Venditore</div>
-              <div class="fw-bold"><?= safe_string($annuncio['venditore']) ?></div>
+              <div class="fw-bold">
+                <?php if ($isProprietario): ?>
+                  <a href="index.php?page=dashboard">
+                    <?= safe_string($annuncio['venditore']) ?>
+                  </a>
+                <?php else: ?>
+                  <?= safe_string($annuncio['venditore']) ?>
+                <?php endif; ?>
+              </div>
               <div class="fw-bold">
                 <a href="mailto:<?= safe_string($annuncio['email_venditore']) ?>">
                   <?= safe_string($annuncio['email_venditore']) ?>
