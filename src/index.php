@@ -7,6 +7,13 @@
 define("APP", true);
 
 session_start();
+if (!isset($_SESSION['errors'])) {
+  $_SESSION['errors'] = [];
+}
+if (!isset($_SESSION['success'])) {
+  $_SESSION['success'] = '';
+}
+
 
 require_once __DIR__ . '/utils/helpers.php';
 
@@ -28,6 +35,7 @@ if (file_exists($path)) {
     }
   }
 } else {
+  $_SESSION['errors'][] = 'Pagina non esistente';
   header("Location: index.php?page=home");
   exit;
 }

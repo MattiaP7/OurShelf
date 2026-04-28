@@ -69,10 +69,11 @@ cd OurShelf
 Copia `src/config/dbconfig.example.php` in `src/config/dbconfig.php` e compila i parametri:
 
 ```php
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'nome_database');
-define('DB_USER', 'utente');
-define('DB_PASS', 'password');
+define("DB_HOST", 'HOST_DEL_TUO_DB');
+define("DB_NAME", 'NOME_DEL_TUO_DB');
+define("DB_USERNAME", 'USERNAME_DB');
+define("DB_PASSWORD", 'PASSWORD_DB');
+define("DB_CHARSET", 'utf8mb4');
 ```
 
 ### 3. Configura SFTP per VS Code
@@ -81,13 +82,13 @@ Crea `.vscode/sftp.json` con i dati del server della scuola:
 
 ```jsonc
 {
-  "name": "OurShelf - Server scuola",
-  "host": "", // host del server
+  "name": "", // nome server sftp
+  "host": "", // host del server sftp
   "protocol": "ftp",
   "port": 21,
   "username": "", // tuo username
   "password": "", // tua password
-  "remotePath": "/tuo-cognome/OurShelf",
+  "remotePath": "", // path del progetto nel server sftp
   "uploadOnSave": true,
   "useTempFile": false,
   "openSsh": false,
@@ -102,7 +103,7 @@ Crea `.vscode/sftp.json` con i dati del server della scuola:
 }
 ```
 
-> Per host, username e password consulta il file `sftp.json` di riferimento nella cartella `info5/projects`.
+> Per name, host, username e password consulta il file `sftp.json` di riferimento nella cartella `info5/projects`.
 
 ---
 
@@ -195,14 +196,6 @@ Dopodichè, posizionati sopra qualsiasi funzione e digita `/**` + Invio: il DocB
 
 ---
 
-## Link utili
-
-- [CONTRIBUTING.md](CONTRIBUTING.md) — standard di codifica e flusso Git
-- [Book_swap_project.pdf](docs/Book_swap_project.pdf) — specifiche del progetto
-- [Isit Bassi Burgatti](https://www.isit100.fe.it/)
-
----
-
 <div align="center">
-  &copy; 2026 OurShelf &bull; Team 2 &bull; Istituto Bassi Burgatti, Ferrara
+  &copy; 2026 OurShelf &bull; Team 2: <a href="https://github.com/MattiaP7">Pirazzi Mattia</a> <a href="https://github.com/cyberCcode23">Portacci Matteo</a> <a href="https://github.com/alessandrolandi186">Alessandro Landi</a> <a href="https://github.com/IonutAnusca">Ionut Anusca</a> &bull; Istituto Bassi Burgatti, Ferrara
 </div>

@@ -4,10 +4,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OurShelf</title>
+  <title>
+    OurShelf - <?= $title ?>
+  </title>
+  <base href="http://lab.isit100.fe.it:8092/pirazzi/OurShelf/src/">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-  <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/style_layout.css">
+  <link rel="stylesheet" href="../assets/css/style_layout.css">
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 </head>
@@ -18,9 +22,9 @@
     <nav class="navbar  navbar-expand-lg shadow-sm">
       <div class="container d-flex align-items-center justify-content-between">
 
-        <a class="navbar-brand d-flex align-items-center gap-3" href="<?= BASE_URL ?>/src/index.php">
+        <a class="navbar-brand d-flex align-items-center gap-3" href="index.php">
           <div class="logo-wrapper">
-            <img src="<?= BASE_URL ?>/assets/img/logo_progetto.png" alt="OurShelf Logo">
+            <img src="../assets/img/logo_progetto.png" alt="OurShelf Logo">
           </div>
           <span class="brand-name fw-bold">OurShelf</span>
         </a>
@@ -100,11 +104,12 @@
     </nav>
   </header>
 
-  <?php if (!empty($_SESSION['id_studente'])): ?>
-    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1050;">
-      <?php flash_success(); ?>
-    </div>
-  <?php endif; ?>
+  <div class="container mt-3">
+    <?php
+    flash_error();
+    flash_success();
+    ?>
+  </div>
 
   <main class="container my-5">
     <div class="view-container">
@@ -200,7 +205,7 @@
 
   <script src=" https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
   </script>
-  <script src="<?= BASE_URL ?>/src/utils/showPassword.js"></script>
+  <script src="utils/showPassword.js"></script>
   <script>
     // stampiano nel footer 2026 - anno corrente
     const currentYear = new Date().getFullYear();

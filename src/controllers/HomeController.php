@@ -63,9 +63,9 @@ class HomeController
     );
 
     $materie = $this->libriModel->getMaterie();
-    $condizioni = ['Ottime condizioni', 'Buone condizioni', 'Condizioni accettabili', 'Danneggiato'];
+    $condizioni = get_condizioni();
 
-
+    $title = 'Home Page';
     $view = __DIR__ . '/../views/layout/main_view.php';
     include __DIR__ . '/../views/layout.php';
   }
@@ -79,7 +79,8 @@ class HomeController
    */
   public function about(): void
   {
-    $view = __DIR__ . '/../views/link/chi_siamo.php';
+    $title = 'About Page';
+    $view = __DIR__ . '/../views/users/chi_siamo.php';
     include __DIR__ . '/../views/layout.php';
   }
 }

@@ -39,7 +39,7 @@ class LibriModels
    * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
    * @date 21/04/2026
    */
-  public function getLibroByIsbn(string $isbn): array|false
+  public function getLibroByIsbn(string $isbn): array
   {
     $sql  = "SELECT * FROM Libri WHERE isbn = ? LIMIT 1";
     $stmt = $this->pdo->prepare($sql);
@@ -73,28 +73,17 @@ class LibriModels
   public function getAllLibri()
   {
     $sql = "
-        SELECT 
-            id_libro, 
-            isbn, 
-            titolo, 
-            autore, 
-            materia, 
-            editore, 
-            volume, 
-            anno_scolastico,
-            prezzo
-        FROM Libri 
-        GROUP BY 
-            id_libro, 
-            isbn, 
-            titolo, 
-            autore, 
-            materia, 
-            editore, 
-            volume, 
-            anno_scolastico,
-            prezzo
-        ORDER BY materia, titolo
+      SELECT DISTINCT
+        isbn, 
+        titolo, 
+        autore, 
+        materia, 
+        editore, 
+        volume, 
+        anno_scolastico,
+        prezzo
+      FROM Libri 
+      ORDER BY materia, titolo
     ";
     $stmt = $this->pdo->prepare($sql);
     $stmt->execute();
@@ -126,7 +115,7 @@ class LibriModels
 				l.anno_scolastico,
 				l.prezzo
 			FROM Libri l
-			JOIN Classi_Libri cl ON l.id_libro = cl.id_libro
+			JOIN Classi_Libri cl USING(id_libro)
 			WHERE cl.id_classe = ?
 			GROUP BY
 				l.id_libro,
@@ -159,18 +148,5 @@ class LibriModels
     $stmt = $this->pdo->prepare($sql);
     $stmt->execute();
     return array_column($stmt->fetchAll(PDO::FETCH_ASSOC), 'materia');
-  }
-
-  /**
-   * Verifica se un libro (tramite ISBN) è effettivamente adottato dalla scuola.
-   *
-   * @param string $isbn Il codice ISBN da verificare.
-   * @return bool True se il libro è nel catalogo scolastico.
-   * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
-   * @date 21/04/2026
-   */
-  public function isbnEsiste(string $isbn): bool
-  {
-    return $this->getLibroByIsbn($isbn) !== false;
   }
 }

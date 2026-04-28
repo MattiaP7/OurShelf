@@ -33,70 +33,6 @@ class AnnunciController
   }
 
   /**
-   * Mostra la bacheca degli annunci disponibili.
-   * Applica i filtri di ricerca se presenti in $_GET.
-   *
-   * @return void
-   * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
-   * @date 17/04/2026
-   */
-  public function index(): void
-  {
-    requireLogin();
-
-    $materia    = trim($_GET['materia']    ?? '');
-    $condizione = trim($_GET['condizione'] ?? '');
-    $prezzoMin  = (float) ($_GET['prezzo_min'] ?? 0);
-    $prezzoMax  = (float) ($_GET['prezzo_max'] ?? 0);
-
-    $annunci  = $this->model->getAnnunci($materia, $condizione, $prezzoMin, $prezzoMax);
-    $materie  = $this->libriModel->getMaterie();
-
-    $view = __DIR__ . '/../views/annunci/bacheca.php';
-    include __DIR__ . '/../views/layout.php';
-  }
-
-  /**
-   * Endpoint JSON per la ricerca degli annunci.
-   * Chiamato via fetch() dal frontend senza ricaricare la pagina.
-   * Legge i parametri da $_GET e restituisce un array json degli annunci trovati.
-   * 
-   * @example `{ "ok": true, "annunci": [ { "id_annuncio": 1, "titolo": "...", ... } ] }`
-   *
-   * @return void
-   * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
-   * @date 21/04/2026
-   */
-  public function search(): void
-  {
-    requireLogin();
-
-    $materia    = trim($_GET['materia']    ?? '');
-    $condizione = trim($_GET['condizione'] ?? '');
-    $prezzoMin  = (float) ($_GET['prezzo_min'] ?? 0);
-    $prezzoMax  = (float) ($_GET['prezzo_max'] ?? 0);
-    $isbn       = trim($_GET['isbn']       ?? '');
-    $titolo     = trim($_GET['titolo']     ?? '');
-    $editore    = trim($_GET['editore']    ?? '');
-
-    $annunci = $this->model->getAnnunci(
-      $materia,
-      $condizione,
-      $prezzoMin,
-      $prezzoMax,
-      $isbn,
-      $titolo,
-      $editore
-    );
-
-    echo json_encode([
-      'ok'      => true,
-      'totale'  => count($annunci),
-      'annunci' => $annunci
-    ], JSON_UNESCAPED_UNICODE);
-  }
-
-  /**
    * Mostra il dettaglio di un singolo annuncio.
    *
    * @return void
@@ -113,10 +49,11 @@ class AnnunciController
 
     if (!$annuncio) {
       $_SESSION['errors'][] = "Annuncio non trovato";
-      header("Location: index.php?page=annunci");
+      header("Location: index.php");
       exit;
     }
 
+    $title = "{$annuncio['titolo']}";
     $view = __DIR__ . '/../views/annunci/dettaglio.php';
     include __DIR__ . '/../views/layout.php';
   }
@@ -133,16 +70,14 @@ class AnnunciController
   {
     requireLogin();
 
-    $luoghi  = $this->model->getLuoghi();
-
     // per avere i libri solo di una classe specifica
     //$libri   = $this->libriModel->getLibriByClasse($_SESSION['id_classe']);
 
-    // tutti i libri
     $libri = $this->libriModel->getAllLibri();
+    $luoghi  = $this->model->getLuoghi();
+    $condizioni = get_condizioni();
 
-    $condizioni = ['Ottime condizioni', 'Buone condizioni', 'Condizioni accettabili', 'Danneggiato'];
-
+    $title = "Crea";
     $view = __DIR__ . '/../views/annunci/crea.php';
     include __DIR__ . '/../views/layout.php';
   }
@@ -164,7 +99,7 @@ class AnnunciController
     $_SESSION['success'] = '';
 
     $isbn           = trim($_POST['isbn']          ?? '');
-    $prezzo         = trim($_POST['prezzo']        ?? '');
+    $prezzo         = (float) trim($_POST['prezzo']        ?? 0);
     $descrizione    = trim($_POST['descrizione']   ?? '');
     $dataOraScambio = trim($_POST['data_ora_scambio'] ?? '');
     $idLuogo        = (int) ($_POST['id_luogo']   ?? 0);
@@ -179,7 +114,7 @@ class AnnunciController
     if (empty($condizione)) {
       $_SESSION['errors'][] = "Seleziona la condizione del libro";
     }
-    if (!is_numeric($prezzo) || (float) $prezzo <= 0) {
+    if (!is_numeric($prezzo) || $prezzo <= 0) {
       $_SESSION['errors'][] = "Inserisci un prezzo valido";
     }
     if (empty($dataOraScambio)) {
@@ -195,7 +130,7 @@ class AnnunciController
     }
 
     $params = [
-      (float) $prezzo,
+      $prezzo,
       $descrizione,
       $dataOraScambio,
       $_SESSION['id_studente'],
@@ -209,11 +144,12 @@ class AnnunciController
     if ($new_id > 0) {
       $_SESSION['success'] = "Annuncio pubblicato con successo!";
       header("Location: index.php?page=annunci&action=dettaglio&id={$new_id}");
+      exit;
     } else {
       $_SESSION['errors'][] = "Errore durante la pubblicazione dell'annuncio";
       header("Location: index.php?page=annunci&action=crea");
+      exit;
     }
-    exit;
   }
 
   /**
@@ -233,7 +169,7 @@ class AnnunciController
 
     if (!$annuncio) {
       $_SESSION['errors'][] = "Annuncio non trovato";
-      header("Location: index.php?page=annunci");
+      header("Location: index.php");
       exit;
     }
 
@@ -244,13 +180,56 @@ class AnnunciController
       exit;
     }
 
-    if ($this->model->concludiAcquisto($_SESSION['id_studente'], $idAnnuncio)) {
+    if ($this->model->concludiAcquisto($idAnnuncio, $_SESSION['id_studente'])) {
       $_SESSION['success'] = "Acquisto registrato! Presentati all'orario indicato per il ritiro.";
       header("Location: index.php?page=dashboard");
     } else {
       $_SESSION['errors'][] = "Errore durante l'acquisto. L'annuncio potrebbe non essere più disponibile.";
       header("Location: index.php?page=annunci&action=dettaglio&id={$idAnnuncio}");
     }
+    exit;
+  }
+
+  /**
+   * Gestisce l'annullamento dell'acquisto di un libro.
+   * Nota che si ha tempo 1 giorno per fare l'annullamento dell'acquisto
+   *
+   * @return void
+   * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
+   * @date 24/04/2026
+   */
+  public function annullaAcquisto()
+  {
+    requireLogin();
+
+    $idAnnuncio = $_POST['id_annuncio'] ?? null;
+    $_dataAcquisto = $_POST['data_acquisto'] ?? null;
+    $idCompratore = $_SESSION['id_studente'];
+
+    if ($idAnnuncio && $_dataAcquisto) {
+      $dataAcquisto = new DateTime($_dataAcquisto);
+      $oraAttuale = new DateTime();
+      $differenza = $oraAttuale->diff($dataAcquisto);
+
+
+      if ($differenza->days >= 1) {
+        $_SESSION['errors'][] = "Tempo scaduto: puoi annullare l'acquisto solo entro 24 ore.";
+        header("Location: index.php?page=dashboard&action=index");
+        exit;
+      }
+
+      $successo = $this->model->annullaAcquisto((int)$idAnnuncio, (int)$idCompratore);
+
+      if ($successo) {
+        $_SESSION['success'] = "Acquisto annullato con successo.";
+      } else {
+        $_SESSION['errors'][] = "Errore durante l'annullamento. L'annuncio potrebbe essere già stato rimosso.";
+      }
+    } else {
+      $_SESSION['errors'][] = "Dati insufficienti per annullare l'operazione.";
+    }
+
+    header("Location: index.php?page=dashboard&action=index");
     exit;
   }
 

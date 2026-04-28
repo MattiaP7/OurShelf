@@ -37,7 +37,10 @@ class UsersModels
    */
   public function getUser(int $userId): array|false
   {
-    $sql  = "SELECT * FROM Studenti WHERE id_studente = ? LIMIT 1";
+    $sql  = "SELECT id_studente, nome, cognome, data_iscrizione, sesso, email, id_classe 
+             FROM Studenti 
+             WHERE id_studente = ? 
+             LIMIT 1";
     $stmt = $this->pdo->prepare($sql);
     $stmt->execute([$userId]);
     return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -68,11 +71,11 @@ class UsersModels
    * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
    * @date 21/04/2026
    */
-  public function emailEsiste(string $email, int $escludiId): bool
+  public function emailEsiste(string $email): bool
   {
-    $sql  = "SELECT id_studente FROM Studenti WHERE email = ? AND id_studente != ? LIMIT 1";
+    $sql  = "SELECT id_studente FROM Studenti WHERE email = ? LIMIT 1";
     $stmt = $this->pdo->prepare($sql);
-    $stmt->execute([$email, $escludiId]);
+    $stmt->execute([$email]);
     return (bool) $stmt->fetch();
   }
 

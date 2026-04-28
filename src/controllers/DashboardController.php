@@ -55,6 +55,7 @@ class DashboardController
     }
     $libriAcquistati = $this->model->getLibriAcquistati($idStudente);
 
+    $title = "{$_SESSION['nome_completo']}";
     $view = __DIR__ . '/../views/dashboard/index.php';
     include __DIR__ . '/../views/layout.php';
   }

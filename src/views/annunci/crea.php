@@ -83,7 +83,7 @@ if (!empty($libri) && is_array($libri)) {
               <div class="input-group">
                 <span class="input-group-text">€</span>
                 <input type="number" id="prezzo-input" name="prezzo" class="form-control"
-                  step="0.01" min="0.01" placeholder="0.00" required disabled>
+                  step="0.01" min="0.01" max="" placeholder="0.00" required disabled>
               </div>
               <div id="prezzo-feedback" class="form-text mt-2"></div>
             </div>
@@ -230,6 +230,7 @@ if (!empty($libri) && is_array($libri)) {
 
     // CRITICO: Impediamo fisicamente di andare oltre
     prezzoInput.max = prezzoMax;
+    prezzoInput.setAttribute('max', prezzoMax);
 
     prezzoFeedback.innerHTML = `
       <div class="alert alert-info py-2 px-3 mb-0 small border-0 shadow-sm">
