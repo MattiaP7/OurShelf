@@ -2,6 +2,7 @@
 defined("APP") or die("Accesso negato");
 
 require_once __DIR__ . '/../models/LoginModels.php';
+require_once __DIR__ . '/../models/UsersModels.php';
 require_once __DIR__ . '/../utils/helpers.php';
 
 /**
@@ -37,13 +38,14 @@ class LoginController
    */
   public function index(): void
   {
+    $title = "Login Page";
     $view = __DIR__ . '/../views/login/login.php';
     include __DIR__ . '/../views/layout.php';
   }
 
   /**
    * Esegue il controllo delle credenziali fornite dall'utente.
-   * Avvia la sessione se l'autenticazione ha successo.
+   * Carica in sessione i dati dell'utente se l'autenticazione ha successo.
    *
    * @return void
    * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
@@ -54,6 +56,12 @@ class LoginController
     // recupero email e password dal POST e rimuovo spazi bianchi
     $email    = trim($_POST['email'] ?? '');
     $password = trim($_POST['password'] ?? '');
+
+    if (!isEmailDomainValid($email)) {
+      $_SESSION['errors'][] = "Devi autenticarti usando la email istituzionale";
+      header("Location: index.php?page=login");
+      exit;
+    }
 
     // cerco l'utente nel db 
     $user = $this->model->authUser($email);
@@ -68,23 +76,17 @@ class LoginController
       header("Location: index.php?page=login");
       exit;
     }
-    // if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    //   $_SESSION['errors'][] = "Inserisci una email valida";
-    // }
-    if (!isEmailDomainValid($email)) {
-      $_SESSION['errors'][] = "Devi autenticarti usando la email istituzionale";
-      header("Location: index.php?page=login");
-      exit;
-    }
+
 
     // se l'utente è stato trovato aggiungo alla sessione i relativi valori.
     $_SESSION['id_studente'] = $user['id_studente'];
+    $_SESSION['nome_completo'] = $user['nome'] . ' ' . $user['cognome'];
     $_SESSION['nome']        = $user['nome'];
     $_SESSION['cognome']     = $user['cognome'];
     $_SESSION['email']       = $user['email'];
     $_SESSION['id_classe']   = $user['id_classe'];
 
-    $_SESSION['success'] = "Bentornato, {$user['nome']}!";
+    $_SESSION['success'] = "Bentornato, {$_SESSION['nome_completo']}!";
     header("Location: index.php");
     exit;
   }
@@ -101,6 +103,7 @@ class LoginController
     // recupero la lista di classi : indirizzi e relativo valore id
     // utile per la registrazione di un utente
     $classi = $this->model->getClassi();
+    $title = "Register Page";
     $view   = __DIR__ . '/../views/login/register.php';
     include __DIR__ . '/../views/layout.php';
   }
@@ -114,9 +117,6 @@ class LoginController
    */
   public function store(): void
   {
-    $_SESSION['errors']  = [];
-    $_SESSION['success'] = '';
-
     // recupero dal POST i valori inviati dal form
     $nome             = trim($_POST['nome'] ?? '');
     $cognome          = trim($_POST['cognome'] ?? '');
@@ -130,12 +130,18 @@ class LoginController
     // controllo errori vari per i campi
     if (empty($password) || empty($confirm_password)) {
       $_SESSION['errors'][] = "Password obbligatoria";
+      header("Location: index.php?page=login");
+      exit;
     }
     if ($password !== $confirm_password) {
       $_SESSION['errors'][] = "Le password non coincidono";
+      header("Location: index.php?page=login");
+      exit;
     }
     if (strlen($password) < 8) {
       $_SESSION['errors'][] = "La password deve essere almeno 8 caratteri";
+      header("Location: index.php?page=login");
+      exit;
     }
 
     if (!isEmailDomainValid($email)) {
@@ -143,38 +149,37 @@ class LoginController
       header("Location: index.php?page=login");
       exit;
     }
+
     if (empty($email)) {
       $_SESSION['errors'][] = "La email non puo' essere vuota";
       header("Location: index.php?page=login");
       exit;
     }
 
-    // if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    //   $_SESSION['errors'][] = "Email non valida";
-    // }
+
     if (in_array($email, $this->model->emailList())) {
       $_SESSION['errors'][] = "Email già registrata";
+      header("Location: index.php?page=login");
+      exit;
     }
 
     if (empty($nome) || empty($cognome)) {
       $_SESSION['errors'][] = "Nome e cognome obbligatori";
+      header("Location: index.php?page=login");
+      exit;
     }
     if ($id_classe === 0) {
       $_SESSION['errors'][] = "Seleziona una classe";
+      header("Location: index.php?page=login");
+      exit;
     }
 
-    // in caso di errori, prima di rimandare l'utente al form lo ripopoliamo con i dati inseriti, tranne per la password
-    if (!empty($_SESSION['errors'])) {
-      // $_SESSION['old'] = $_POST;
-      // unset($_SESSION['old']['password']);
-      // unset($_SESSION['old']['confPassword']);
 
+    if (!empty($_SESSION['errors'])) {
       header("Location: index.php?page=login&action=register");
       exit;
     }
-    // unset($_SESSION['old']);
 
-    // hash della password, MAI salvare in chiaro
     $hash   = password_hash($password, PASSWORD_DEFAULT);
     $params = [$nome, $cognome, $data_nascita, $sesso, $email, $hash, $id_classe];
 
@@ -197,6 +202,7 @@ class LoginController
    */
   public function changePassword(): void
   {
+    $title = 'Cambia Password';
     $view = __DIR__ . '/../views/login/change_password.php';
     include __DIR__ . '/../views/layout.php';
   }
@@ -216,8 +222,8 @@ class LoginController
     $newPassword    = trim($_POST['newPassword'] ?? '');
     $reNewPassword  = trim($_POST['reNewPassword'] ?? '');
 
-    if (!isEmailDomainValid($email)) {
-      $_SESSION['errors'][] = "Email non valida";
+    if (empty($email) || !isEmailDomainValid($email)) {
+      $_SESSION['errors'][] = "Devi usare un'email istituzionale";
       header("Location: index.php?page=login");
       exit;
     }

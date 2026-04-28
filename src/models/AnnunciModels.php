@@ -151,6 +151,7 @@ class AnnunciModels
         a.id_annuncio,
         a.prezzo AS prezzo_vendita,  -- Alias per il prezzo dell'annuncio
         a.id_venditore,
+        a.id_compratore,
         a.data_pubblicazione,
         a.data_acquisto,
         a.descrizione,
@@ -167,11 +168,13 @@ class AnnunciModels
         l.prezzo AS prezzo_listino, -- Alias per il prezzo originale del libro
         ls.nome AS luogo_scambio,
         CONCAT(sv.nome, ' ', sv.cognome) AS venditore,
+        CONCAT(sc.nome, ' ', sc.cognome) AS compratore,
         sv.email AS email_venditore
       FROM Annunci a
-      JOIN Libri         l  ON a.id_libro    = l.id_libro
-      JOIN Luoghi_Scambi ls ON a.id_luogo    = ls.id_luogo
-      JOIN Studenti      sv ON a.id_venditore = sv.id_studente
+      JOIN Libri              l  ON a.id_libro    = l.id_libro
+      JOIN Luoghi_Scambi      ls ON a.id_luogo    = ls.id_luogo
+      JOIN Studenti           sv ON a.id_venditore = sv.id_studente
+      LEFT JOIN Studenti      sc ON a.id_compratore = sc.id_studente
       WHERE a.id_annuncio = ?
       GROUP BY
         a.id_annuncio,
@@ -247,6 +250,32 @@ class AnnunciModels
   }
 
   /**
+   * Riporta un annuncio disponibile
+   *
+   * @param integer $idAnnuncio
+   * @param integer $idCompratore
+   * @return boolean
+   * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
+   * @date 24/04/2026
+   */
+  public function annullaAcquisto(int $idAnnuncio, int $idCompratore): bool
+  {
+    $sql = "
+      UPDATE Annunci
+      SET
+        id_compratore = NULL,
+        data_acquisto = NULL,
+        stato         = 'disponibile'
+      WHERE id_annuncio = ?
+        AND id_compratore = ?
+        AND stato         = 'venduto'
+    ";
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute([$idAnnuncio, $idCompratore]);
+    return $stm->rowCount() > 0;
+  }
+
+  /**
    * Elimina un annuncio. Operazione consentita solo al venditore proprietario.
    *
    * @param int $idAnnuncio  L'ID dell'annuncio da eliminare.
@@ -275,18 +304,22 @@ class AnnunciModels
   public function getAnnunciByVenditore(int $idStudente): array
   {
     $sql = "
-        SELECT 
+          SELECT 
             a.id_annuncio,
             a.prezzo AS prezzo_vendita,
             a.data_pubblicazione,
+            a.data_acquisto,            
             a.stato,
             a.condizione,
             l.titolo,
             l.autore,
             l.isbn,
-            l.prezzo AS prezzo_listino
+            l.prezzo AS prezzo_listino,
+            CONCAT(sc.nome, ' ', sc.cognome) AS compratore,
+            sc.email AS email_compratore
         FROM Annunci a
         JOIN Libri l ON a.id_libro = l.id_libro
+        LEFT JOIN Studenti sc ON a.id_compratore = sc.id_studente
         WHERE a.id_venditore = ?
         ORDER BY a.data_pubblicazione DESC
     ";
@@ -310,13 +343,13 @@ class AnnunciModels
     $sql = "
 			SELECT
 				a.id_annuncio,
-				a.prezzo,
+				a.prezzo as prezzo_vendita,
 				a.data_acquisto,
 				a.condizione,
 				l.titolo,
 				l.autore,
 				l.isbn,
-				l.prezzo,
+				l.prezzo as prezzo_listino,
 				CONCAT(s.nome, ' ', s.cognome) AS venditore
 			FROM Annunci a
 			JOIN Libri    l ON a.id_libro    = l.id_libro

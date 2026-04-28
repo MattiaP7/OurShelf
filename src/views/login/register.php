@@ -65,7 +65,7 @@
         <span class="input-group-text bg-white border-0 pe-1">
           <i class="bi bi-envelope text-muted"></i>
         </span>
-        <input type="email" name="email" class="form-control border-0 ps-1" placeholder="mario@esempio.it" style="box-shadow: none;" required>
+        <input type="email" name="email" class="form-control border-0 ps-1" placeholder="mario@isit100.fe.it" style="box-shadow: none;" required>
       </div>
     </div>
 

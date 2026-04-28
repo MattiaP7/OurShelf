@@ -10,14 +10,12 @@
   <h2 class="fw-bold mb-0">La mia area personale</h2>
   <p class="text-muted">
     Ciao, <strong>
-      <?= safe_string($_SESSION['nome']) ?> <?= safe_string($_SESSION['cognome']) ?>
+      <?= safe_string($_SESSION['nome_completo']) ?>
     </strong>
     ! Ecco un riepilogo delle tue attività.
   </p>
 </div>
 
-<!-- ?<?= flash_success(); ?>
-?<?= flash_error(); ?> -->
 
 <!-- Statistiche rapide -->
 <div class="row g-3 mb-4">
@@ -166,21 +164,35 @@
             <tr>
               <th>Libro</th>
               <th>ISBN</th>
+              <th>Compratore</th>
               <th class="text-end">Prezzo</th>
               <th class="text-end">Venduto il</th>
             </tr>
           </thead>
           <tbody>
             <?php foreach ($libriVenduti as $a): ?>
+
               <tr>
                 <td>
-                  <div class="fw-semibold"><?= safe_string($a['titolo']) ?></div>
+                  <div class="fw-semibold text-dark"><?= safe_string($a['titolo']) ?></div>
                   <div class="text-muted small"><?= safe_string($a['autore']) ?></div>
                 </td>
                 <td class="text-muted small"><?= safe_string($a['isbn']) ?></td>
-                <td class="text-end fw-bold text-success">€<?= number_format($a['prezzo_vendita'], 2) ?></td>
+                <td>
+                  <div class="small fw-medium">
+                    <i class="bi bi-person-check me-1 text-success"></i>
+                    <?= !empty($a['compratore']) ? safe_string($a['compratore']) : '<span class="text-muted fst-italic">N.D.</span>' ?>
+                  </div>
+                  <?php if (!empty($a['email_compratore'])): ?>
+                    <div class="text-muted" style="font-size: 0.75rem;"><?= safe_string($a['email_compratore']) ?></div>
+                  <?php endif; ?>
+                </td>
+                <td class="text-end fw-bold text-success">
+                  €<?= number_format($a['prezzo_vendita'], 2) ?>
+                </td>
                 <td class="text-end text-muted small">
-                  <?= !empty($a['data_pubblicazione']) ? date('d/m/Y', strtotime($a['data_pubblicazione'])) : '—' ?>
+                  <i class="bi bi-calendar-event me-1"></i>
+                  <?= !empty($a['data_acquisto']) ? date('d/m/Y', strtotime($a['data_acquisto'])) : '—' ?>
                 </td>
               </tr>
             <?php endforeach; ?>
@@ -207,7 +219,8 @@
               <th>ISBN</th>
               <th>Venditore</th>
               <th class="text-end">Pagato</th>
-              <th class="text-end">Acquistato il</th>
+              <th class="text-end">Acquistato in data</th>
+              <th class="text-end">Annulla ordine</th>
             </tr>
           </thead>
           <tbody>
@@ -219,9 +232,19 @@
                 </td>
                 <td class="text-muted small"><?= safe_string($a['isbn']) ?></td>
                 <td class="text-muted small"><?= safe_string($a['venditore']) ?></td>
-                <td class="text-end fw-bold text-info">€<?= number_format($a['prezzo_vendita'], 2) ?></td>
+                <td class="text-end fw-bold">€<?= number_format($a['prezzo_vendita'], 2) ?></td>
                 <td class="text-end text-muted small">
-                  <?= !empty($a['data_acquisto']) ? date('d/m/Y', strtotime($a['data_acquisto'])) : '—' ?>
+                  <?= !empty($a['data_acquisto']) ? date('d/m/Y', strtotime($a['data_acquisto'])) : 'N/A' ?>
+                </td>
+                <td class="text-end">
+                  <form method="POST" action="index.php?page=annunci&action=annullaAcquisto"
+                    onsubmit="return confirm('Vuoi annullare l\'acquisto? Il libro tornerà disponibile per gli altri studenti.')">
+                    <input type="hidden" name="data_acquisto" value="<?= $a['data_acquisto'] ?>">
+                    <input type="hidden" name="id_annuncio" value="<?= (int)$a['id_annuncio'] ?>">
+                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-3" title="Annulla acquisto">
+                      <i class="bi bi-arrow-counterclockwise"></i>
+                    </button>
+                  </form>
                 </td>
               </tr>
             <?php endforeach; ?>

@@ -36,11 +36,12 @@ class UsersController
    */
   public function index(): void
   {
-    $this->requireLogin();
+    requireLogin();
 
     $user   = $this->model->getUser((int) $_SESSION['id_studente']);
     $classi = $this->model->getClassi();
 
+    $title = "Area utente";
     $view = __DIR__ . '/../views/users/index.php';
     include __DIR__ . '/../views/layout.php';
   }
@@ -63,7 +64,7 @@ class UsersController
    */
   public function update(): void
   {
-    $this->requireLogin();
+    requireLogin();
 
     $_SESSION['errors']  = [];
     $_SESSION['success'] = '';
@@ -91,11 +92,13 @@ class UsersController
     if (!in_array($sesso, ['m', 'f'], true)) {
       $_SESSION['errors'][] = "Seleziona un sesso valido";
     }
+
     if (empty($email) || !isEmailDomainValid($email)) {
       $_SESSION['errors'][] = "Inserisci un'email valida";
-    } elseif ($this->model->emailEsiste($email, $userId)) {
+    } elseif (!empty($this->model->emailEsiste($email))) {
       $_SESSION['errors'][] = "L'email è già utilizzata da un altro account";
     }
+
     if ($idClasse === 0) {
       $_SESSION['errors'][] = "Seleziona una classe";
     }
@@ -141,9 +144,8 @@ class UsersController
     );
 
     if ($ok) {
-      // aggiorna i dati in sessione per riflettere i cambiamenti nella navbar
-      $_SESSION['nome']      = $nome;
-      $_SESSION['cognome']   = $cognome;
+      // aggiorno i valori nella session
+      $_SESSION['nome_completo'] = $nome . ' ' . $cognome;
       $_SESSION['email']     = $email;
       $_SESSION['id_classe'] = $idClasse;
 
@@ -154,21 +156,5 @@ class UsersController
 
     header("Location: index.php?page=users&action=index");
     exit;
-  }
-
-  /**
-   * Verifica che l'utente sia autenticato.
-   * In caso contrario reindirizza al login e interrompe l'esecuzione.
-   *
-   * @return void
-   * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
-   * @date 21/04/2026
-   */
-  private function requireLogin(): void
-  {
-    if (empty($_SESSION['id_studente'])) {
-      header("Location: index.php?page=login");
-      exit;
-    }
   }
 }
