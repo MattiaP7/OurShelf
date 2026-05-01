@@ -1,9 +1,11 @@
 <?php
 defined("APP") or die("Accesso negato");
 
+require_once 'config/dbconnect.php';
 require_once __DIR__ . '/../models/LoginModels.php';
 require_once __DIR__ . '/../models/UsersModels.php';
 require_once __DIR__ . '/../utils/helpers.php';
+require_once __DIR__ . '/../utils/secureUploader.php';
 
 /**
  * Classe LoginController
@@ -16,7 +18,13 @@ require_once __DIR__ . '/../utils/helpers.php';
 class LoginController
 {
   /** @var LoginModels Istanza del modello per le query */
-  private $model;
+  private LoginModels $model;
+
+  /** @var secureUploader Istanza della classe secureUploader per il caricamento sicuro delle immagini */
+  private secureUploader $uploader;
+
+  /** @var PDO Istanza della connessione al database */
+  private PDO $pdo;
 
   /**
    * Inizializza il controller e il suo modello di riferimento.
@@ -26,7 +34,9 @@ class LoginController
    */
   public function __construct()
   {
-    $this->model = new LoginModels();
+    $this->model    = new LoginModels();
+    $this->uploader = new secureUploader();
+    $this->pdo      = DB::connect();
   }
 
   /**
@@ -45,7 +55,6 @@ class LoginController
 
   /**
    * Esegue il controllo delle credenziali fornite dall'utente.
-   * Carica in sessione i dati dell'utente se l'autenticazione ha successo.
    *
    * @return void
    * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
@@ -53,8 +62,7 @@ class LoginController
    */
   public function check(): void
   {
-    // recupero email e password dal POST e rimuovo spazi bianchi
-    $email    = trim($_POST['email'] ?? '');
+    $email    = trim($_POST['email']    ?? '');
     $password = trim($_POST['password'] ?? '');
 
     if (!isEmailDomainValid($email)) {
@@ -63,28 +71,21 @@ class LoginController
       exit;
     }
 
-    // cerco l'utente nel db 
     $user = $this->model->authUser($email);
 
-    if (empty($user)) {
-      $_SESSION['errors'][] = "Credenziali non valide";
-      header("Location: index.php?page=login");
-      exit;
-    }
-    if (!password_verify($password, $user['password'])) {
+    if (empty($user) || !password_verify($password, $user['password'])) {
       $_SESSION['errors'][] = "Credenziali non valide";
       header("Location: index.php?page=login");
       exit;
     }
 
-
-    // se l'utente è stato trovato aggiungo alla sessione i relativi valori.
-    $_SESSION['id_studente'] = $user['id_studente'];
+    $_SESSION['id_studente']   = $user['id_studente'];
     $_SESSION['nome_completo'] = $user['nome'] . ' ' . $user['cognome'];
-    $_SESSION['nome']        = $user['nome'];
-    $_SESSION['cognome']     = $user['cognome'];
-    $_SESSION['email']       = $user['email'];
-    $_SESSION['id_classe']   = $user['id_classe'];
+    $_SESSION['nome']          = $user['nome'];
+    $_SESSION['cognome']       = $user['cognome'];
+    $_SESSION['email']         = $user['email'];
+    $_SESSION['id_classe']     = $user['id_classe'];
+    $_SESSION['foto']          = $user['foto'];
 
     $_SESSION['success'] = "Bentornato, {$_SESSION['nome_completo']}!";
     header("Location: index.php");
@@ -100,16 +101,15 @@ class LoginController
    */
   public function register(): void
   {
-    // recupero la lista di classi : indirizzi e relativo valore id
-    // utile per la registrazione di un utente
     $classi = $this->model->getClassi();
-    $title = "Register Page";
+    $title  = "Register Page";
     $view   = __DIR__ . '/../views/login/register.php';
     include __DIR__ . '/../views/layout.php';
   }
 
   /**
-   *  Gestisce la logica di creazione di un nuovo studente.
+   * Gestisce la logica di creazione di un nuovo studente.
+   * Dopo l'INSERT, se l'utente ha allegato un avatar lo carica subito.
    *
    * @return void
    * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
@@ -117,17 +117,16 @@ class LoginController
    */
   public function store(): void
   {
-    // recupero dal POST i valori inviati dal form
-    $nome             = trim($_POST['nome'] ?? '');
-    $cognome          = trim($_POST['cognome'] ?? '');
+    $nome             = trim($_POST['nome']        ?? '');
+    $cognome          = trim($_POST['cognome']      ?? '');
     $data_nascita     = trim($_POST['data_nascita'] ?? '');
-    $sesso            = trim($_POST['sesso'] ?? '');
-    $email            = trim($_POST['email'] ?? '');
-    $password         = trim($_POST['password'] ?? '');
+    $sesso            = trim($_POST['sesso']        ?? '');
+    $email            = trim($_POST['email']        ?? '');
+    $password         = trim($_POST['password']     ?? '');
     $confirm_password = trim($_POST['confPassword'] ?? '');
-    $id_classe        = (int)($_POST['id_classe'] ?? 0);
+    $id_classe        = (int) ($_POST['id_classe']  ?? 0);
+    $_SESSION['foto'] = '';
 
-    // controllo errori vari per i campi
     if (empty($password) || empty($confirm_password)) {
       $_SESSION['errors'][] = "Password obbligatoria";
       header("Location: index.php?page=login");
@@ -143,26 +142,21 @@ class LoginController
       header("Location: index.php?page=login");
       exit;
     }
-
     if (!isEmailDomainValid($email)) {
       $_SESSION['errors'][] = "Devi registrarti usando la email istituzionale";
       header("Location: index.php?page=login");
       exit;
     }
-
     if (empty($email)) {
       $_SESSION['errors'][] = "La email non puo' essere vuota";
       header("Location: index.php?page=login");
       exit;
     }
-
-
     if (in_array($email, $this->model->emailList())) {
       $_SESSION['errors'][] = "Email già registrata";
       header("Location: index.php?page=login");
       exit;
     }
-
     if (empty($nome) || empty($cognome)) {
       $_SESSION['errors'][] = "Nome e cognome obbligatori";
       header("Location: index.php?page=login");
@@ -173,8 +167,6 @@ class LoginController
       header("Location: index.php?page=login");
       exit;
     }
-
-
     if (!empty($_SESSION['errors'])) {
       header("Location: index.php?page=login&action=register");
       exit;
@@ -183,13 +175,22 @@ class LoginController
     $hash   = password_hash($password, PASSWORD_DEFAULT);
     $params = [$nome, $cognome, $data_nascita, $sesso, $email, $hash, $id_classe];
 
-    if ($this->model->insertUser($params)) {
-      $_SESSION['success'] = "Registrazione completata!";
-      header("Location: index.php?page=login");
-    } else {
-      $_SESSION['errors'][] = "Errore durante il salvataggio";
+    $user_id = $this->model->insertUser($params);
+    if ($user_id === 0) {
+      $_SESSION['errors'][] = 'Errore durante la creazione dell\'utente';
       header("Location: index.php?page=login&action=register");
+      exit;
     }
+
+    // Avatar profilo, opzionale ma se presente lo salviamo
+    // vecchia_foto = '' perche' l'utente appena creato non aveva ancora una foto
+
+    if (!empty($_FILES['avatar']) && $_FILES['avatar']['error'] !== UPLOAD_ERR_NO_FILE) {
+      $this->uploader->salvaAvatar($this->pdo, (int) $user_id, $_FILES['avatar'], '');
+    }
+
+    $_SESSION['success'] = "Registrazione completata! Accedi ora";
+    header("Location: index.php?page=login");
     exit;
   }
 
@@ -216,11 +217,10 @@ class LoginController
    */
   public function updatePassword(): void
   {
-    // recupero i valori dal POST inviati dal form
-    $email          = trim($_POST['email'] ?? '');
-    $oldPassword    = trim($_POST['oldPassword'] ?? '');
-    $newPassword    = trim($_POST['newPassword'] ?? '');
-    $reNewPassword  = trim($_POST['reNewPassword'] ?? '');
+    $email         = trim($_POST['email']         ?? '');
+    $oldPassword   = trim($_POST['oldPassword']   ?? '');
+    $newPassword   = trim($_POST['newPassword']   ?? '');
+    $reNewPassword = trim($_POST['reNewPassword'] ?? '');
 
     if (empty($email) || !isEmailDomainValid($email)) {
       $_SESSION['errors'][] = "Devi usare un'email istituzionale";
@@ -254,7 +254,7 @@ class LoginController
   }
 
   /**
-   * Esegue il logout distruggendo la sessione e reindirizzando al login.
+   * Esegue il logout distruggendo la sessione.
    *
    * @return void
    * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
@@ -262,11 +262,7 @@ class LoginController
    */
   public function logout(): void
   {
-    if (!$_SESSION['id_studente'] || empty($_SESSION['id_studente'])) {
-      $_SESSION['errors'][] = "Devi essere registrato prima di fare il logout";
-      header("Location: index.php?page=login");
-      exit;
-    }
+    requireLogin();
     $_SESSION = [];
     session_destroy();
     header("Location: index.php?page=login");

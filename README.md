@@ -180,7 +180,7 @@ Dopodichè, posizionati sopra qualsiasi funzione e digita `/**` + Invio: il DocB
 - [x] Bacheca annunci con filtri dinamici (fetch)
 - [x] Dettaglio annuncio con carosello immagini
 - [x] Acquisto e conclusione vendita
-- [ ] Upload immagini annuncio — _in corso_
+- [x] Upload immagini annuncio - 01/05/2026
 
 ### Frontend
 

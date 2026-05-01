@@ -1,9 +1,10 @@
 <?php
-// views/dashboard/index.php
 // Variabili disponibili:
-//   $inVendita       (array) — annunci attivi del venditore
-//   $libriVenduti    (array) — annunci conclusi del venditore
-//   $libriAcquistati (array) — libri comprati dallo studente
+
+/** @var array $inVendita - annunci attivi del venditore */
+/** @var array $libriVenduti - annunci conclusi del venditore */
+/** @var array $libriAcquistati - libri comprati dallo studente */
+
 ?>
 
 <div class="mt-4 mb-2">

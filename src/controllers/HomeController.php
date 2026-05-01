@@ -3,6 +3,7 @@ defined("APP") or die("Accesso negato");
 
 require_once __DIR__ . '/../models/AnnunciModels.php';
 require_once __DIR__ . '/../models/LibriModels.php';
+require_once __DIR__ . '/../models/AnnunciModels.php';
 
 /**
  * Classe HomeController
@@ -16,10 +17,11 @@ require_once __DIR__ . '/../models/LibriModels.php';
 class HomeController
 {
   /** @var AnnunciModels Istanza del modello annunci */
-  private $model;
+  private AnnunciModels $annunciModel;
 
   /** @var LibriModels Istanza del modello libri (per la lista materie) */
-  private $libriModel;
+  private LibriModels $libriModel;
+
 
   /**
    * Inizializza il controller e i modelli necessari.
@@ -29,8 +31,8 @@ class HomeController
    */
   public function __construct()
   {
-    $this->model      = new AnnunciModels();
-    $this->libriModel = new LibriModels();
+    $this->annunciModel        = new AnnunciModels();
+    $this->libriModel   = new LibriModels();
   }
 
   /**
@@ -52,7 +54,7 @@ class HomeController
     $prezzoMin  = (float) ($_GET['prezzo_min'] ?? 0);
     $prezzoMax  = (float) ($_GET['prezzo_max'] ?? 0);
 
-    $annunci = $this->model->getAnnunci(
+    $annunci = $this->annunciModel->getAnnunci(
       $materia,
       $condizione,
       $prezzoMin,
@@ -64,6 +66,14 @@ class HomeController
 
     $materie = $this->libriModel->getMaterie();
     $condizioni = get_condizioni();
+
+    foreach ($annunci as &$a) {
+      // aggiungo il campo foto all'annuncio
+      $a['foto'] = $this->annunciModel->getImmaginiAnnuncio($a['id_annuncio']);
+    }
+    // togliamo riferimenti ad $a, se ancora presenti
+    // altrimenti sovrascrive le foto di tutti gli annunci, mostrando solo la foto del primo annuncio per tutti
+    unset($a);
 
     $title = 'Home Page';
     $view = __DIR__ . '/../views/layout/main_view.php';

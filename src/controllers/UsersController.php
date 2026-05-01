@@ -2,6 +2,8 @@
 defined("APP") or die("Accesso negato");
 
 require_once __DIR__ . '/../models/UsersModels.php';
+require_once __DIR__ . '/../utils/secureUploader.php';
+require_once 'config/dbconnect.php';
 
 /**
  * Classe UsersController
@@ -16,6 +18,12 @@ class UsersController
   /** @var UsersModels Istanza del modello utente */
   private $model;
 
+  /** @var secureUploader Istanza della classe secureUploader per il caricamento sicuro delle immagini */
+  private secureUploader $uploader;
+
+  /** @var PDO Istanza della connessione al database */
+  private PDO $pdo;
+
   /**
    * Inizializza il controller e il suo modello.
    *
@@ -24,7 +32,9 @@ class UsersController
    */
   public function __construct()
   {
-    $this->model = new UsersModels();
+    $this->model    = new UsersModels();
+    $this->uploader = new secureUploader();
+    $this->pdo      = DB::connect();
   }
 
   /**
@@ -48,8 +58,8 @@ class UsersController
 
   /**
    * Processa il form di aggiornamento profilo.
-   * Aggiorna sempre i dati personali; aggiorna la password solo se
-   * l'utente ha compilato i campi appositi.
+   * Aggiorna sempre i dati personali anche avatar profilo
+   * aggiorna la password solo se l'utente ha compilato i campi appositi.
    *
    * Validazioni eseguite:
    * - Campi obbligatori non vuoti
@@ -57,6 +67,14 @@ class UsersController
    * - Email non già usata da un altro account
    * - Se cambio password: verifica password attuale, lunghezza minima 8 caratteri,
    *   corrispondenza nuova password / conferma
+   * 
+   * Flusso foto:
+   *  1. Legge il nome del vecchio file da Studenti.foto
+   *  2. Chiama salvaAvatar() che:
+   *     - valida il nuovo file
+   *     - fa unlink() del vecchio
+   *     - salva il nuovo fisicamente
+   *     - aggiorna Studenti.foto nel DB
    *
    * @return void
    * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
@@ -66,8 +84,8 @@ class UsersController
   {
     requireLogin();
 
-    $_SESSION['errors']  = [];
-    $_SESSION['success'] = '';
+    // $_SESSION['errors']  = [];
+    // $_SESSION['success'] = '';
 
     $userId      = (int) $_SESSION['id_studente'];
     $nome        = trim($_POST['nome']        ?? '');
@@ -95,7 +113,7 @@ class UsersController
 
     if (empty($email) || !isEmailDomainValid($email)) {
       $_SESSION['errors'][] = "Inserisci un'email valida";
-    } elseif (!empty($this->model->emailEsiste($email))) {
+    } elseif (!empty($this->model->emailEsiste($email, $_SESSION['id_studente']))) {
       $_SESSION['errors'][] = "L'email è già utilizzata da un altro account";
     }
 
@@ -152,6 +170,17 @@ class UsersController
       $_SESSION['success'] = "Profilo aggiornato con successo!";
     } else {
       $_SESSION['errors'][] = "Nessuna modifica rilevata o errore durante il salvataggio";
+    }
+
+    // cambio la foto profilo (opzionale)
+    if (!empty($_FILES['avatar']) && $_FILES['avatar']['error'] !== UPLOAD_ERR_NO_FILE) {
+      $userDB = $this->model->getUser($userId);
+      $vecchia_foto = $userDB['foto'] ?? '';
+
+      // salva la nuova foto
+      $this->uploader->salvaAvatar($this->pdo, $userId, $_FILES['avatar'], $vecchia_foto);
+      $user_aggiornato = $this->model->getUser($userId);
+      $_SESSION['foto'] = $user_aggiornato['foto'] ?? '';
     }
 
     header("Location: index.php?page=users&action=index");
