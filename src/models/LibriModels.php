@@ -66,11 +66,11 @@ class LibriModels
   /**
    * Recupera tutti i libri adottati in tutta la scuola
    *
-   * @return void
+   * @return array
    * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
    * @date 18/04/2026
    */
-  public function getAllLibri()
+  public function getAllLibri(): array
   {
     $sql = "
       SELECT DISTINCT

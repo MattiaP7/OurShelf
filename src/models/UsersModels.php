@@ -37,7 +37,7 @@ class UsersModels
    */
   public function getUser(int $userId): array|false
   {
-    $sql  = "SELECT id_studente, nome, cognome, data_iscrizione, sesso, email, id_classe 
+    $sql  = "SELECT id_studente, nome, cognome, data_nascita, sesso, email, id_classe, foto
              FROM Studenti 
              WHERE id_studente = ? 
              LIMIT 1";
@@ -66,16 +66,16 @@ class UsersModels
    * Usato per evitare duplicati quando l'utente cambia la propria email.
    *
    * @param string $email     L'email da verificare.
-   * @param int    $escludiId L'ID dello studente da escludere dal controllo (sé stesso).
+   * @param int $id_studente  Utente da escludere
    * @return bool True se l'email è già occupata da qualcun altro.
    * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
    * @date 21/04/2026
    */
-  public function emailEsiste(string $email): bool
+  public function emailEsiste(string $email, int $id_studente): bool
   {
-    $sql  = "SELECT id_studente FROM Studenti WHERE email = ? LIMIT 1";
+    $sql  = "SELECT id_studente FROM Studenti WHERE email = ? and id_studente != ? LIMIT 1";
     $stmt = $this->pdo->prepare($sql);
-    $stmt->execute([$email]);
+    $stmt->execute([$email, $id_studente]);
     return (bool) $stmt->fetch();
   }
 

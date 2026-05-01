@@ -148,6 +148,7 @@ class AnnunciModels
   {
     $sql = "
       SELECT
+        sv.id_studente as proprietario,
         a.id_annuncio,
         a.prezzo AS prezzo_vendita,  -- Alias per il prezzo dell'annuncio
         a.id_venditore,
@@ -220,9 +221,36 @@ class AnnunciModels
 			VALUES (?, ?, ?, ?, ?, ?, ?)
 		";
     $stmt = $this->pdo->prepare($sql);
-    $stmt->execute($params);
-    return (int) $this->pdo->lastInsertId();
+    if ($stmt->execute($params)) {
+      return (int) $this->pdo->lastInsertId();
+    }
+    return 0;
   }
+
+  /**
+   * Restituisce l'array dei nomi file delle immagini di un annuncio.
+   * La view costruirà l'URL: /uploads/annunci/{nome_file}
+   *
+   * Esempio di utilizzo nella view (dettaglio.php):
+   *
+   *   foreach ($immagini as $img):
+   *     $url = '/uploads/annunci/' . $img['nome_file'];
+   *
+   * @param  int   $idAnnuncio
+   * @return array Array di row associative: [['id_immagine'=>1,'nome_file'=>'ann_7_...jpg'], ...]
+   */
+  public function getImmaginiAnnuncio(int $idAnnuncio): array
+  {
+    $stmt = $this->pdo->prepare(
+      "SELECT id_immagine, nome_file
+       FROM Immagini_Annunci
+      WHERE id_annuncio = ?
+      ORDER BY id_immagine ASC"
+    );
+    $stmt->execute([$idAnnuncio]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
 
   /**
    * Registra l'acquisto di un libro: imposta compratore, data acquisto e stato venduto.
@@ -371,6 +399,28 @@ class AnnunciModels
     $stmt = $this->pdo->prepare($sql);
     $stmt->execute([$idStudente]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  /**
+   * Recupera i dettagli di una singola immagine tramite il suo ID
+   */
+  public function getImmagineById(int $idImmagine): array
+  {
+    $sql = "SELECT * FROM Immagini_Annunci WHERE id_immagine = ?";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute([$idImmagine]);
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+  }
+
+  /**
+   * Elimina il record dell'immagine dal database
+   */
+  public function deleteImmagine(int $idImmagine): bool
+  {
+    $sql = "DELETE FROM Immagini_Annunci WHERE id_immagine = ?";
+    $stmt = $this->pdo->prepare($sql);
+    return $stmt->execute([$idImmagine]);
   }
 
   /**

@@ -75,13 +75,14 @@ class LoginModels
   }
 
   /**
-   * Inserisce un nuovo record studente nella tabella.
+   * Inserisce un nuovo record studente nella tabella e restituisce l'ID generato.
+   *
    * @param array $params [nome, cognome, data_nascita, sesso, email, password, id_classe]
-   * @return bool True se l'inserimento è avvenuto con successo, false altrimenti.
+   * @return int L'ID dello studente appena creato, oppure 0 in caso di fallimento.
    * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
    * @date 30/03/2026
    */
-  public function insertUser(array $params): bool
+  public function insertUser(array $params): int
   {
     $dql = "
             INSERT INTO Studenti (nome, cognome, data_nascita, sesso, email, password, id_classe)
@@ -89,7 +90,14 @@ class LoginModels
         ";
     $stmt = $this->pdo->prepare($dql);
     $stmt->execute($params);
-    return $stmt->rowCount() !== 0;
+
+    // Verifichiamo se l'inserimento ha effettivamente prodotto una riga.
+    if ($stmt->rowCount() > 0) {
+      // Recupera l'ultimo ID autoincrementale generato dalla connessione.
+      return (int) $this->pdo->lastInsertId();
+    }
+
+    return 0;
   }
 
   /**

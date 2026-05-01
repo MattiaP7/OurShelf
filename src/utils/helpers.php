@@ -24,7 +24,7 @@ function safe_string(string $value): string
  * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
  * @date 26/04/2026
  */
-function flash_error()
+function flash_error(): void
 {
   if (!empty($_SESSION['errors'])) {
     echo '<div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
@@ -50,7 +50,7 @@ function flash_error()
  * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
  * @date 26/04/2026
  */
-function flash_success()
+function flash_success(): void
 {
   if (!empty($_SESSION['success'])) {
     echo '<div class="alert alert-success alert-dismissible fade show shadow-sm d-flex align-items-center" role="alert">
