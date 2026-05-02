@@ -138,4 +138,20 @@ class UsersModels
     return $stmt->execute($params);
     //return $stmt->rowCount() > 0;
   }
+
+  /**
+   * Aggiorna la foto profilo di uno studente
+   *
+   * @param string $nome_file
+   * @param integer $id_studente
+   * @return boolean
+   * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
+   * @date 02/05/2026
+   */
+  public function updateAvatar(string $nome_file, int $id_studente): bool
+  {
+    $sql = "UPDATE Studenti SET foto = ? WHERE id_studente = ?";
+    $stm = $this->pdo->prepare($sql);
+    return $stm->execute([$nome_file, $id_studente]);
+  }
 }

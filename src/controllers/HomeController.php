@@ -4,6 +4,7 @@ defined("APP") or die("Accesso negato");
 require_once __DIR__ . '/../models/AnnunciModels.php';
 require_once __DIR__ . '/../models/LibriModels.php';
 require_once __DIR__ . '/../models/AnnunciModels.php';
+require_once __DIR__ . '/../models/ImmagineAnnuncioModel.php';
 
 /**
  * Classe HomeController
@@ -22,6 +23,9 @@ class HomeController
   /** @var LibriModels Istanza del modello libri (per la lista materie) */
   private LibriModels $libriModel;
 
+  /** @var ImmagineAnnuncioModel Istanza del modello ImmagineAnnuncio  */
+  private ImmagineAnnuncioModel $immagineModels;
+
 
   /**
    * Inizializza il controller e i modelli necessari.
@@ -31,8 +35,9 @@ class HomeController
    */
   public function __construct()
   {
-    $this->annunciModel        = new AnnunciModels();
-    $this->libriModel   = new LibriModels();
+    $this->annunciModel   = new AnnunciModels();
+    $this->libriModel     = new LibriModels();
+    $this->immagineModels = new ImmagineAnnuncioModel();
   }
 
   /**
@@ -69,7 +74,7 @@ class HomeController
 
     foreach ($annunci as &$a) {
       // aggiungo il campo foto all'annuncio
-      $a['foto'] = $this->annunciModel->getImmaginiAnnuncio($a['id_annuncio']);
+      $a['foto'] = $this->immagineModels->getAllByAnnuncio($a['id_annuncio']);
     }
     // togliamo riferimenti ad $a, se ancora presenti
     // altrimenti sovrascrive le foto di tutti gli annunci, mostrando solo la foto del primo annuncio per tutti
@@ -91,6 +96,13 @@ class HomeController
   {
     $title = 'About Page';
     $view = __DIR__ . '/../views/users/chi_siamo.php';
+    include __DIR__ . '/../views/layout.php';
+  }
+
+  public function notFound(): void
+  {
+    $title = 'Pagina non trovata';
+    $view = __DIR__ . '/../views/404.php';
     include __DIR__ . '/../views/layout.php';
   }
 }

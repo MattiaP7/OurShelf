@@ -2,52 +2,67 @@
 
 defined("APP") or die("Accesso negato");
 
+require_once __DIR__ . '/../models/UsersModels.php';
+require_once __DIR__ . '/../models/ImmagineAnnuncioModel.php';
+
+/**
+ * Classe per la gestione del caricamento delle immagini sul server.
+ * Si occupa di salvarle fisicamente, nel database, operazioni CRUD.
+ *
+ * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
+ * @date 02/05/2026
+ */
 class secureUploader
 {
   /** @var string $dir_annuncio path dove salviamo le immagini degli annunci */
   private string $dir_annuncio;
+
   /** @var string $dir_users path dove salviamo le immagini degli utenti */
   private string $dir_users;
 
   /** @var int $max_image numero massimo di immagini caricabili */
   private int   $max_image;
+
   /** @var int $max_size dimensione massima per immagine (in MB) */
   private int   $max_size;
 
-  /** @var array $allowed_mime tipi mime usabili, presi dal form */
+  /** @var array $allowed_mime tipi MIME usabili, presi dal form */
   private array $allowed_mime = ['image/jpeg', 'image/png', 'image/webp'];
+
   /** @var array $allowed_ext estensioni immagini consentite */
   private array $allowed_ext  = ['jpg', 'jpeg', 'png', 'webp'];
 
+  /** @var ImmagineAnnuncioModel model dedicato alla tabella Immagini_Annunci */
+  private ImmagineAnnuncioModel $immagineModel;
+
+  /** @var UsersModels model dedicato alla tabella Studente */
+  private UsersModels $userModel;
+
   public function __construct()
   {
-    // prendiamo il nome della radice e saliamo di 2 livelli per arrivare alla radice del progetto
-    $root = dirname(__DIR__, 2);
-    $this->dir_annuncio = $root . '/public/uploads/annunci/';
-    $this->dir_users    = $root . '/public/uploads/users/';
-    $this->max_image    = 3;
-    $this->max_size     = 2 * 1024 * 1024; // 2MB
+    $this->dir_annuncio   = __DIR__ . '/../../public/uploads/annunci/';
+    $this->dir_users      = __DIR__ . '/../../public/uploads/users/';
+    $this->max_image      = 3;
+    $this->max_size       = 2 * 1024 * 1024; // 2MB
+    $this->immagineModel  = new ImmagineAnnuncioModel();
+    $this->userModel      = new UsersModels();
   }
 
   /**
-   * Salva fino a 3 immagini per un annuncio e le registra nel DB
+   * Salva fino a `secureUploader::max_image` immagini per un annuncio e le registra nel DB
    * Scrive errori e success nella $_SESSION
    *
-   * @param PDO $pdo
    * @param integer $id_annuncio
    * @param array $files  $_FILES['immagini']
    * @return void
    * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
    * @date 30/04/2026
    */
-  public function salvaImmagineAnnuncio(PDO $pdo, int $id_annuncio, array $files): void
+  public function salvaImmagineAnnuncio(int $id_annuncio, array $files): void
   {
-    $sql = "SELECT COUNT(*) FROM Immagini_Annunci WHERE id_annuncio = ?";
-    $stm = $pdo->prepare($sql);
-    $stm->execute([$id_annuncio]);
-    $trovate = (int) $stm->fetchColumn();
+    $trovate = $this->immagineModel->countByAnnuncio($id_annuncio);
 
-    if ($trovate >= 3) {
+    if ($trovate >= $this->max_image) {
       $_SESSION['errors'][] = 'Hai già caricato il massimo di 3 immagini!';
       return;
     }
@@ -80,9 +95,7 @@ class secureUploader
 
       if (move_uploaded_file($file['tmp_name'], $dest)) {
         chmod($dest, 0644);
-        $sql = "INSERT INTO Immagini_Annunci (id_annuncio, nome_file) VALUES (?, ?)";
-        $stm = $pdo->prepare($sql);
-        $stm->execute([$id_annuncio, $nome_file]);
+        $this->immagineModel->insert($id_annuncio, $nome_file);
         $salvati++;
       } else {
         $_SESSION['error'][] = "Errore nel salvataggio di \"{$file['name']}\".";
@@ -97,39 +110,40 @@ class secureUploader
   }
 
   /**
-   * Elimina tutti i file fisici di un annuncio.
-   * Il DB viene pulito automaticamente dall'ON DELETE CASCADE sull'annuncio.
-   * Da chiamare PRIMA del DELETE sull'annuncio se vuoi cancellare i file fisici.
+   * Elimina tutti i file fisici di un annuncio dal disco.
+   * I nomi file vengono letti tramite ImmagineAnnuncioModel.
+   * Le righe DB vengono cancellate dal CASCADE quando si elimina l'annuncio.
+   * Da chiamare PRIMA del DELETE sull'annuncio.
    *
-   * @param PDO $pdo
-   * @param int $id_annuncio
+   * @param integer $id_annuncio
+   * @return void
+   * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
+   * @date 02/05/2026
    */
-  public function eliminaImmaginiAnnuncio(PDO $pdo, int $id_annuncio): void
+  public function eliminaImmaginiAnnuncio(int $id_annuncio): void
   {
-    $stmt = $pdo->prepare("SELECT nome_file FROM Immagini_Annunci WHERE id_annuncio = ?");
-    $stmt->execute([$id_annuncio]);
-    $files = $stmt->fetchAll(PDO::FETCH_COLUMN);
+    $files = $this->immagineModel->getNomeFileByAnnuncio($id_annuncio);
 
     foreach ($files as $f) {
       $path = $this->dir_annuncio . $f;
       if (file_exists($path)) {
-        @unlink($path);
+        unlink($path);
       }
     }
   }
 
   /**
-   * Salva l'avatar di uno studente e aggiorna la colonna `foto` in Studenti.
-   * Se lo studente aveva già un avatar, il vecchio file fisico viene eliminato.
-   * Input: $_FILES['avatar'] (file singolo, name="avatar")
+   * Salva l'avatar di uno studente e aggiorna  la foto 
+   * Elimina il vecchio file fisico prima di salvare il nuovo.
    *
-   * @param  PDO    $pdo
-   * @param  int    $id_studente
-   * @param  array  $file        $_FILES['avatar']
-   * @param  string $vecchia_foto Nome del file attuale (da Studenti.foto), per unlink
-   * @return void  — usa $_SESSION['errors'] e $_SESSION['success']
+   * @param integer $id_studente
+   * @param array $file
+   * @param string $vecchia_foto
+   * @return void
+   * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
+   * @date 02/05/2026
    */
-  public function salvaAvatar(PDO $pdo, int $id_studente, array $file, string $vecchia_foto = ''): void
+  public function salvaAvatar(int $id_studente, array $file, string $vecchia_foto = ''): void
   {
     // Campo non compilato: l'utente ha saltato l'upload, non è un errore
     if (!isset($file['error']) || $file['error'] === UPLOAD_ERR_NO_FILE) {
@@ -146,7 +160,7 @@ class secureUploader
     if (!empty($vecchia_foto)) {
       $vecchioPath = $this->dir_users . $vecchia_foto;
       if (file_exists($vecchioPath)) {
-        @unlink($vecchioPath);
+        unlink($vecchioPath);
       }
     }
 
@@ -160,10 +174,7 @@ class secureUploader
 
     chmod($dest, 0644);
 
-    // Aggiorna la colonna foto in Studenti
-    $stmt = $pdo->prepare("UPDATE Studenti SET foto = ? WHERE id_studente = ?");
-    $stmt->execute([$nomeFile, $id_studente]);
-
+    $this->userModel->updateAvatar($nomeFile, $id_studente);
     $_SESSION['success'] = "Foto profilo aggiornata!";
   }
 
@@ -239,9 +250,9 @@ class secureUploader
    * 4. Estensione del nome file.
    * 5. Integrità della struttura dell'immagine.
    *
-   * @param  array  $file L'array del singolo file (estratto da normalizza())[cite: 1].
-   * @return string|bool Restituisce il messaggio di errore se la validazione fallisce, 
-   *                altrimenti restituisce una stringa vuota ('')[cite: 1].
+   * @param  array  $file L'array del singolo file (estratto da normalizza()).
+   * @return string Restituisce il messaggio di errore se la validazione fallisce, 
+   *                altrimenti restituisce una stringa vuota ('').
    */
   private function valida(array $file): string
   {

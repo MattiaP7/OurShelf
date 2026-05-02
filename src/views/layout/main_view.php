@@ -6,7 +6,7 @@
 /** @var array $condizioni - array con le informazioni sulle condizioni dei libri  */
 /** @var array $immagini - array con le immagini dell'annuncio  */
 
-// immagine di stock placeholder per tutti gli annunci (finché il DB immagini non è pronto)
+// immagine di stock placeholder per tutti gli annunci senza immagini
 define('STOCK_IMG', 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600&q=80');
 ?>
 
@@ -42,10 +42,8 @@ define('STOCK_IMG', 'https://images.unsplash.com/photo-1512820790803-83ca734da79
               (int)$_SESSION['id_studente'] === (int)$a['id_venditore'];
           ?>
             <div class="col-sm-6 col-lg-4">
-              <!-- <?php print_r($a); ?> -->
               <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
 
-                <!-- Immagine di stock -->
                 <div style="height:160px;overflow:hidden;position:relative;">
                   <?php if (empty($a['foto'])): ?>
                     <!-- Se non ci sono foto, usa lo stock -->

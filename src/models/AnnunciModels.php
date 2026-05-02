@@ -108,27 +108,28 @@ class AnnunciModels
     }
 
     // GROUP BY aggiornato con gli alias corretti
-    $sql .= "
-    GROUP BY
-      a.id_annuncio,
-      prezzo_vendita,
-      a.id_venditore,
-      a.data_pubblicazione,
-      a.descrizione,
-      a.data_ora_scambio,
-      a.stato,
-      a.condizione,
-      l.titolo,
-      l.autore,
-      l.isbn,
-      l.materia,
-      l.editore,
-      l.volume,
-      prezzo_listino,
-      ls.nome,
-      venditore
-    ORDER BY a.data_pubblicazione DESC
-  ";
+    $sql .= " ORDER BY a.data_pubblicazione DESC";
+    //   $sql .= "
+    //   GROUP BY
+    //     a.id_annuncio,
+    //     prezzo_vendita,
+    //     a.id_venditore,
+    //     a.data_pubblicazione,
+    //     a.descrizione,
+    //     a.data_ora_scambio,
+    //     a.stato,
+    //     a.condizione,
+    //     l.titolo,
+    //     l.autore,
+    //     l.isbn,
+    //     l.materia,
+    //     l.editore,
+    //     l.volume,
+    //     prezzo_listino,
+    //     ls.nome,
+    //     venditore
+    //   ORDER BY a.data_pubblicazione DESC
+    // ";
 
     $stmt = $this->pdo->prepare($sql);
     $stmt->execute($params);
@@ -227,28 +228,13 @@ class AnnunciModels
     return 0;
   }
 
-  /**
-   * Restituisce l'array dei nomi file delle immagini di un annuncio.
-   * La view costruirà l'URL: /uploads/annunci/{nome_file}
-   *
-   * Esempio di utilizzo nella view (dettaglio.php):
-   *
-   *   foreach ($immagini as $img):
-   *     $url = '/uploads/annunci/' . $img['nome_file'];
-   *
-   * @param  int   $idAnnuncio
-   * @return array Array di row associative: [['id_immagine'=>1,'nome_file'=>'ann_7_...jpg'], ...]
-   */
-  public function getImmaginiAnnuncio(int $idAnnuncio): array
+
+  public function getImmagineVenditoreById(int $id_venditore): string
   {
-    $stmt = $this->pdo->prepare(
-      "SELECT id_immagine, nome_file
-       FROM Immagini_Annunci
-      WHERE id_annuncio = ?
-      ORDER BY id_immagine ASC"
-    );
-    $stmt->execute([$idAnnuncio]);
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $sql = "SELECT foto FROM Studenti WHERE id_studente = ?";
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute([$id_venditore]);
+    return $stm->fetch(PDO::FETCH_COLUMN);
   }
 
 
@@ -402,25 +388,26 @@ class AnnunciModels
   }
 
   /**
-   * Recupera i dettagli di una singola immagine tramite il suo ID
+   * Aggiorna i dati di un annuncio esistente.
+   *
+   * @param array $params [prezzo, descrizione, data_ora_scambio, id_luogo, condizione, id_annuncio]
+   * @return boolean
+   * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
+   * @date 02/05/2026
    */
-  public function getImmagineById(int $idImmagine): array
+  public function updateAnnuncio(array $params): bool
   {
-    $sql = "SELECT * FROM Immagini_Annunci WHERE id_immagine = ?";
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute([$idImmagine]);
+    $sql = "UPDATE Annunci 
+                SET prezzo = ?, 
+                    descrizione = ?, 
+                    data_ora_scambio = ?, 
+                    id_luogo = ?, 
+                    id_libro = ?, 
+                    condizione = ? 
+                WHERE id_annuncio = ?";
 
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-  }
-
-  /**
-   * Elimina il record dell'immagine dal database
-   */
-  public function deleteImmagine(int $idImmagine): bool
-  {
-    $sql = "DELETE FROM Immagini_Annunci WHERE id_immagine = ?";
-    $stmt = $this->pdo->prepare($sql);
-    return $stmt->execute([$idImmagine]);
+    $stm = $this->pdo->prepare($sql);
+    return $stm->execute($params);
   }
 
   /**
