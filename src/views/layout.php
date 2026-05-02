@@ -76,11 +76,12 @@ if (!empty($_SESSION['id_studente']) && !empty($_SESSION['foto'])) {
                         class="rounded-circle border"
                         style="width:32px;height:32px;object-fit:cover;"
                         onerror="this.outerHTML='<i class=\'bi bi-person-circle fs-5\'></i>'">
+
                     <?php else: ?>
                       <!-- Iniziale colorata come fallback -->
                       <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white fw-bold"
                         style="width:32px;height:32px;font-size:.85rem;flex-shrink:0;">
-                        <?= strtoupper(mb_substr($_SESSION['nome'] ?? 'U', 0, 1)) ?>
+                        <?= strtoupper($_SESSION['name'][0]) ?>
                       </div>
                     <?php endif; ?>
 
@@ -137,8 +138,10 @@ if (!empty($_SESSION['id_studente']) && !empty($_SESSION['foto'])) {
   </header>
 
   <div class="container mt-3">
-    <?php flash_error();
-    flash_success(); ?>
+    <?php
+    flash_error();
+    flash_success();
+    ?>
   </div>
 
   <main class="container my-5">
@@ -147,7 +150,7 @@ if (!empty($_SESSION['id_studente']) && !empty($_SESSION['foto'])) {
       if (!empty($view) && file_exists($view)) {
         include $view;
       } else {
-        die("Pagina non trovata, riprova tra un po'...");
+        include __DIR__ . '/404.php';
       }
       ?>
     </div>

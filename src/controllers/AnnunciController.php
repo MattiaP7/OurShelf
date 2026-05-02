@@ -5,6 +5,8 @@ defined("APP") or die("Accesso negato");
 require_once __DIR__ . '/../models/AnnunciModels.php';
 require_once __DIR__ . '/../models/LibriModels.php';
 require_once __DIR__ . '/../utils/secureUploader.php';
+require_once __DIR__ . '/../models/ImmagineAnnuncioModel.php';
+
 
 /**
  * Classe AnnunciController
@@ -25,14 +27,18 @@ class AnnunciController
   /** @var SecureUploader */
   private SecureUploader $uploader;
 
+  /** @var ImmagineAnnuncioModel */
+  private ImmagineAnnuncioModel $immagineModels;
+
   /** @var PDO  — la tua istanza PDO (adatta al tuo bootstrap) */
   private PDO $pdo;
 
   public function __construct()
   {
-    $this->model      = new AnnunciModels();
-    $this->libriModel = new LibriModels();
-    $this->uploader   = new SecureUploader();
+    $this->model          = new AnnunciModels();
+    $this->libriModel     = new LibriModels();
+    $this->uploader       = new SecureUploader();
+    $this->immagineModels = new ImmagineAnnuncioModel();
 
 
     $this->pdo = DB::connect();
@@ -81,7 +87,7 @@ class AnnunciController
       exit;
     }
 
-    $this->uploader->salvaImmagineAnnuncio($this->pdo, $id_annuncio, $_FILES['immagini']);
+    $this->uploader->salvaImmagineAnnuncio($id_annuncio, $_FILES['immagini']);
 
     header("Location: index.php?page=annunci&action=dettaglio&id=$id_annuncio");
     exit;
@@ -108,8 +114,8 @@ class AnnunciController
       exit;
     }
 
-    // Array di nomi file; la view costruisce l'URL con /uploads/annunci/{nome}
-    $immagini = $this->model->getImmaginiAnnuncio($id);
+    $immagini         = $this->immagineModels->getAllByAnnuncio($id);
+    $avatar_venditore = $this->model->getImmagineVenditoreById($annuncio['id_venditore']);
 
     $title = $annuncio['titolo'];
     $view  = __DIR__ . '/../views/annunci/dettaglio.php';
@@ -138,6 +144,92 @@ class AnnunciController
   }
 
 
+  /**
+   * Mostra il form per la modifica di un annuncio esistente.
+   * Pre-carica i dati attuali, le immagini e le liste per le select.
+   *
+   * @return void
+   * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
+   * @date 02/05/2026
+   */
+  public function modifica(): void
+  {
+    requireLogin();
+
+    $id_annuncio  = (int) ($_GET['id'] ?? 0);
+    $annuncio     = $this->model->getAnnuncioById($id_annuncio);
+
+    $proprietario_id = $annuncio['proprietario'] ?? 0;
+
+    if (!$annuncio || (int) $proprietario_id !== (int) $_SESSION['id_studente']) {
+      $_SESSION['errors'][] = "Accesso negato o annuncio non trovato.";
+      header("Location: index.php?page=annunci&action=index");
+      exit;
+    }
+
+    $libri      = $this->libriModel->getAllLibri();
+    $luoghi     = $this->model->getLuoghi();
+    $condizioni = get_condizioni();
+    $immagini   = $this->immagineModels->getAllByAnnuncio($id_annuncio);
+
+    $title = "Modifica annuncio";
+    $view = __DIR__ . '/../views/annunci/modifica.php';
+    include __DIR__ . '/../views/layout.php';
+  }
+
+  public function update(): void
+  {
+    requireLogin();
+
+    $idAnnuncio = (int) ($_POST['id_annuncio'] ?? 0);
+    $annuncio   = $this->model->getAnnuncioById($idAnnuncio);
+
+    $proprietario_id = $annuncio['proprietario'] ?? 0;
+    if (!$annuncio || (int)$proprietario_id !== (int)$_SESSION['id_studente']) {
+      $_SESSION['errors'][] = "Operazione non autorizzata.";
+      header("Location: index.php");
+      exit;
+    }
+
+    $isbn           = trim($_POST['isbn'] ?? '');
+    $prezzo         = (float) ($_POST['prezzo_vendita'] ?? 0);
+    $descrizione    = trim($_POST['descrizione'] ?? '');
+    $dataOraScambio = trim($_POST['data_ora_scambio'] ?? '');
+    $idLuogo        = (int) ($_POST['id_luogo'] ?? 0);
+    $condizione     = trim($_POST['condizione'] ?? '');
+
+    $libro = $this->libriModel->getLibroByIsbn($isbn);
+    if (!$libro)
+      $_SESSION['errors'][] = "ISBN non trovato nel catalogo";
+    if ($prezzo <= 0)
+      $_SESSION['errors'][] = "Inserisci un prezzo valido";
+    if (empty($dataOraScambio))
+      $_SESSION['errors'][] = "Inserisci data e ora dello scambio";
+
+    if (!empty($_SESSION['errors'])) {
+      header("Location: index.php?page=annunci&action=modifica&id=$idAnnuncio");
+      exit;
+    }
+
+    $params = [
+      $prezzo,
+      $descrizione,
+      $dataOraScambio,
+      $idLuogo,
+      $libro['id_libro'],
+      $condizione,
+      $idAnnuncio
+    ];
+
+    if ($this->model->updateAnnuncio($params)) {
+      $_SESSION['success'] = "Annuncio aggiornato con successo!";
+    } else {
+      $_SESSION['errors'][] = "Errore durante il salvataggio delle modifiche.";
+    }
+
+    header("Location: index.php?page=annunci&action=dettaglio&id=$idAnnuncio");
+    exit;
+  }
 
   /**
    * Salva il nuovo annuncio nel DB, poi gestisce le immagini allegate.
@@ -209,7 +301,7 @@ class AnnunciController
     }
 
     if ($files_sent) {
-      $this->uploader->salvaImmagineAnnuncio($this->pdo, $newId, $_FILES['immagini']);
+      $this->uploader->salvaImmagineAnnuncio($newId, $_FILES['immagini']);
       $_SESSION['success'] = "Annuncio e foto pubblicati!";
       header("Location: index.php?page=annunci&action=dettaglio&id={$newId}");
     } else {
@@ -243,7 +335,7 @@ class AnnunciController
       exit;
     }
 
-    $immagini = $this->model->getImmaginiAnnuncio($idAnnuncio);
+    $immagini = $this->immagineModels->getAllByAnnuncio($idAnnuncio);
 
     $title = "Aggiungi foto";
     $view  = __DIR__ . '/../views/annunci/upload_immagini.php';
@@ -341,8 +433,7 @@ class AnnunciController
     $idImg = (int)($_GET['id_img'] ?? 0);
     $idAnnuncio = (int)($_GET['id_annuncio'] ?? 0);
 
-    // 1. Recupera info immagine e verifica proprietà
-    $img = $this->model->getImmagineById($idImg);
+    $img = $this->immagineModels->getById($idImg);
     $annuncio = $this->model->getAnnuncioById($idAnnuncio);
 
     if ($img && $annuncio && (int)$annuncio['proprietario'] === (int)$_SESSION['id_studente']) {
@@ -352,7 +443,7 @@ class AnnunciController
         unlink($percorsoFisico);
       }
 
-      $this->model->deleteImmagine($idImg);
+      $this->immagineModels->delete($idImg);
       $_SESSION['success'] = "Immagine rimossa con successo.";
     } else {
       $_SESSION['errors'][] = "Impossibile eliminare l'immagine.";
@@ -376,7 +467,7 @@ class AnnunciController
     $idAnnuncio = (int) ($_POST['id_annuncio'] ?? 0);
 
     // 1. Elimina i file fisici (legge i nomi dal DB prima del CASCADE)
-    $this->uploader->eliminaImmaginiAnnuncio($this->pdo, $idAnnuncio);
+    $this->uploader->eliminaImmaginiAnnuncio($idAnnuncio);
 
     // 2. Elimina l'annuncio — il CASCADE rimuove le righe in Immagini_Annunci
     if ($this->model->deleteAnnuncio($idAnnuncio, $_SESSION['id_studente'])) {

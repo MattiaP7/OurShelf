@@ -126,7 +126,7 @@
                   </span>
                 </td>
                 <td class="text-end fw-bold text-primary">€<?= number_format($a['prezzo_vendita'], 2) ?></td>
-                <td class="text-end text-muted small"><?= date('d/m/Y', strtotime($a['data_pubblicazione'])) ?></td>
+                <td class="text-end text-muted small"><?= date('d/m/Y H:i', strtotime($a['data_pubblicazione'])) ?></td>
                 <td class="text-end">
                   <div class="d-flex gap-1 justify-content-end">
                     <a href="index.php?page=annunci&action=dettaglio&id=<?= (int)$a['id_annuncio'] ?>"
@@ -193,7 +193,7 @@
                 </td>
                 <td class="text-end text-muted small">
                   <i class="bi bi-calendar-event me-1"></i>
-                  <?= !empty($a['data_acquisto']) ? date('d/m/Y', strtotime($a['data_acquisto'])) : '—' ?>
+                  <?= !empty($a['data_acquisto']) ? date('d/m/Y H:i', strtotime($a['data_acquisto'])) : '—' ?>
                 </td>
               </tr>
             <?php endforeach; ?>
@@ -235,7 +235,7 @@
                 <td class="text-muted small"><?= safe_string($a['venditore']) ?></td>
                 <td class="text-end fw-bold">€<?= number_format($a['prezzo_vendita'], 2) ?></td>
                 <td class="text-end text-muted small">
-                  <?= !empty($a['data_acquisto']) ? date('d/m/Y', strtotime($a['data_acquisto'])) : 'N/A' ?>
+                  <?= !empty($a['data_acquisto']) ? date('d/m/Y H:i', strtotime($a['data_acquisto'])) : 'N/A' ?>
                 </td>
                 <td class="text-end">
                   <form method="POST" action="index.php?page=annunci&action=annullaAcquisto"
@@ -256,17 +256,3 @@
   </div>
 
 </div>
-
-<?php
-// Helper locale per gli empty state
-function _empty_state(string $icon, string $titolo, string $desc): string
-{
-  return "
-    <div class='text-center py-5'>
-      <i class='bi bi-{$icon} display-3 text-muted opacity-50'></i>
-      <h6 class='mt-3 fw-semibold'>{$titolo}</h6>
-      <p class='text-muted small'>{$desc}</p>
-    </div>
-  ";
-}
-?>

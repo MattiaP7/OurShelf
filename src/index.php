@@ -36,6 +36,6 @@ if (file_exists($path)) {
   }
 } else {
   $_SESSION['errors'][] = 'Pagina non esistente';
-  header("Location: index.php?page=home");
+  header("Location: index.php?page=home&action=notFound");
   exit;
 }

@@ -42,11 +42,11 @@ class DashboardController
     $idStudente = (int) $_SESSION['id_studente'];
 
     // recupero tutti gli annunci del venditore e li separo per stato
-    $tuttiAnnunci   = $this->model->getAnnunciByVenditore($idStudente);
+    $annuncio   = $this->model->getAnnunciByVenditore($idStudente);
     $inVendita = [];
     $libriVenduti = [];
 
-    foreach ($tuttiAnnunci as $a) {
+    foreach ($annuncio as $a) {
       if ($a['stato'] === 'disponibile') {
         $inVendita[] = $a;
       } elseif ($a['stato'] === 'venduto') {
