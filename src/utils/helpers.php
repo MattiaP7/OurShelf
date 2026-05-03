@@ -72,6 +72,10 @@ function flash_success(): void
  */
 function isEmailDomainValid(string $email): bool
 {
+  if (empty($email))
+    return false;
+
+  $domain = '';
   if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
     // explode divide la stringa dato il separatore e fa un array 
     $domain = explode('@', $email)[1];

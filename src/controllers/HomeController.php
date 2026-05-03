@@ -59,6 +59,8 @@ class HomeController
     $prezzoMin  = (float) ($_GET['prezzo_min'] ?? 0);
     $prezzoMax  = (float) ($_GET['prezzo_max'] ?? 0);
 
+    $this->annunciModel->scadiAnnunci();
+
     $annunci = $this->annunciModel->getAnnunci(
       $materia,
       $condizione,
@@ -72,13 +74,6 @@ class HomeController
     $materie = $this->libriModel->getMaterie();
     $condizioni = get_condizioni();
 
-    foreach ($annunci as &$a) {
-      // aggiungo il campo foto all'annuncio
-      $a['foto'] = $this->immagineModels->getAllByAnnuncio($a['id_annuncio']);
-    }
-    // togliamo riferimenti ad $a, se ancora presenti
-    // altrimenti sovrascrive le foto di tutti gli annunci, mostrando solo la foto del primo annuncio per tutti
-    unset($a);
 
     $title = 'Home Page';
     $view = __DIR__ . '/../views/layout/main_view.php';

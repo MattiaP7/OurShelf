@@ -151,7 +151,7 @@ $avatarUrl = !empty($user['foto'])
 
         <div class="card border-0 shadow-sm rounded-4 p-4 mb-3">
           <h6 class="fw-bold text-muted text-uppercase small mb-1" style="letter-spacing:1px;">
-            <i class="bi bi-shield-lock text-primary me-2"></i>Sicurezza
+            <i class="bi bi-shield-lock text-primary me-2"></i>Cambia Password
           </h6>
           <p class="text-muted" style="font-size:.75rem;">
             Lascia vuoto se non vuoi cambiare password.

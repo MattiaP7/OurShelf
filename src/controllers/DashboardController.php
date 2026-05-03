@@ -41,19 +41,32 @@ class DashboardController
 
     $idStudente = (int) $_SESSION['id_studente'];
 
+    // fa scadere gli annunci con data scaduta
+    $this->model->scadiAnnunci();
+
     // recupero tutti gli annunci del venditore e li separo per stato
-    $annuncio   = $this->model->getAnnunciByVenditore($idStudente);
-    $inVendita = [];
+    $tuttiAnnunci = $this->model->getAnnunciByVenditore($idStudente);
+
+    // separiamo gli annunci per stato
+    $inVendita    = [];
     $libriVenduti = [];
 
-    foreach ($annuncio as $a) {
-      if ($a['stato'] === 'disponibile') {
+
+    $n_scaduti = 0;
+    $n_disponibili = 0;
+
+    foreach ($tuttiAnnunci as $a) {
+      if ($a['stato'] === 'disponibile' || $a['stato'] === 'scaduto') {
         $inVendita[] = $a;
+        if ($a['stato'] === 'scaduto') $n_scaduti++;
+        if ($a['stato'] === 'disponibile') $n_disponibili++;
       } elseif ($a['stato'] === 'venduto') {
         $libriVenduti[] = $a;
       }
     }
+
     $libriAcquistati = $this->model->getLibriAcquistati($idStudente);
+
 
     $title = "{$_SESSION['nome_completo']}";
     $view = __DIR__ . '/../views/dashboard/index.php';

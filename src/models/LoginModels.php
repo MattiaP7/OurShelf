@@ -50,9 +50,9 @@ class LoginModels
   public function getClassi(array $params = []): array
   {
     $dql  = "SELECT id_classe, anno, sezione, indirizzo FROM Classi ORDER BY anno, sezione";
-    $stmt = $this->pdo->prepare($dql);
-    $stmt->execute($params);
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stm = $this->pdo->prepare($dql);
+    $stm->execute($params);
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
   }
 
   /**
@@ -65,9 +65,9 @@ class LoginModels
   public function authUser(string $email): array
   {
     $dql = "SELECT * FROM Studenti WHERE email = ? LIMIT 1";
-    $stmt = $this->pdo->prepare($dql);
-    $stmt->execute([$email]);
-    $result =  $stmt->fetch(PDO::FETCH_ASSOC);
+    $stm = $this->pdo->prepare($dql);
+    $stm->execute([$email]);
+    $result =  $stm->fetch(PDO::FETCH_ASSOC);
 
     if ($result === false)
       return [];
@@ -88,11 +88,11 @@ class LoginModels
             INSERT INTO Studenti (nome, cognome, data_nascita, sesso, email, password, id_classe)
             VALUES (?, ?, ?, ?, ?, ?, ?)
         ";
-    $stmt = $this->pdo->prepare($dql);
-    $stmt->execute($params);
+    $stm = $this->pdo->prepare($dql);
+    $stm->execute($params);
 
     // Verifichiamo se l'inserimento ha effettivamente prodotto una riga.
-    if ($stmt->rowCount() > 0) {
+    if ($stm->rowCount() > 0) {
       // Recupera l'ultimo ID autoincrementale generato dalla connessione.
       return (int) $this->pdo->lastInsertId();
     }
@@ -111,7 +111,7 @@ class LoginModels
   public function updatePassword(string $hash, int $id): bool
   {
     $dql = "UPDATE Studenti SET password = ? WHERE id_studente = ?";
-    $stmt = $this->pdo->prepare($dql);
-    return $stmt->execute([$hash, $id]);
+    $stm = $this->pdo->prepare($dql);
+    return $stm->execute([$hash, $id]);
   }
 }

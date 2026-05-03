@@ -107,10 +107,12 @@ class UsersController
     if (empty($dataNascita)) {
       $_SESSION['errors'][] = "La data di nascita è obbligatoria";
     }
+    // con il terzo parametro controlliamo che il tipo che cerchiamo sia uguale al tipo degli elementi da dove cerchiamo
     if (!in_array($sesso, ['m', 'f'], true)) {
       $_SESSION['errors'][] = "Seleziona un sesso valido";
     }
 
+    // validazione email, controlliamo se gia' usata da un utente che NON sia noi stessi
     if (empty($email) || !isEmailDomainValid($email)) {
       $_SESSION['errors'][] = "Inserisci un'email valida";
     } elseif (!empty($this->model->emailEsiste($email, $_SESSION['id_studente']))) {
@@ -178,7 +180,7 @@ class UsersController
       $vecchia_foto = $userDB['foto'] ?? '';
 
       // salva la nuova foto
-      $this->uploader->salvaAvatar($this->pdo, $userId, $_FILES['avatar'], $vecchia_foto);
+      $this->uploader->salvaAvatar($userId, $_FILES['avatar'], $vecchia_foto);
       $user_aggiornato = $this->model->getUser($userId);
       $_SESSION['foto'] = $user_aggiornato['foto'] ?? '';
     }

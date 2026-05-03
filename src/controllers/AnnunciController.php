@@ -211,6 +211,8 @@ class AnnunciController
       exit;
     }
 
+    $stato = (new DateTime($dataOraScambio) > new DateTime()) ? 'disponibile' : 'scaduto';
+
     $params = [
       $prezzo,
       $descrizione,
@@ -218,6 +220,7 @@ class AnnunciController
       $idLuogo,
       $libro['id_libro'],
       $condizione,
+      $stato,
       $idAnnuncio
     ];
 

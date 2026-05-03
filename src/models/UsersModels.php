@@ -41,9 +41,9 @@ class UsersModels
              FROM Studenti 
              WHERE id_studente = ? 
              LIMIT 1";
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute([$userId]);
-    return $stmt->fetch(PDO::FETCH_ASSOC);
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute([$userId]);
+    return $stm->fetch(PDO::FETCH_ASSOC);
   }
 
   /**
@@ -56,9 +56,9 @@ class UsersModels
   public function getClassi(): array
   {
     $sql  = "SELECT id_classe, anno, sezione, indirizzo FROM Classi ORDER BY anno, sezione";
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute();
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
   }
 
   /**
@@ -74,9 +74,9 @@ class UsersModels
   public function emailEsiste(string $email, int $id_studente): bool
   {
     $sql  = "SELECT id_studente FROM Studenti WHERE email = ? and id_studente != ? LIMIT 1";
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute([$email, $id_studente]);
-    return (bool) $stmt->fetch();
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute([$email, $id_studente]);
+    return (bool) $stm->fetch();
   }
 
   /**
@@ -134,9 +134,9 @@ class UsersModels
       $params = [$nome, $cognome, $dataNascita, $sesso, $email, $idClasse, $userId];
     }
 
-    $stmt = $this->pdo->prepare($sql);
-    return $stmt->execute($params);
-    //return $stmt->rowCount() > 0;
+    $stm = $this->pdo->prepare($sql);
+    return $stm->execute($params);
+    //return $stm->rowCount() > 0;
   }
 
   /**

@@ -23,6 +23,9 @@ class secureUploader
   /** @var int $max_image numero massimo di immagini caricabili */
   private int   $max_image;
 
+  /** @var int  $max_mb numero massimo di MB */
+  private int   $max_mb;
+
   /** @var int $max_size dimensione massima per immagine (in MB) */
   private int   $max_size;
 
@@ -43,7 +46,8 @@ class secureUploader
     $this->dir_annuncio   = __DIR__ . '/../../public/uploads/annunci/';
     $this->dir_users      = __DIR__ . '/../../public/uploads/users/';
     $this->max_image      = 3;
-    $this->max_size       = 2 * 1024 * 1024; // 2MB
+    $this->max_mb         = 2;
+    $this->max_size       = $this->max_mb * 1024 * 1024; // 2MB
     $this->immagineModel  = new ImmagineAnnuncioModel();
     $this->userModel      = new UsersModels();
   }
@@ -67,8 +71,6 @@ class secureUploader
       return;
     }
 
-    // sistemiamo l'array dei file
-    $files = $this->normalizza($files);
 
     if (empty($files)) {
       $_SESSION['errors'][] = 'Nessun file ricevuto';
@@ -77,12 +79,31 @@ class secureUploader
 
     $salvati = 0;
     $immagini_rimaste = $this->max_image - $trovate;
+    // se files['name'] e' un array prendiamo la dimensione, altrimenti ha valore 1
+    $count = is_array($files['name']) ? count($files['name']) : 1;
 
-    foreach ($files as $file) {
+    for ($i = 0; $i < $count; $i++) {
       if ($salvati >= $immagini_rimaste) {
         $_SESSION['errors'][] = "Limite di 3 immagini raggiunto. File extra ignorati.";
         break;
       }
+
+      $error = is_array($files['error']) ? $files['error'][$i] : $files['error'];
+      if ($error === UPLOAD_ERR_NO_FILE) continue;
+
+      /**
+       * Dobbiamo fare questo perche' la struttura del array files e' fatta cosi:
+       * $_FILES['immagini'] ha questa forma:
+          ['name' => ['a.jpg', 'b.png'], 'tmp_name' => ['/tmp/1', '/tmp/2'], 'error' => [0, 0], ...]
+       */
+
+      $file = [
+        'name'     => is_array($files['name'])     ? $files['name'][$i]     : $files['name'],
+        'type'     => is_array($files['type'])     ? $files['type'][$i]     : $files['type'],
+        'tmp_name' => is_array($files['tmp_name']) ? $files['tmp_name'][$i] : $files['tmp_name'],
+        'error'    => $error,
+        'size'     => is_array($files['size'])     ? $files['size'][$i]     : $files['size'],
+      ];
 
       $errore = $this->valida($file);
       if ($errore !== "") {
@@ -90,15 +111,15 @@ class secureUploader
         continue;
       }
 
-      $nome_file  = $this->genera_nome('ann', $id_annuncio, $file['name']);
-      $dest       = $this->dir_annuncio . $nome_file;
+      $nome_file = $this->genera_nome('ann', $id_annuncio, $file['name']);
+      $dest      = $this->dir_annuncio . $nome_file;
 
       if (move_uploaded_file($file['tmp_name'], $dest)) {
         chmod($dest, 0644);
         $this->immagineModel->insert($id_annuncio, $nome_file);
         $salvati++;
       } else {
-        $_SESSION['error'][] = "Errore nel salvataggio di \"{$file['name']}\".";
+        $_SESSION['errors'][] = "Errore nel salvataggio di \"{$file['name']}\".";
       }
     }
 
@@ -261,7 +282,7 @@ class secureUploader
     }
 
     if (($file['size'] ?? 0) > $this->max_size) {
-      return "Il file \"{$file['name']}\" supera i 2MB.";
+      return "Il file \"{$file['name']}\" supera i {$this->max_mb}MB.";
     }
 
     $tmp = $file['tmp_name'] ?? null;

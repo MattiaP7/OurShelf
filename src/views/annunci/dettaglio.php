@@ -222,6 +222,14 @@ if (!empty($avatar_venditore)) {
                   </button>
                 </form>
               </div>
+            <?php elseif ($annuncio['stato'] === 'scaduto'): ?>
+              <div class="alert alert-warning rounded-3 small text-center py-2">
+                <i class="bi bi-clock-history me-1"></i>
+                La data di scambio è passata. Il venditore può rinnovare l'annuncio.
+              </div>
+              <button class="btn btn-secondary btn-lg rounded-pill py-3 disabled w-100">
+                SCAMBIO SCADUTO
+              </button>
             <?php elseif ($annuncio['stato'] === 'disponibile'): ?>
               <form method="POST" action="index.php?page=annunci&action=acquista">
                 <input type="hidden" name="id_annuncio" value="<?= (int)$annuncio['id_annuncio'] ?>">
