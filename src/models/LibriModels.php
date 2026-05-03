@@ -42,9 +42,9 @@ class LibriModels
   public function getLibroByIsbn(string $isbn): array
   {
     $sql  = "SELECT * FROM Libri WHERE isbn = ? LIMIT 1";
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute([$isbn]);
-    return $stmt->fetch(PDO::FETCH_ASSOC);
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute([$isbn]);
+    return $stm->fetch(PDO::FETCH_ASSOC);
   }
 
   /**
@@ -58,9 +58,9 @@ class LibriModels
   public function getLibroById(int $id): array|false
   {
     $sql  = "SELECT * FROM Libri WHERE id_libro = ? LIMIT 1";
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute([$id]);
-    return $stmt->fetch(PDO::FETCH_ASSOC);
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute([$id]);
+    return $stm->fetch(PDO::FETCH_ASSOC);
   }
 
   /**
@@ -85,9 +85,9 @@ class LibriModels
       FROM Libri 
       ORDER BY materia, titolo
     ";
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute();
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
   }
 
 
@@ -129,9 +129,9 @@ class LibriModels
 				l.prezzo
 			ORDER BY l.materia, l.titolo
 		";
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute([$idClasse]);
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute([$idClasse]);
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
   }
 
   /**
@@ -145,8 +145,8 @@ class LibriModels
   public function getMaterie(): array
   {
     $sql  = "SELECT DISTINCT materia FROM Libri ORDER BY materia";
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute();
-    return array_column($stmt->fetchAll(PDO::FETCH_ASSOC), 'materia');
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute();
+    return array_column($stm->fetchAll(PDO::FETCH_ASSOC), 'materia');
   }
 }

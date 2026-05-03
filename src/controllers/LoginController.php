@@ -186,7 +186,7 @@ class LoginController
     // vecchia_foto = '' perche' l'utente appena creato non aveva ancora una foto
 
     if (!empty($_FILES['avatar']) && $_FILES['avatar']['error'] !== UPLOAD_ERR_NO_FILE) {
-      $this->uploader->salvaAvatar($this->pdo, (int) $user_id, $_FILES['avatar'], '');
+      $this->uploader->salvaAvatar((int) $user_id, $_FILES['avatar'], '');
     }
 
     $_SESSION['success'] = "Registrazione completata! Accedi ora";
@@ -220,7 +220,7 @@ class LoginController
     $email         = trim($_POST['email']         ?? '');
     $oldPassword   = trim($_POST['oldPassword']   ?? '');
     $newPassword   = trim($_POST['newPassword']   ?? '');
-    $reNewPassword = trim($_POST['reNewPassword'] ?? '');
+    $reNewPassword = trim($_POST['confNewPassword'] ?? '');
 
     if (empty($email) || !isEmailDomainValid($email)) {
       $_SESSION['errors'][] = "Devi usare un'email istituzionale";

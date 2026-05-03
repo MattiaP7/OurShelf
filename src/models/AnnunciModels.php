@@ -68,11 +68,13 @@ class AnnunciModels
       l.volume,
       l.prezzo AS prezzo_listino, -- Alias per il prezzo originale
       ls.nome AS luogo_scambio,
+      IA.nome_file as foto,
       CONCAT(s.nome, ' ', s.cognome) AS venditore
     FROM Annunci a
     JOIN Libri         l  ON a.id_libro    = l.id_libro
     JOIN Luoghi_Scambi ls ON a.id_luogo    = ls.id_luogo
     JOIN Studenti      s  ON a.id_venditore = s.id_studente
+    JOIN Immagini_Annunci IA USING(id_annuncio)
     WHERE a.stato = 'disponibile'
   ";
 
@@ -107,33 +109,32 @@ class AnnunciModels
       $params[] = '%' . $editore . '%';
     }
 
-    // GROUP BY aggiornato con gli alias corretti
-    $sql .= " ORDER BY a.data_pubblicazione DESC";
-    //   $sql .= "
-    //   GROUP BY
-    //     a.id_annuncio,
-    //     prezzo_vendita,
-    //     a.id_venditore,
-    //     a.data_pubblicazione,
-    //     a.descrizione,
-    //     a.data_ora_scambio,
-    //     a.stato,
-    //     a.condizione,
-    //     l.titolo,
-    //     l.autore,
-    //     l.isbn,
-    //     l.materia,
-    //     l.editore,
-    //     l.volume,
-    //     prezzo_listino,
-    //     ls.nome,
-    //     venditore
-    //   ORDER BY a.data_pubblicazione DESC
-    // ";
+    $sql .= "
+      GROUP BY
+        a.id_annuncio,
+        prezzo_vendita,
+        a.id_venditore,
+        a.data_pubblicazione,
+        a.descrizione,
+        a.data_ora_scambio,
+        a.stato,
+        a.condizione,
+        l.titolo,
+        l.autore,
+        l.isbn,
+        l.materia,
+        l.editore,
+        l.volume,
+        prezzo_listino,
+        ls.nome,
+        venditore,
+        foto
+      ORDER BY a.data_pubblicazione DESC
+    ";
 
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute($params);
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute($params);
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
   }
 
   /**
@@ -201,9 +202,9 @@ class AnnunciModels
         sv.email
       LIMIT 1
     ";
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute([$id]);
-    return $stmt->fetch(PDO::FETCH_ASSOC);
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute([$id]);
+    return $stm->fetch(PDO::FETCH_ASSOC);
   }
 
   /**
@@ -221,8 +222,8 @@ class AnnunciModels
 				(prezzo, descrizione, data_ora_scambio, id_venditore, id_luogo, id_libro, condizione)
 			VALUES (?, ?, ?, ?, ?, ?, ?)
 		";
-    $stmt = $this->pdo->prepare($sql);
-    if ($stmt->execute($params)) {
+    $stm = $this->pdo->prepare($sql);
+    if ($stm->execute($params)) {
       return (int) $this->pdo->lastInsertId();
     }
     return 0;
@@ -258,9 +259,28 @@ class AnnunciModels
 			WHERE id_annuncio = ?
 			  AND stato       = 'disponibile'
 		";
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute([$idCompratore, $idAnnuncio]);
-    return $stmt->rowCount() > 0;
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute([$idCompratore, $idAnnuncio]);
+    return $stm->rowCount() > 0;
+  }
+
+  /**
+   * Cambio lo stato di un Annuncio, in caso la data di scambio fosse minore della data attuale e nessuno lo ha comprato vuol dire che l'annuncio e' scaduto
+   *
+   * @return boolean
+   * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
+   * @date 03/05/2026
+   */
+  public function scadiAnnunci(): bool
+  {
+    $sql = "UPDATE Annunci
+      SET stato = 'scaduto'
+      WHERE stato = 'disponibile'
+      AND data_ora_scambio < NOW()
+    ";
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute([]);
+    return $stm->rowCount() > 0;
   }
 
   /**
@@ -301,9 +321,9 @@ class AnnunciModels
   public function deleteAnnuncio(int $idAnnuncio, int $idVenditore): bool
   {
     $sql  = "DELETE FROM Annunci WHERE id_annuncio = ? AND id_venditore = ?";
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute([$idAnnuncio, $idVenditore]);
-    return $stmt->rowCount() > 0;
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute([$idAnnuncio, $idVenditore]);
+    return $stm->rowCount() > 0;
   }
 
   /**
@@ -338,9 +358,9 @@ class AnnunciModels
         ORDER BY a.data_pubblicazione DESC
     ";
 
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute([$idStudente]);
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute([$idStudente]);
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
   }
 
   /**
@@ -382,15 +402,15 @@ class AnnunciModels
 				venditore
 			ORDER BY a.data_acquisto DESC
 		";
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute([$idStudente]);
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute([$idStudente]);
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
   }
 
   /**
    * Aggiorna i dati di un annuncio esistente.
    *
-   * @param array $params [prezzo, descrizione, data_ora_scambio, id_luogo, condizione, id_annuncio]
+   * @param array $params [prezzo, descrizione, data_ora_scambio, id_luogo, condizione, stato, id_annuncio]
    * @return boolean
    * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
    * @date 02/05/2026
@@ -403,7 +423,8 @@ class AnnunciModels
                     data_ora_scambio = ?, 
                     id_luogo = ?, 
                     id_libro = ?, 
-                    condizione = ? 
+                    condizione = ?,
+                    stato = ?
                 WHERE id_annuncio = ?";
 
     $stm = $this->pdo->prepare($sql);
@@ -420,8 +441,8 @@ class AnnunciModels
   public function getLuoghi(): array
   {
     $sql  = "SELECT id_luogo, nome FROM Luoghi_Scambi ORDER BY nome";
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute();
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
   }
 }

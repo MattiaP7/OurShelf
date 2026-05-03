@@ -51,7 +51,7 @@ define('STOCK_IMG', 'https://images.unsplash.com/photo-1512820790803-83ca734da79
                       class="w-100 h-100" style="object-fit:cover;">
                   <?php else: ?>
                     <!-- Prendi la prima immagine dell'annuncio specifico -->
-                    <img src="<?= APP_BASE_URL ?>/public/uploads/annunci/<?= $a['foto'][0]['nome_file'] ?>"
+                    <img src="<?= APP_BASE_URL ?>/public/uploads/annunci/<?= $a['foto'] ?>"
                       alt="Foto libro"
                       class="w-100 h-100" style="object-fit:cover;">
                   <?php endif; ?>
