@@ -85,6 +85,18 @@ function requireLogin(): void
 }
 
 
+/**
+ * il codice di sotto ci permette di creare una costante chiamata BASE_URL che contiene l'url del nostro
+ * sito in modo tale che quando dobbiamo andare a collegare un link esterno o delle pagine tra di loro
+ * andiamo ad aprire l'ambiente php nel link per potere richiamare questa costante e aggiungere solamente
+ * la parte di percorso mancante... questo risolve tutti i problemi legati ai percorsi per i collegamenti
+ * dei file tra di loro e per link esterni, così che anche se dovesse cambiare qualcosa all'interno delle cartelle
+ * quindi magari si spostano dei file, la base del percorso rimane sempre quella 
+ *
+ * @author Matteo Portacci <portacci.7780@isit100.fe.it>
+ * @param mixed BASE_URL
+ * @return void
+ */
 $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
 $host = $_SERVER['HTTP_HOST'];
 $script_dir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
