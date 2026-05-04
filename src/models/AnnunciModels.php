@@ -235,7 +235,11 @@ class AnnunciModels
     $sql = "SELECT foto FROM Studenti WHERE id_studente = ?";
     $stm = $this->pdo->prepare($sql);
     $stm->execute([$id_venditore]);
-    return $stm->fetch(PDO::FETCH_COLUMN);
+    $foto = $stm->fetchColumn();
+    if (empty($foto))
+      return "";
+    else
+      return $foto;
   }
 
 

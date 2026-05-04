@@ -82,7 +82,7 @@ if (!empty($_SESSION['id_studente']) && !empty($_SESSION['foto'])) {
                       <!-- Iniziale colorata come fallback -->
                       <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white fw-bold"
                         style="width:32px;height:32px;font-size:.85rem;flex-shrink:0;">
-                        <?= strtoupper($_SESSION['name'][0]) ?>
+                        <?= strtoupper($_SESSION['nome_completo'][0]) ?>
                       </div>
                     <?php endif; ?>
 
