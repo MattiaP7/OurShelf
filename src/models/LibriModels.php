@@ -39,12 +39,12 @@ class LibriModels
    * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
    * @date 21/04/2026
    */
-  public function getLibroByIsbn(string $isbn): array|false
+  public function getLibroByIsbn(string $isbn): array
   {
     $sql  = "SELECT * FROM Libri WHERE isbn = ? LIMIT 1";
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute([$isbn]);
-    return $stmt->fetch(PDO::FETCH_ASSOC);
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute([$isbn]);
+    return $stm->fetch(PDO::FETCH_ASSOC);
   }
 
   /**
@@ -58,47 +58,36 @@ class LibriModels
   public function getLibroById(int $id): array|false
   {
     $sql  = "SELECT * FROM Libri WHERE id_libro = ? LIMIT 1";
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute([$id]);
-    return $stmt->fetch(PDO::FETCH_ASSOC);
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute([$id]);
+    return $stm->fetch(PDO::FETCH_ASSOC);
   }
 
   /**
    * Recupera tutti i libri adottati in tutta la scuola
    *
-   * @return void
+   * @return array
    * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
    * @date 18/04/2026
    */
-  public function getAllLibri()
+  public function getAllLibri(): array
   {
     $sql = "
-        SELECT 
-            id_libro, 
-            isbn, 
-            titolo, 
-            autore, 
-            materia, 
-            editore, 
-            volume, 
-            anno_scolastico,
-            prezzo
-        FROM Libri 
-        GROUP BY 
-            id_libro, 
-            isbn, 
-            titolo, 
-            autore, 
-            materia, 
-            editore, 
-            volume, 
-            anno_scolastico,
-            prezzo
-        ORDER BY materia, titolo
+      SELECT DISTINCT
+        isbn, 
+        titolo, 
+        autore, 
+        materia, 
+        editore, 
+        volume, 
+        anno_scolastico,
+        prezzo
+      FROM Libri 
+      ORDER BY materia, titolo
     ";
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute();
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
   }
 
 
@@ -126,7 +115,7 @@ class LibriModels
 				l.anno_scolastico,
 				l.prezzo
 			FROM Libri l
-			JOIN Classi_Libri cl ON l.id_libro = cl.id_libro
+			JOIN Classi_Libri cl USING(id_libro)
 			WHERE cl.id_classe = ?
 			GROUP BY
 				l.id_libro,
@@ -140,9 +129,9 @@ class LibriModels
 				l.prezzo
 			ORDER BY l.materia, l.titolo
 		";
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute([$idClasse]);
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute([$idClasse]);
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
   }
 
   /**
@@ -156,21 +145,8 @@ class LibriModels
   public function getMaterie(): array
   {
     $sql  = "SELECT DISTINCT materia FROM Libri ORDER BY materia";
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute();
-    return array_column($stmt->fetchAll(PDO::FETCH_ASSOC), 'materia');
-  }
-
-  /**
-   * Verifica se un libro (tramite ISBN) è effettivamente adottato dalla scuola.
-   *
-   * @param string $isbn Il codice ISBN da verificare.
-   * @return bool True se il libro è nel catalogo scolastico.
-   * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
-   * @date 21/04/2026
-   */
-  public function isbnEsiste(string $isbn): bool
-  {
-    return $this->getLibroByIsbn($isbn) !== false;
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute();
+    return array_column($stm->fetchAll(PDO::FETCH_ASSOC), 'materia');
   }
 }

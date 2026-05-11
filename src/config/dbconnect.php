@@ -28,15 +28,10 @@ class DB
         DB_USERNAME,
         DB_PASSWORD,
         // quando c'è un errore solleva eccezzione
-        // le query vengono preparate da mysql e non php
-        [
-          PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-          PDO::ATTR_EMULATE_PREPARES => false,
-        ]
+        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
       );
       return $pdo;
     } catch (PDOException $e) {
-
       throw new Exception('Errore di connessione al database.');
     }
   }

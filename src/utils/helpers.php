@@ -3,7 +3,6 @@
 /**
  * Converte caratteri speciali in entità HTML per una stampa sicura nelle View.
  * 
- * Protegge l'applicazione da attacchi XSS (Cross-Site Scripting). 
  * Esempio: trasformando `"<a>"` in `"&lt;a&gt;"`, il browser visualizzerà 
  * il testo letterale invece di interpretarlo come un link o script.
  *
@@ -13,34 +12,52 @@
  * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
  * @date 20/03/2026
  */
-function safe_string(?string $value): string
+function safe_string(string $value): string
 {
   return htmlspecialchars($value ?? '', ENT_QUOTES, 'UTF-8');
 }
 
-function flash_error()
+/**
+ * Funzione che stampa tutti gli errori
+ *
+ * @return void
+ * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
+ * @date 26/04/2026
+ */
+function flash_error(): void
 {
   if (!empty($_SESSION['errors'])) {
-    echo '<div class="alert alert-danger alert-dismissible fade show small shadow-sm" role="alert">
-            <ul class="mb-0 ps-3">';
+    echo '<div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <strong class="me-2">Attenzione!</strong>
+                </div>
+                <ul class="mb-0 mt-2">';
     foreach ($_SESSION['errors'] as $error) {
       echo "<li>" . safe_string($error) . "</li>";
     }
     echo '  </ul>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>';
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>';
     unset($_SESSION['errors']);
   }
 }
 
-function flash_success()
+/**
+ * Funzione che stampa il messaggio di successo
+ *
+ * @return void
+ * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
+ * @date 26/04/2026
+ */
+function flash_success(): void
 {
   if (!empty($_SESSION['success'])) {
-    echo '<div class="alert alert-success alert-dismissible fade show small shadow-sm d-flex align-items-center" role="alert">
-            <i class="bi bi-check-circle-fill me-2"></i>
-            <div>' . safe_string($_SESSION['success']) . '</div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>';
+    echo '<div class="alert alert-success alert-dismissible fade show shadow-sm d-flex align-items-center" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                <div>' . safe_string($_SESSION['success']) . '</div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>';
     unset($_SESSION['success']);
   }
 }
@@ -55,7 +72,12 @@ function flash_success()
  */
 function isEmailDomainValid(string $email): bool
 {
+  if (empty($email))
+    return false;
+
+  $domain = '';
   if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    // explode divide la stringa dato il separatore e fa un array 
     $domain = explode('@', $email)[1];
   }
 
@@ -66,6 +88,19 @@ function isEmailDomainValid(string $email): bool
     return false;
   }
 }
+
+/**
+ * Ritorna l'array delle condizioni dei libri
+ *
+ * @return array
+ * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
+ * @date 26/04/2026
+ */
+function get_condizioni(): array
+{
+  return ['Ottime condizioni', 'Buone condizioni', 'Condizioni accettabili', 'Danneggiato'];
+}
+
 
 /**
  * Verifica che l'utente sia autenticato.
@@ -84,14 +119,9 @@ function requireLogin(): void
   }
 }
 
-
 /**
  * il codice di sotto ci permette di creare una costante chiamata BASE_URL che contiene l'url del nostro
- * sito in modo tale che quando dobbiamo andare a collegare un link esterno o delle pagine tra di loro
- * andiamo ad aprire l'ambiente php nel link per potere richiamare questa costante e aggiungere solamente
- * la parte di percorso mancante... questo risolve tutti i problemi legati ai percorsi per i collegamenti
- * dei file tra di loro e per link esterni, così che anche se dovesse cambiare qualcosa all'interno delle cartelle
- * quindi magari si spostano dei file, la base del percorso rimane sempre quella 
+ * sito in modo tale che quando dobbiamo andare a collegare un link esterno o delle pagine tra di loro...
  *
  * @author Matteo Portacci <portacci.7780@isit100.fe.it>
  * @param mixed BASE_URL

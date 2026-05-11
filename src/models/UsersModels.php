@@ -37,10 +37,13 @@ class UsersModels
    */
   public function getUser(int $userId): array|false
   {
-    $sql  = "SELECT * FROM Studenti WHERE id_studente = ? LIMIT 1";
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute([$userId]);
-    return $stmt->fetch(PDO::FETCH_ASSOC);
+    $sql  = "SELECT id_studente, nome, cognome, data_nascita, sesso, email, id_classe, foto
+             FROM Studenti 
+             WHERE id_studente = ? 
+             LIMIT 1";
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute([$userId]);
+    return $stm->fetch(PDO::FETCH_ASSOC);
   }
 
   /**
@@ -53,9 +56,9 @@ class UsersModels
   public function getClassi(): array
   {
     $sql  = "SELECT id_classe, anno, sezione, indirizzo FROM Classi ORDER BY anno, sezione";
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute();
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
   }
 
   /**
@@ -63,17 +66,17 @@ class UsersModels
    * Usato per evitare duplicati quando l'utente cambia la propria email.
    *
    * @param string $email     L'email da verificare.
-   * @param int    $escludiId L'ID dello studente da escludere dal controllo (sé stesso).
+   * @param int $id_studente  Utente da escludere
    * @return bool True se l'email è già occupata da qualcun altro.
    * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
    * @date 21/04/2026
    */
-  public function emailEsiste(string $email, int $escludiId): bool
+  public function emailEsiste(string $email, int $id_studente): bool
   {
-    $sql  = "SELECT id_studente FROM Studenti WHERE email = ? AND id_studente != ? LIMIT 1";
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute([$email, $escludiId]);
-    return (bool) $stmt->fetch();
+    $sql  = "SELECT id_studente FROM Studenti WHERE email = ? and id_studente != ? LIMIT 1";
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute([$email, $id_studente]);
+    return (bool) $stm->fetch();
   }
 
   /**
@@ -131,8 +134,24 @@ class UsersModels
       $params = [$nome, $cognome, $dataNascita, $sesso, $email, $idClasse, $userId];
     }
 
-    $stmt = $this->pdo->prepare($sql);
-    return $stmt->execute($params);
-    //return $stmt->rowCount() > 0;
+    $stm = $this->pdo->prepare($sql);
+    return $stm->execute($params);
+    //return $stm->rowCount() > 0;
+  }
+
+  /**
+   * Aggiorna la foto profilo di uno studente
+   *
+   * @param string $nome_file
+   * @param integer $id_studente
+   * @return boolean
+   * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
+   * @date 02/05/2026
+   */
+  public function updateAvatar(string $nome_file, int $id_studente): bool
+  {
+    $sql = "UPDATE Studenti SET foto = ? WHERE id_studente = ?";
+    $stm = $this->pdo->prepare($sql);
+    return $stm->execute([$nome_file, $id_studente]);
   }
 }

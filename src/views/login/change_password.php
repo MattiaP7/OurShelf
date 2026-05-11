@@ -16,15 +16,26 @@
           <i class="bi bi-envelope text-muted"></i>
         </span>
 
-        <input
-          type="email"
-          name="email"
-          disabled
-          class="form-control border-0 ps-1"
-          placeholder="mario@esempio.it"
-          style="box-shadow: none;"
-          value="<?= safe_string($_SESSION['email'] ?? '') ?>"
-          required>
+        <?php if (!empty($_SESSION['email'])): ?>
+          <input
+            type="email"
+            name="email"
+            disabled
+            class="form-control border-0 ps-1"
+            placeholder="mario@esempio.it"
+            style="box-shadow: none;"
+            value="<?= safe_string($_SESSION['email'] ?? '') ?>"
+            required>
+        <?php else: ?>
+          <input
+            type="email"
+            name="email"
+            class="form-control border-0 ps-1"
+            placeholder="mario@esempio.it"
+            style="box-shadow: none;"
+            value=""
+            required>
+        <?php endif; ?>
       </div>
     </div>
 
@@ -133,4 +144,3 @@
 
   </form>
 </div>
-<script src="/pirazzi/OurShelf/src/utils/showPassword.js"></script>

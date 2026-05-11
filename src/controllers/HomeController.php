@@ -3,6 +3,8 @@ defined("APP") or die("Accesso negato");
 
 require_once __DIR__ . '/../models/AnnunciModels.php';
 require_once __DIR__ . '/../models/LibriModels.php';
+require_once __DIR__ . '/../models/AnnunciModels.php';
+require_once __DIR__ . '/../models/ImmagineAnnuncioModel.php';
 
 /**
  * Classe HomeController
@@ -16,10 +18,14 @@ require_once __DIR__ . '/../models/LibriModels.php';
 class HomeController
 {
   /** @var AnnunciModels Istanza del modello annunci */
-  private $model;
+  private AnnunciModels $annunciModel;
 
   /** @var LibriModels Istanza del modello libri (per la lista materie) */
-  private $libriModel;
+  private LibriModels $libriModel;
+
+  /** @var ImmagineAnnuncioModel Istanza del modello ImmagineAnnuncio  */
+  private ImmagineAnnuncioModel $immagineModels;
+
 
   /**
    * Inizializza il controller e i modelli necessari.
@@ -29,8 +35,9 @@ class HomeController
    */
   public function __construct()
   {
-    $this->model      = new AnnunciModels();
-    $this->libriModel = new LibriModels();
+    $this->annunciModel   = new AnnunciModels();
+    $this->libriModel     = new LibriModels();
+    $this->immagineModels = new ImmagineAnnuncioModel();
   }
 
   /**
@@ -52,7 +59,9 @@ class HomeController
     $prezzoMin  = (float) ($_GET['prezzo_min'] ?? 0);
     $prezzoMax  = (float) ($_GET['prezzo_max'] ?? 0);
 
-    $annunci = $this->model->getAnnunci(
+    $this->annunciModel->scadiAnnunci();
+
+    $annunci = $this->annunciModel->getAnnunci(
       $materia,
       $condizione,
       $prezzoMin,
@@ -63,9 +72,10 @@ class HomeController
     );
 
     $materie = $this->libriModel->getMaterie();
-    $condizioni = ['Ottime condizioni', 'Buone condizioni', 'Condizioni accettabili', 'Danneggiato'];
+    $condizioni = get_condizioni();
 
 
+    $title = 'Home Page';
     $view = __DIR__ . '/../views/layout/main_view.php';
     include __DIR__ . '/../views/layout.php';
   }
@@ -79,7 +89,15 @@ class HomeController
    */
   public function about(): void
   {
-    $view = __DIR__ . '/../views/link/chi_siamo.php';
+    $title = 'About Page';
+    $view = __DIR__ . '/../views/users/chi_siamo.php';
+    include __DIR__ . '/../views/layout.php';
+  }
+
+  public function notFound(): void
+  {
+    $title = 'Pagina non trovata';
+    $view = __DIR__ . '/../views/404.php';
     include __DIR__ . '/../views/layout.php';
   }
 }
