@@ -59,6 +59,7 @@ class HomeController
     $prezzoMin  = (float) ($_GET['prezzo_min'] ?? 0);
     $prezzoMax  = (float) ($_GET['prezzo_max'] ?? 0);
 
+    // prima di prendere gli annunci cambiamo lo stato di quelli gia' scaduti
     $this->annunciModel->scadiAnnunci();
 
     $annunci = $this->annunciModel->getAnnunci(
@@ -94,6 +95,14 @@ class HomeController
     include __DIR__ . '/../views/layout.php';
   }
 
+  /**
+   * Quando non viene trovato il controller viene fatto un redirect a questa view
+   * `index.php?page=home&action=notFound`
+   *
+   * @return void
+   * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
+   * @date 12/05/2026
+   */
   public function notFound(): void
   {
     $title = 'Pagina non trovata';

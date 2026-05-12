@@ -52,6 +52,8 @@ class DashboardController
     $libriVenduti = [];
 
 
+    // prendiamo il numero degli annunci con stato scaduto e disponibile, informazioni da mostrare nella 
+
     $n_scaduti = 0;
     $n_disponibili = 0;
 

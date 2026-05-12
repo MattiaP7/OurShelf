@@ -5,16 +5,14 @@
 /** @var array $inVendita       — annunci disponibili + scaduti del venditore */
 /** @var array $libriVenduti    — annunci conclusi (venduto) */
 /** @var array $libriAcquistati — libri comprati dallo studente */
-/** @var int   $n_scaduti    — quanti annunci sono scaduti */
-/** @var int   $n_disponibili — quanti annunci sono attivi */
-
-$nomeUtente = safe_string($_SESSION['nome'] ?? $_SESSION['nome_completo'] ?? 'Studente');
+/** @var int   $n_scaduti       — quanti annunci sono scaduti */
+/** @var int   $n_disponibili   — quanti annunci sono attivi */
 ?>
 
 <div class="mt-4 mb-3">
   <h2 class="fw-bold mb-0">La mia area personale</h2>
   <p class="text-muted mb-0">
-    Ciao, <strong><?= $nomeUtente ?></strong>! Ecco un riepilogo delle tue attività.
+    Ciao, <strong><?= $_SESSION['nome_completo'] ?></strong>! Ecco un riepilogo delle tue attività.
   </p>
 </div>
 
@@ -322,9 +320,7 @@ $nomeUtente = safe_string($_SESSION['nome'] ?? $_SESSION['nome_completo'] ?? 'St
               // Calcoliamo se è ancora annullabile (entro 24h)
               $dataAcquisto    = new DateTime($a['data_acquisto'] ?? 'now');
               $diff            = (new DateTime())->diff($dataAcquisto);
-              $annullabile     = $diff->days < 1 && $diff->invert === 0;
-              // invert=0 significa che dataAcquisto è nel passato
-              // days < 1 significa meno di 24 ore fa
+              $annullabile     = $diff->days < 1;
             ?>
               <tr>
                 <td>

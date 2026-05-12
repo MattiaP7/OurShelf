@@ -84,9 +84,6 @@ class UsersController
   {
     requireLogin();
 
-    // $_SESSION['errors']  = [];
-    // $_SESSION['success'] = '';
-
     $userId      = (int) $_SESSION['id_studente'];
     $nome        = trim($_POST['nome']        ?? '');
     $cognome     = trim($_POST['cognome']      ?? '');
@@ -107,8 +104,7 @@ class UsersController
     if (empty($dataNascita)) {
       $_SESSION['errors'][] = "La data di nascita è obbligatoria";
     }
-    // con il terzo parametro controlliamo che il tipo che cerchiamo sia uguale al tipo degli elementi da dove cerchiamo
-    if (!in_array($sesso, ['m', 'f'], true)) {
+    if (!in_array($sesso, ['m', 'f'])) {
       $_SESSION['errors'][] = "Seleziona un sesso valido";
     }
 
