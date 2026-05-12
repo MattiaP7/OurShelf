@@ -18,19 +18,19 @@ require_once __DIR__ . '/../models/ImmagineAnnuncioModel.php';
  */
 class AnnunciController
 {
-  /** @var AnnunciModels */
+  /** @var AnnunciModels istanza del modello degli annunci */
   private AnnunciModels $model;
 
-  /** @var LibriModels */
+  /** @var LibriModels istanza del modello dei libri*/
   private LibriModels $libriModel;
 
-  /** @var SecureUploader */
+  /** @var SecureUploader istanza della classe per il caricamento delle immagini */
   private SecureUploader $uploader;
 
-  /** @var ImmagineAnnuncioModel */
+  /** @var ImmagineAnnuncioModel istanza del modello delle immagini associate agli annunci */
   private ImmagineAnnuncioModel $immagineModels;
 
-  /** @var PDO  — la tua istanza PDO (adatta al tuo bootstrap) */
+  /** @var PDO */
   private PDO $pdo;
 
   public function __construct()
@@ -39,11 +39,17 @@ class AnnunciController
     $this->libriModel     = new LibriModels();
     $this->uploader       = new SecureUploader();
     $this->immagineModels = new ImmagineAnnuncioModel();
-
-
     $this->pdo = DB::connect();
   }
 
+  /**
+   * Questa funzione si occupa di gestire il caricamento delle immagini per l'annuncio.
+   * Prenda l'annuncio per id se siamo proprietari di esso possiamo caricare le immagini
+   *
+   * @return void
+   * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
+   * @date 12/05/2026
+   */
   public function uploadImmagini(): void
   {
     requireLogin();
@@ -95,7 +101,7 @@ class AnnunciController
 
   /**
    * Mostra il dettaglio di un singolo annuncio con il carousel immagini.
-   * Le immagini vengono lette dalla tabella Immagini_Annunci tramite il model.
+   * Le immagini vengono lette dalla tabella Immagini_Annunci tramite il relativo model.
    *
    * @return void
    * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
@@ -177,6 +183,14 @@ class AnnunciController
     include __DIR__ . '/../views/layout.php';
   }
 
+  /**
+   * Carica la pagina per la modifica dell'annuncio
+   * Prende le nuove informazioni dal form e aggiorna l'annuncio
+   *
+   * @return void
+   * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
+   * @date 12/05/2026
+   */
   public function update(): void
   {
     requireLogin();
@@ -290,7 +304,6 @@ class AnnunciController
     /**
      * Il form deve avere enctype="multipart/form-data" e un input
      * name="immagini[]" multiple per le foto (opzionale al momento della creazione).
-     * TODO: al momento non funziona...
      */
     $files_sent = false;
 
@@ -433,14 +446,18 @@ class AnnunciController
   public function eliminaImmagine(): void
   {
     requireLogin();
-    $idImg = (int)($_GET['id_img'] ?? 0);
+    $idImg      = (int)($_GET['id_img'] ?? 0);
     $idAnnuncio = (int)($_GET['id_annuncio'] ?? 0);
 
     $img = $this->immagineModels->getById($idImg);
     $annuncio = $this->model->getAnnuncioById($idAnnuncio);
 
+    /**
+     * Prendiamo l'annuncio e la immagine
+     * Se esistono e siamo proprieatri dell'annuncio possiamo eliminare l'immagine
+     */
+
     if ($img && $annuncio && (int)$annuncio['proprietario'] === (int)$_SESSION['id_studente']) {
-      // 2. Elimina file fisico
       $percorsoFisico = __DIR__ . '/../../public/uploads/annunci/' . $img['nome_file'];
       if (file_exists($percorsoFisico)) {
         unlink($percorsoFisico);

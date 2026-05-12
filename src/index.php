@@ -1,8 +1,12 @@
 <?php
 
 /**
- * File principale che si occupa del page routing
+ * File principale che si occupa di gestire:
+ * - page routing
+ * - gestione della sessione
+ * - gestione degli errori
  * @author Mattia Pirazzi <PIRAZZI.8076@isit100.fe.it>
+ * @date 10/05/2026
  */
 define("APP", true);
 
