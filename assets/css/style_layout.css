@@ -242,40 +242,39 @@ footer.footer .text-muted {
   color: var(--primary-color) !important;
 }
 
-/* logo */
-/* Contenitore circolare per il logo */
-.logo-wrapper {
-  width: 48px;
-  /* Dimensione aumentata */
-  height: 48px;
-  background-color: #ffffff;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* Ombra morbida per farlo "staccare" dallo sfondo */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  padding: 6px;
-  transition: all 0.3s ease;
-}
-
-.logo-wrapper img {
-  max-height: 100%;
-  max-width: 100%;
+/* Logo come immagine piena (nessuna forma attorno) */
+.site-logo {
+  width: 80px; /* dimensione normale desktop */
+  height: auto;
+  display: block;
   object-fit: contain;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
 }
 
 /* Testo del brand accanto al logo */
 .brand-name {
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   color: #212529;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.3px;
+  margin-left: 12px;
 }
 
-/* Effetto al passaggio del mouse */
-.navbar-brand:hover .logo-wrapper {
+/* Hover leggero per feedback, nessun colore aggiuntivo */
+.navbar-brand:hover .site-logo {
   transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(13, 110, 253, 0.15);
-  /* Ombra bluastra al passaggio */
+}
+
+@media (max-width: 992px) {
+  .site-logo {
+    width: 56px; /* tablet */
+  }
+}
+
+@media (max-width: 576px) {
+  .site-logo {
+    width: 40px; /* mobile */
+  }
 }

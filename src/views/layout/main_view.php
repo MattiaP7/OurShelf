@@ -10,6 +10,8 @@
 define('STOCK_IMG', 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600&q=80');
 ?>
 
+<link rel="stylesheet" href="<?= APP_BASE_URL ?>/assets/css/style_main_view.css">
+
 <div class="container py-4">
   <div class="row g-4">
 

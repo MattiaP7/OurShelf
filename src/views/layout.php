@@ -16,6 +16,9 @@ $_navAvatarUrl = '';
 if (!empty($_SESSION['id_studente']) && !empty($_SESSION['foto'])) {
   $_navAvatarUrl = APP_BASE_URL . '/public/uploads/users/' . $_SESSION['foto'];
 }
+
+// impostiamo il fuso orario locale per evitare problemi con date e orari (es. scadenza annunci)
+date_default_timezone_set('Europe/Rome');
 ?>
 <!DOCTYPE html>
 <html lang="it">
@@ -27,8 +30,8 @@ if (!empty($_SESSION['id_studente']) && !empty($_SESSION['foto'])) {
   <base href="http://lab.isit100.fe.it:8092/pirazzi/OurShelf/src/">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-  <link rel="stylesheet" href="../assets/css/style_layout.css">
-  <link rel="icon" type="image/x-icon" href="../assets/img/favicon.ico">
+  <link rel="stylesheet" href="<?= APP_BASE_URL ?>/assets/css/style_layout.css">
+  <link rel="icon" type="image/x-icon" href="<?= APP_BASE_URL ?>/assets/img/logo_progetto-favicon.webp">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 </head>
@@ -39,12 +42,10 @@ if (!empty($_SESSION['id_studente']) && !empty($_SESSION['foto'])) {
       <div class="container d-flex align-items-center justify-content-between">
 
         <a class="navbar-brand d-flex align-items-center gap-3" href="index.php">
-          <div class="logo-wrapper">
-            <img src="../assets/img/logo_progetto.png" alt="OurShelf Logo">
-          </div>
+          <img class="site-logo" src="<?= APP_BASE_URL ?>/assets/img/logo_progetto.webp" alt="OurShelf Logo">
           <span class="brand-name fw-bold">OurShelf</span>
         </a>
-
+        <!-- 
         <div class="header-center-content d-none d-lg-flex">
           <div class="icone-google">
             <span class="material-symbols-outlined">menu_book</span>
@@ -53,7 +54,7 @@ if (!empty($_SESSION['id_studente']) && !empty($_SESSION['foto'])) {
           <div class="frase">
             <h3 class="typing-text">Ogni libro è un viaggio. Dove vuoi andare oggi?</h3>
           </div>
-        </div>
+        </div> -->
 
         <div class="d-flex align-items-center gap-2">
           <button class="navbar-toggler" type="button"
