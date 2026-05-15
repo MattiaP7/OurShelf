@@ -31,7 +31,7 @@ date_default_timezone_set('Europe/Rome');
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
   <link rel="stylesheet" href="<?= APP_BASE_URL ?>/assets/css/style_layout.css">
-  <link rel="icon" type="image/x-icon" href="<?= APP_BASE_URL ?>/assets/img/logo_progetto-favicon.webp">
+  <link rel="icon" type="image/x-icon" href="<?= APP_BASE_URL ?>/assets/img/logo_progetto-favicon.ico">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 </head>

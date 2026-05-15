@@ -148,14 +148,23 @@
           <tbody>
             <?php foreach ($inVendita as $a):
               $isScaduto = $a['stato'] === 'scaduto';
-              $badgeCondizione = match ($a['condizione']) {
-                'Ottime condizioni'      => 'bg-success-subtle text-success',
-                'Buone condizioni'       => 'bg-warning-subtle text-warning-emphasis',
-                'Condizioni accettabili' => 'bg-info-subtle text-info-emphasis',
-                'Danneggiato'            => 'bg-danger-subtle text-danger',
-                default                  => 'bg-secondary-subtle text-secondary',
-              };
+              $badgeCondizione = 'bg-secondary-subtle text-secondary';
+              switch ($a['condizione']) {
+                case 'Ottime condizioni':
+                  $badgeCondizione = 'bg-success-subtle text-success';
+                  break;
+                case 'Buone condizioni':
+                  $badgeCondizione = 'bg-warning-subtle text-warning-emphasis';
+                  break;
+                case 'Condizioni accettabili':
+                  $badgeCondizione = 'bg-info-subtle text-info-emphasis';
+                  break;
+                case 'Danneggiato':
+                  $badgeCondizione = 'bg-danger-subtle text-danger';
+                  break;
+              }
             ?>
+
               <tr class="<?= $isScaduto ? 'table-warning' : '' ?>">
 
                 <td>

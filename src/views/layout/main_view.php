@@ -77,7 +77,7 @@ define('STOCK_IMG', 'https://images.unsplash.com/photo-1512820790803-83ca734da79
                       $badgeClass = 'bg-secondary-subtle text-secondary';
                   }
                   ?>
-                  <span class="badge rounded-pill <?= $badgeClass ?> small">
+                  <span class="position-absolute top-0 end-0 m-2 badge rounded-pill <?= $badgeClass ?> small">
                     <?= safe_string($a['condizione']) ?>
                   </span>
                   <?php if ($isProprietario): ?>
