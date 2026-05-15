@@ -74,7 +74,8 @@ class AnnunciModels
     JOIN Libri         l  ON a.id_libro    = l.id_libro
     JOIN Luoghi_Scambi ls ON a.id_luogo    = ls.id_luogo
     JOIN Studenti      s  ON a.id_venditore = s.id_studente
-    JOIN Immagini_Annunci IA USING(id_annuncio)
+    -- prendiamo gli annunci anche se non hanno immagini
+    LEFT JOIN Immagini_Annunci IA USING(id_annuncio)
     WHERE a.stato = 'disponibile'
   ";
 

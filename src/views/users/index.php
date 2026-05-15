@@ -246,5 +246,3 @@ $avatarUrl = !empty($user['foto'])
     });
   })();
 </script>
-
-<br><br>
