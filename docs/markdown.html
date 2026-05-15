@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Markdown Preview</title>
+
+  <!-- GitHub Markdown CSS migliorato -->
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.8.1/github-markdown.min.css">
+
+  <!-- Highlight.js (tema chiaro leggibile) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css">
+
+
+</head>
+
+<body>
+  <div class="markdown-body" id="content"></div>
+
+  <!-- Marked.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/15.0.7/marked.min.js"></script>
+
+  <!-- Highlight.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+
+  <!-- Mermaid.js -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+
+  <script>
+    // Config Mermaid
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'default',
+      flowchart: { useMaxWidth: true }
+    });
+
+    // Config Marked
+    marked.setOptions({
+      gfm: true,
+      breaks: true,
+      smartypants: true,
+      headerIds: true,
+      highlight: function (code, lang) {
+        if (lang && hljs.getLanguage(lang)) {
+          return hljs.highlight(code, { language: lang }).value;
+        }
+        return hljs.highlightAuto(code).value;
+      }
+    });
+
+    // Render Mermaid dopo il caricamento
+    function renderMermaid() {
+      document.querySelectorAll('.mermaid').forEach(el => {
+        mermaid.render('mermaid-' + Math.random().toString(36).substr(2, 9), el.textContent)
+          .then(({ svg }) => {
+            el.innerHTML = svg;
+          })
+          .catch(err => console.error(err));
+      });
+    }
+
+    // Carica il Markdown
+    async function loadMarkdown() {
+      try {
+        const response = await fetch('architettura.md');   // ← CAMBIA CON IL NOME DEL TUO FILE
+        const text = await response.text();
+
+        const html = marked.parse(text);
+        document.getElementById('content').innerHTML = html;
+
+        // Evidenzia codice
+        hljs.highlightAll();
+
+        // Renderizza Mermaid
+        setTimeout(renderMermaid, 300);
+
+      } catch (err) {
+        document.getElementById('content').innerHTML = `
+                    <h2 style="color:#d32f2f;">Errore di caricamento</h2>
+                    <p>Assicurati che <strong>tuo-file.md</strong> sia nella stessa cartella di index.html</p>
+                `;
+      }
+    }
+
+    window.onload = loadMarkdown;
+  </script>
+</body>
+
+</html>

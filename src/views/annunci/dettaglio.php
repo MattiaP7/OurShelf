@@ -12,13 +12,21 @@ $carouselId = 'carousel-detail-' . (int) $annuncio['id_annuncio'];
 $placeholder = 'https://images.pexels.com/photos/159866/books-book-pages-read-literature-159866.jpeg';
 $hasFoto = !empty($immagini);
 
-$badgeClass = match ($annuncio['condizione']) {
-  'Ottime condizioni'      => 'bg-success text-white',
-  'Buone condizioni'       => 'bg-warning text-dark',
-  'Condizioni accettabili' => 'bg-info text-dark',
-  'Danneggiato'            => 'bg-danger text-white',
-  default                  => 'bg-secondary text-white',
-};
+$badgeClass = 'bg-secondary text-white';
+switch ($annuncio['condizione']) {
+  case 'Ottime condizioni':
+    $badgeClass = 'bg-success text-white';
+    break;
+  case 'Buone condizioni':
+    $badgeClass = 'bg-warning text-dark';
+    break;
+  case 'Condizioni accettabili':
+    $badgeClass = 'bg-info text-dark';
+    break;
+  case 'Danneggiato':
+    $badgeClass = 'bg-danger text-white';
+    break;
+}
 
 $_navAvatarUrl = '';
 if (!empty($avatar_venditore)) {
